@@ -63,76 +63,81 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(
-              top: 20,
-              left: 20,
-              right: 10,
-              bottom: 4,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: NyamColors.gradientBG,
+        ),
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 10,
+                bottom: 4,
+              ),
+              child: HomeScreenTopBar(),
             ),
-            child: HomeScreenTopBar(),
-          ),
-          Container(
-            height: 10,
-            color: NyamColors.customSkyBlue,
-          ),
-          SevenDatePicker(
-              isSelectedDate: isSelectedDate,
-              sevenDays: sevenDays,
-              sevenDaysOfWeek: sevenDaysOfWeek),
-          Container(
-            height: 10,
-            color: NyamColors.customSkyBlue,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 14,
-              left: 20,
+            Container(
+              height: 10,
+              color: NyamColors.customSkyBlue,
             ),
-            child: SizedBox(
-              height: 34,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: entryPoint == CampusType.Seoul
-                    ? SeoulRestaurantType.values.length
-                    : AnsungRestaurantType.values.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(1, 1),
-                            color: Colors.black.withOpacity(0.1),
-                          )
-                        ],
-                        borderRadius: BorderRadius.circular(30),
+            SevenDatePicker(
+                isSelectedDate: isSelectedDate,
+                sevenDays: sevenDays,
+                sevenDaysOfWeek: sevenDaysOfWeek),
+            Container(
+              height: 10,
+              color: NyamColors.customSkyBlue,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 14,
+                left: 20,
+              ),
+              child: SizedBox(
+                height: 34,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: entryPoint == CampusType.Seoul
+                      ? SeoulRestaurantType.values.length
+                      : AnsungRestaurantType.values.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        right: 10,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
-                        child: Text(
-                          entryPoint == CampusType.Seoul
-                              ? seoulRestaurantName[index]
-                              : ansungRestaurantName[index],
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.black.withOpacity(0.1),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 5),
+                          child: Text(
+                            entryPoint == CampusType.Seoul
+                                ? seoulRestaurantName[index]
+                                : ansungRestaurantName[index],
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
