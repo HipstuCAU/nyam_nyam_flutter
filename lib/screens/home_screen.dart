@@ -298,43 +298,50 @@ class _MenuState extends State<Menu> {
                     ))
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(
-                top: 6,
-                bottom: 0,
-              ),
-              child: Text(
-                "3200원",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                bottom: 10,
-              ),
-              child: GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 4,
-                ),
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return const SizedBox(
+            if (isOpenedToSee)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      top: 6,
+                      bottom: 0,
+                    ),
                     child: Text(
-                      "된장찌개",
+                      "3200원",
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 4,
+                      ),
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return const SizedBox(
+                          child: Text(
+                            "된장찌개",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              )
           ],
         ),
       ),
