@@ -167,54 +167,75 @@ class _HomeScreenState extends State<HomeScreen> {
               seoulRestaurantName: seoulRestaurantName,
               ansungRestaurantName: ansungRestaurantName,
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height - 210,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          left: 10,
-                          bottom: 10,
-                        ),
-                        child: Text(
-                          "경영경제관 310관 B4층",
-                          style: TextStyle(
-                            color: NyamColors.grey50,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Menu(
-                        mealTime: "조식",
-                      ),
-                      const SizedBox(
-                        height: 14,
-                      ),
-                      Menu(
-                        mealTime: "중식",
-                      ),
-                      const SizedBox(
-                        height: 14,
-                      ),
-                      Menu(
-                        mealTime: "석식",
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                    ],
-                  ),
-                ),
+            Expanded(
+              child: PageView.builder(
+                controller: PageController(initialPage: 0),
+                itemCount: HomeScreen.entryPoint == CampusType.seoul
+                    ? seoulRestaurantName.length
+                    : ansungRestaurantName.length,
+                itemBuilder: (context, index) {
+                  return const MealsOfRestaurant();
+                },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class MealsOfRestaurant extends StatelessWidget {
+  const MealsOfRestaurant({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height - 210,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(
+                  left: 10,
+                  bottom: 10,
+                ),
+                child: Text(
+                  "경영경제관 310관 B4층",
+                  style: TextStyle(
+                    color: NyamColors.grey50,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Menu(
+                mealTime: "조식",
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              Menu(
+                mealTime: "중식",
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              Menu(
+                mealTime: "석식",
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -228,6 +249,7 @@ class Menu extends StatefulWidget {
   });
 
   String mealTime;
+  DateTime now = DateTime.now();
 
   @override
   State<Menu> createState() => _MenuState();
@@ -270,21 +292,9 @@ class _MenuState extends State<Menu> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: NyamColors.customRed.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          child: OpenState(),
-                        ),
-                      ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: OpenState(),
                     ),
                   ],
                 ),
@@ -359,12 +369,24 @@ class OpenState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      "운영 종료",
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w700,
-        color: NyamColors.cauRed,
+    return Container(
+      decoration: BoxDecoration(
+        color: NyamColors.customYellow.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 2,
+        ),
+        child: Text(
+          "준비중",
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: NyamColors.customYellow,
+          ),
+        ),
       ),
     );
   }
