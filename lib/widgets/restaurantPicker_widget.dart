@@ -37,10 +37,10 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: 14,
+        top: 10,
       ),
       child: SizedBox(
-        height: 34,
+        height: 50,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: HomeScreen.entryPoint == CampusType.seoul
@@ -50,13 +50,15 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
             return Padding(
               padding: const EdgeInsets.only(
                 left: 10,
-                // right: 10,
+                top: 5,
+                bottom: 10,
               ),
               child: Container(
+                height: 30,
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      offset: const Offset(0, 2),
+                      offset: const Offset(0, 0),
                       blurRadius: 3,
                       spreadRadius: 1,
                       color: Colors.black.withOpacity(0.1),
@@ -67,13 +69,16 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                       : Colors.white,
                   borderRadius: BorderRadius.circular(30),
                 ),
+                clipBehavior: Clip.none,
                 child: GestureDetector(
                   onTap: () {
                     touchUpToInsideToSelectRestaurant(index);
                   },
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     child: Text(
                       HomeScreen.entryPoint == CampusType.seoul
                           ? widget.seoulRestaurantName[index]
