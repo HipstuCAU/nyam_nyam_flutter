@@ -48,10 +48,11 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
               : widget.ansungRestaurantName.length,
           itemBuilder: (context, index) {
             return Padding(
-              padding: const EdgeInsets.only(
-                left: 10,
+              padding: EdgeInsets.only(
+                left: index == 0 ? 20 : 10,
                 top: 5,
                 bottom: 10,
+                right: index == widget.seoulRestaurantName.length - 1 ? 20 : 0,
               ),
               child: Container(
                 height: 30,
