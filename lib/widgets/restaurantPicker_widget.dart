@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
+import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 
 class RestaurantPicker extends StatefulWidget {
   RestaurantPicker({
     super.key,
-    required this.entryPoint,
     required this.isSelectedRestaurant,
     required this.seoulRestaurantName,
     required this.ansungRestaurantName,
   });
 
-  final CampusType entryPoint;
   List<bool> isSelectedRestaurant;
   final List<String> seoulRestaurantName;
   final List<String> ansungRestaurantName;
@@ -44,7 +43,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
         height: 34,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: widget.entryPoint == CampusType.seoul
+          itemCount: HomeScreen.entryPoint == CampusType.seoul
               ? widget.seoulRestaurantName.length
               : widget.ansungRestaurantName.length,
           itemBuilder: (context, index) {
@@ -76,7 +75,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Text(
-                      widget.entryPoint == CampusType.seoul
+                      HomeScreen.entryPoint == CampusType.seoul
                           ? widget.seoulRestaurantName[index]
                           : widget.ansungRestaurantName[index],
                       style: TextStyle(

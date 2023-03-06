@@ -1,22 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:nyam_nyam_flutter/widgets/homeScreenTopBar_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  static CampusType entryPoint = CampusType.seoul;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  CampusType entryPoint = CampusType.seoul;
-
   var sevenDays = [];
   var sevenDaysOfWeek = [];
   Map<String, String> sevenDates = {};
@@ -71,32 +70,92 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                 top: 20,
                 left: 20,
                 right: 10,
                 bottom: 4,
               ),
-              child: HomeScreenTopBar(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton.icon(
+                    onPressed: (() {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) => CupertinoActionSheet(
+                          title: const Text("캠퍼스를 선택해주세요."),
+                          actions: <Widget>[
+                            CupertinoActionSheetAction(
+                              onPressed: () {
+                                setState(() {
+                                  HomeScreen.entryPoint = CampusType.seoul;
+                                  print("서울");
+                                });
+                              },
+                              child: const Text(
+                                "서울캠퍼스",
+                              ),
+                            ),
+                            CupertinoActionSheetAction(
+                              onPressed: () {
+                                setState(() {
+                                  HomeScreen.entryPoint = CampusType.ansung;
+                                  print("안성");
+                                });
+                              },
+                              child: const Text(
+                                "안성캠퍼스",
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: NyamColors.customGrey,
+                      size: 35,
+                    ),
+                    label: Text(
+                      HomeScreen.entryPoint == CampusType.seoul
+                          ? "서울캠퍼스"
+                          : "안성캠퍼스",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.settings),
+                    color: NyamColors.customGrey,
+                    iconSize: 25,
+                  )
+                ],
+              ),
             ),
             Container(
               height: 10,
               color: NyamColors.customSkyBlue,
             ),
             SevenDatePicker(
-                isSelectedDate: isSelectedDate,
-                sevenDays: sevenDays,
-                sevenDaysOfWeek: sevenDaysOfWeek),
+              isSelectedDate: isSelectedDate,
+              sevenDays: sevenDays,
+              sevenDaysOfWeek: sevenDaysOfWeek,
+            ),
             Container(
               height: 10,
               color: NyamColors.customSkyBlue,
             ),
             RestaurantPicker(
-                entryPoint: entryPoint,
-                isSelectedRestaurant: isSelectedRestaurant,
-                seoulRestaurantName: seoulRestaurantName,
-                ansungRestaurantName: ansungRestaurantName),
+              isSelectedRestaurant: isSelectedRestaurant,
+              seoulRestaurantName: seoulRestaurantName,
+              ansungRestaurantName: ansungRestaurantName,
+            ),
           ],
         ),
       ),
