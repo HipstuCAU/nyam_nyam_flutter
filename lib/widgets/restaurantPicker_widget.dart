@@ -50,7 +50,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(
-                left: 20,
+                left: 10,
                 // right: 10,
               ),
               child: Container(
@@ -74,7 +74,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                   },
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Text(
                       widget.entryPoint == CampusType.Seoul
                           ? widget.seoulRestaurantName[index]
