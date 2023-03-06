@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
     false,
   ];
-  List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원식당'];
+  List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원'];
   List<String> ansungRestaurantName = ['카우이츠', '카우', '라면'];
 
   @override
