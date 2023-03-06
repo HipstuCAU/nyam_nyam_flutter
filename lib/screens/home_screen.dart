@@ -3,6 +3,8 @@ import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nyam_nyam_flutter/widgets/homeScreenTopBar_widget.dart';
+import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,11 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
     false,
   ];
+  List<String> restaurantName = [];
 
   @override
   void initState() {
     super.initState();
     get7daysFromToday();
+    getRestaurantsName(SeoulRestaurantType.values);
+  }
+
+  List<String> getRestaurantsName(List<SeoulRestaurantType> restaurantTypes) {
+    print(restaurantTypes.toString());
+    return restaurantName;
   }
 
   Map<String, String> get7daysFromToday() {
@@ -83,7 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 return Text(
                   entryPoint == CampusType.Seoul
-                      ? SeoulRestaurantType.values[index].toString()
+                      ? SeoulRestaurantType.values[index]
+                          .toString()
+                          .split('.')[1]
                       : AnsungRestaurantType.values[index].toString(),
                   style: const TextStyle(
                     color: Colors.red,
@@ -94,140 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class SevenDatePicker extends StatefulWidget {
-  SevenDatePicker({
-    super.key,
-    required this.isSelectedDate,
-    required this.sevenDays,
-    required this.sevenDaysOfWeek,
-  });
-
-  List<bool> isSelectedDate;
-  final List sevenDays;
-  final List sevenDaysOfWeek;
-
-  @override
-  State<SevenDatePicker> createState() => _SevenDatePickerState();
-}
-
-class _SevenDatePickerState extends State<SevenDatePicker> {
-  void touchUpToInsideToSelectDate(int index) {
-    setState(() {
-      if (widget.isSelectedDate[index] == true) {
-        return;
-      } else {
-        widget.isSelectedDate = [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ];
-        widget.isSelectedDate[index] = true;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: NyamColors.customSkyBlue,
-      height: 41,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 7,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              touchUpToInsideToSelectDate(index);
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width / 28,
-              ),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width / 14,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: widget.isSelectedDate[index]
-                        ? NyamColors.cauBlue
-                        : NyamColors.customSkyBlue,
-                    borderRadius: BorderRadius.circular(13),
-                  ),
-                  clipBehavior: Clip.hardEdge,
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.sevenDays[index],
-                        style: TextStyle(
-                          color: widget.isSelectedDate[index]
-                              ? Colors.white
-                              : NyamColors.customBlack,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        widget.sevenDaysOfWeek[index],
-                        style: TextStyle(
-                          color: widget.isSelectedDate[index]
-                              ? Colors.white
-                              : NyamColors.customBlack,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class HomeScreenTopBar extends StatelessWidget {
-  const HomeScreenTopBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextButton.icon(
-          onPressed: (() {}),
-          icon: const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: NyamColors.customGrey,
-            size: 35,
-          ),
-          label: const Text(
-            "서울캠퍼스",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.settings),
-          color: NyamColors.customGrey,
-          iconSize: 25,
-        )
-      ],
     );
   }
 }
