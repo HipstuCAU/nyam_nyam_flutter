@@ -28,18 +28,22 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
     false,
   ];
-  List<String> restaurantName = [];
+  List<bool> isSelectedRestaurant = [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+  List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원식당'];
+  List<String> ansungRestaurantName = ['카우이츠', '카우', '라면'];
 
   @override
   void initState() {
     super.initState();
     get7daysFromToday();
-    getRestaurantsName(SeoulRestaurantType.values);
-  }
-
-  List<String> getRestaurantsName(List<SeoulRestaurantType> restaurantTypes) {
-    print(restaurantTypes.toString());
-    return restaurantName;
   }
 
   Map<String, String> get7daysFromToday() {
@@ -82,25 +86,50 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 10,
             color: NyamColors.customSkyBlue,
           ),
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: entryPoint == CampusType.Seoul
-                  ? SeoulRestaurantType.values.length
-                  : AnsungRestaurantType.values.length,
-              itemBuilder: (context, index) {
-                return Text(
-                  entryPoint == CampusType.Seoul
-                      ? SeoulRestaurantType.values[index]
-                          .toString()
-                          .split('.')[1]
-                      : AnsungRestaurantType.values[index].toString(),
-                  style: const TextStyle(
-                    color: Colors.red,
-                  ),
-                );
-              },
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 14,
+              left: 20,
+            ),
+            child: SizedBox(
+              height: 34,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: entryPoint == CampusType.Seoul
+                    ? SeoulRestaurantType.values.length
+                    : AnsungRestaurantType.values.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(1, 1),
+                            color: Colors.black.withOpacity(0.1),
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 5),
+                        child: Text(
+                          entryPoint == CampusType.Seoul
+                              ? seoulRestaurantName[index]
+                              : ansungRestaurantName[index],
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
