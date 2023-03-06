@@ -65,228 +65,274 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: NyamColors.gradientBG,
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 10,
-                right: 10,
-                bottom: 4,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Directionality(
-                    textDirection: ui.TextDirection.rtl,
-                    child: TextButton.icon(
-                      onPressed: (() {
-                        showCupertinoModalPopup(
-                          context: context,
-                          builder: (context) => CupertinoActionSheet(
-                            title: const Text("캠퍼스를 선택해주세요."),
-                            actions: <Widget>[
-                              CupertinoActionSheetAction(
-                                onPressed: () {
-                                  setState(() {
-                                    HomeScreen.entryPoint = CampusType.seoul;
-                                    Navigator.pop(context, 'Cancel');
-                                  });
-                                },
-                                child: const Text(
-                                  "서울캠퍼스",
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: NyamColors.gradientBG,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 20,
+                  left: 10,
+                  right: 10,
+                  bottom: 4,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Directionality(
+                      textDirection: ui.TextDirection.rtl,
+                      child: TextButton.icon(
+                        onPressed: (() {
+                          showCupertinoModalPopup(
+                            context: context,
+                            builder: (context) => CupertinoActionSheet(
+                              title: const Text("캠퍼스를 선택해주세요."),
+                              actions: <Widget>[
+                                CupertinoActionSheetAction(
+                                  onPressed: () {
+                                    setState(() {
+                                      HomeScreen.entryPoint = CampusType.seoul;
+                                      Navigator.pop(context, 'Cancel');
+                                    });
+                                  },
+                                  child: const Text(
+                                    "서울캠퍼스",
+                                  ),
                                 ),
-                              ),
-                              CupertinoActionSheetAction(
-                                onPressed: () {
-                                  setState(() {
-                                    HomeScreen.entryPoint = CampusType.ansung;
-                                    Navigator.pop(context, 'Cancel');
-                                  });
-                                },
-                                child: const Text(
-                                  "안성캠퍼스",
+                                CupertinoActionSheetAction(
+                                  onPressed: () {
+                                    setState(() {
+                                      HomeScreen.entryPoint = CampusType.ansung;
+                                      Navigator.pop(context, 'Cancel');
+                                    });
+                                  },
+                                  child: const Text(
+                                    "안성캠퍼스",
+                                  ),
                                 ),
+                              ],
+                              cancelButton: CupertinoActionSheetAction(
+                                isDefaultAction: true,
+                                onPressed: () {
+                                  Navigator.pop(context, 'Cancel');
+                                },
+                                child: const Text("취소"),
                               ),
-                            ],
-                            cancelButton: CupertinoActionSheetAction(
-                              isDefaultAction: true,
-                              onPressed: () {
-                                Navigator.pop(context, 'Cancel');
-                              },
-                              child: const Text("취소"),
                             ),
+                          );
+                        }),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: NyamColors.customGrey,
+                          size: 35,
+                        ),
+                        label: Text(
+                          HomeScreen.entryPoint == CampusType.seoul
+                              ? "서울캠퍼스"
+                              : "안성캠퍼스",
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
                           ),
-                        );
-                      }),
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: NyamColors.customGrey,
-                        size: 35,
-                      ),
-                      label: Text(
-                        HomeScreen.entryPoint == CampusType.seoul
-                            ? "서울캠퍼스"
-                            : "안성캠퍼스",
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.settings),
-                    color: NyamColors.customGrey,
-                    iconSize: 25,
-                  )
-                ],
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.settings),
+                      color: NyamColors.customGrey,
+                      iconSize: 25,
+                    )
+                  ],
+                ),
               ),
-            ),
-            Container(
-              height: 10,
-              color: NyamColors.customSkyBlue,
-            ),
-            SevenDatePicker(
-              isSelectedDate: isSelectedDate,
-              sevenDays: sevenDays,
-              sevenDaysOfWeek: sevenDaysOfWeek,
-            ),
-            Container(
-              height: 10,
-              color: NyamColors.customSkyBlue,
-            ),
-            RestaurantPicker(
-              isSelectedRestaurant: isSelectedRestaurant,
-              seoulRestaurantName: seoulRestaurantName,
-              ansungRestaurantName: ansungRestaurantName,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
+              Container(
+                height: 10,
+                color: NyamColors.customSkyBlue,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(
-                      left: 10,
-                      bottom: 10,
+              SevenDatePicker(
+                isSelectedDate: isSelectedDate,
+                sevenDays: sevenDays,
+                sevenDaysOfWeek: sevenDaysOfWeek,
+              ),
+              Container(
+                height: 10,
+                color: NyamColors.customSkyBlue,
+              ),
+              RestaurantPicker(
+                isSelectedRestaurant: isSelectedRestaurant,
+                seoulRestaurantName: seoulRestaurantName,
+                ansungRestaurantName: ansungRestaurantName,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        left: 10,
+                        bottom: 10,
+                      ),
+                      child: Text(
+                        "경영경제관 310관 B4층",
+                        style: TextStyle(
+                          color: NyamColors.grey50,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    child: Text(
-                      "경영경제관 310관 B4층",
-                      style: TextStyle(
-                        color: NyamColors.grey50,
-                        fontSize: 12,
+                    Menu(
+                      mealTime: "조식",
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
+                    Menu(
+                      mealTime: "중식",
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
+                    Menu(
+                      mealTime: "석식",
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Menu extends StatefulWidget {
+  Menu({
+    super.key,
+    required this.mealTime,
+  });
+
+  String mealTime;
+
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  late Icon icon;
+
+  bool isOpenedToSee = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.sunny_snowing,
+                      size: 20,
+                    ),
+                    Text(
+                      "  ${widget.mealTime}",
+                      style: const TextStyle(
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.sunny_snowing,
-                                    size: 20,
-                                  ),
-                                  const Text(
-                                    " 조식",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: NyamColors.customRed
-                                            .withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 2,
-                                        ),
-                                        child: OpenState(),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_up_rounded,
-                                  ))
-                            ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: NyamColors.customRed.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
                           ),
-                          const Padding(
-                            padding: EdgeInsets.only(
-                              top: 6,
-                              bottom: 0,
-                            ),
-                            child: Text(
-                              "3200원",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 10,
-                            ),
-                            child: GridView.builder(
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 4,
-                              ),
-                              itemCount: 5,
-                              itemBuilder: (context, index) {
-                                return const SizedBox(
-                                  child: Text(
-                                    "된장찌개",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
+                          child: OpenState(),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isOpenedToSee = !isOpenedToSee;
+                      });
+                    },
+                    icon: Icon(
+                      isOpenedToSee
+                          ? Icons.keyboard_arrow_up_rounded
+                          : Icons.keyboard_arrow_down_rounded,
+                    ))
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.only(
+                top: 6,
+                bottom: 0,
+              ),
+              child: Text(
+                "3200원",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 10,
+              ),
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 4,
+                ),
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return const SizedBox(
+                    child: Text(
+                      "된장찌개",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
