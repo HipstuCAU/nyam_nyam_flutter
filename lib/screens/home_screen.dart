@@ -98,63 +98,93 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class SevenDatePicker extends StatelessWidget {
-  const SevenDatePicker({
+class SevenDatePicker extends StatefulWidget {
+  SevenDatePicker({
     super.key,
     required this.isSelectedDate,
     required this.sevenDays,
     required this.sevenDaysOfWeek,
   });
 
-  final List<bool> isSelectedDate;
+  List<bool> isSelectedDate;
   final List sevenDays;
   final List sevenDaysOfWeek;
+
+  @override
+  State<SevenDatePicker> createState() => _SevenDatePickerState();
+}
+
+class _SevenDatePickerState extends State<SevenDatePicker> {
+  void touchUpToInsideToSelectDate(int index) {
+    setState(() {
+      if (widget.isSelectedDate[index] == true) {
+        return;
+      } else {
+        widget.isSelectedDate = [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ];
+        widget.isSelectedDate[index] = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: NyamColors.customSkyBlue,
-      height: 40,
+      height: 41,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 7,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width / 28),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 14,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: isSelectedDate[index]
-                      ? NyamColors.cauBlue
-                      : NyamColors.customSkyBlue,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  children: [
-                    Text(
-                      sevenDays[index],
-                      style: TextStyle(
-                        color: isSelectedDate[index]
-                            ? Colors.white
-                            : NyamColors.customBlack,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+          return GestureDetector(
+            onTap: () {
+              touchUpToInsideToSelectDate(index);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 28,
+              ),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width / 14,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: widget.isSelectedDate[index]
+                        ? NyamColors.cauBlue
+                        : NyamColors.customSkyBlue,
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.sevenDays[index],
+                        style: TextStyle(
+                          color: widget.isSelectedDate[index]
+                              ? Colors.white
+                              : NyamColors.customBlack,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    Text(
-                      sevenDaysOfWeek[index],
-                      style: TextStyle(
-                        color: isSelectedDate[index]
-                            ? Colors.white
-                            : NyamColors.customBlack,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
+                      Text(
+                        widget.sevenDaysOfWeek[index],
+                        style: TextStyle(
+                          color: widget.isSelectedDate[index]
+                              ? Colors.white
+                              : NyamColors.customBlack,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
