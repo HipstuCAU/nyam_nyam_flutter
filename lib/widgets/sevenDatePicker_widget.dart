@@ -41,7 +41,7 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
   Widget build(BuildContext context) {
     return Container(
       color: NyamColors.customSkyBlue,
-      height: 41,
+      height: 45,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 7,
@@ -61,7 +61,16 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
                     color: widget.isSelectedDate[index]
                         ? NyamColors.cauBlue
                         : NyamColors.customSkyBlue,
-                    borderRadius: BorderRadius.circular(13),
+                    borderRadius: BorderRadius.circular(15),
+                    border: index == 0
+                        ? Border.all(
+                            width: 1,
+                            color: NyamColors.cauBlue,
+                          )
+                        : Border.all(
+                            width: 0,
+                            color: NyamColors.customSkyBlue,
+                          ),
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: Padding(
