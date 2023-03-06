@@ -64,29 +64,34 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
                     borderRadius: BorderRadius.circular(13),
                   ),
                   clipBehavior: Clip.hardEdge,
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.sevenDays[index],
-                        style: TextStyle(
-                          color: widget.isSelectedDate[index]
-                              ? Colors.white
-                              : NyamColors.customBlack,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 3,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.sevenDays[index],
+                          style: TextStyle(
+                            color: widget.isSelectedDate[index]
+                                ? Colors.white
+                                : NyamColors.customBlack,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Text(
-                        widget.sevenDaysOfWeek[index],
-                        style: TextStyle(
-                          color: widget.isSelectedDate[index]
-                              ? Colors.white
-                              : NyamColors.customBlack,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                        Text(
+                          widget.sevenDaysOfWeek[index],
+                          style: TextStyle(
+                            color: widget.isSelectedDate[index]
+                                ? Colors.white
+                                : NyamColors.customBlack,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
