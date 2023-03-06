@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class nyamColors {
+class NyamColors {
   static const cauBlue = Color(0xFF2155A4);
   static const cauRed = Color(0xFFDA3832);
   static const customGrey = Color(0xFF96A1B2);
