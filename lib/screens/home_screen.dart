@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원'];
 
-  List<String> ansungRestaurantName = ['카우이츠', '카우', '라면'];
+  List<String> ansungRestaurantName = ['카우이츠', '카우버거', '라면'];
 
   @override
   void initState() {
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () {
                                 setState(() {
                                   HomeScreen.entryPoint = CampusType.seoul;
-                                  print("서울");
+                                  Navigator.pop(context, 'Cancel');
                                 });
                               },
                               child: const Text(
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () {
                                 setState(() {
                                   HomeScreen.entryPoint = CampusType.ansung;
-                                  print("안성");
+                                  Navigator.pop(context, 'Cancel');
                                 });
                               },
                               child: const Text(
@@ -110,6 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ],
+                          cancelButton: CupertinoActionSheetAction(
+                            isDefaultAction: true,
+                            onPressed: () {
+                              Navigator.pop(context, 'Cancel');
+                            },
+                            child: const Text("취소"),
+                          ),
                         ),
                       );
                     }),
