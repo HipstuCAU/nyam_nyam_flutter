@@ -11,19 +11,22 @@ class HomeScreenTopBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TextButton.icon(
-          onPressed: (() {}),
-          icon: const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: NyamColors.customGrey,
-            size: 35,
-          ),
-          label: const Text(
-            "서울캠퍼스",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Colors.black,
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: TextButton.icon(
+            onPressed: (() {}),
+            icon: const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: NyamColors.customGrey,
+              size: 35,
+            ),
+            label: const Text(
+              "서울캠퍼스",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
             ),
           ),
         ),
