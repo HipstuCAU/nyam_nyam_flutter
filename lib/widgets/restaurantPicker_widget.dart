@@ -44,9 +44,9 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
         height: 34,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: widget.entryPoint == CampusType.Seoul
-              ? SeoulRestaurantType.values.length
-              : AnsungRestaurantType.values.length,
+          itemCount: widget.entryPoint == CampusType.seoul
+              ? widget.seoulRestaurantName.length
+              : widget.ansungRestaurantName.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(
@@ -76,7 +76,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Text(
-                      widget.entryPoint == CampusType.Seoul
+                      widget.entryPoint == CampusType.seoul
                           ? widget.seoulRestaurantName[index]
                           : widget.ansungRestaurantName[index],
                       style: TextStyle(

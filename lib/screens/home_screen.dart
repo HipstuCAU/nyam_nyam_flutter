@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  CampusType entryPoint = CampusType.Seoul;
+  CampusType entryPoint = CampusType.seoul;
 
   var sevenDays = [];
   var sevenDaysOfWeek = [];
@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
   ];
   List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원'];
+
   List<String> ansungRestaurantName = ['카우이츠', '카우', '라면'];
 
   @override

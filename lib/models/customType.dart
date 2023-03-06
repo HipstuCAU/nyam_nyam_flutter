@@ -1,18 +1,21 @@
-enum SeoulRestaurantType {
+enum RestaurantType {
   chamsulgi,
   domitoryA,
   domirotyB,
   student,
   staff,
-}
-
-enum AnsungRestaurantType {
   ansungCauEats,
   ansungCauBurger,
   ansungRamen,
 }
 
 enum CampusType {
-  Seoul,
-  Ansung,
+  seoul,
+  ansung,
+}
+
+enum MealTime {
+  breakfase,
+  lunch,
+  dinner,
 }
