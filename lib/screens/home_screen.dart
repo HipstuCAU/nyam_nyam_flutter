@@ -65,153 +65,156 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: NyamColors.gradientBG,
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 20,
-                  left: 10,
-                  right: 10,
-                  bottom: 4,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Directionality(
-                      textDirection: ui.TextDirection.rtl,
-                      child: TextButton.icon(
-                        onPressed: (() {
-                          showCupertinoModalPopup(
-                            context: context,
-                            builder: (context) => CupertinoActionSheet(
-                              title: const Text("캠퍼스를 선택해주세요."),
-                              actions: <Widget>[
-                                CupertinoActionSheetAction(
-                                  onPressed: () {
-                                    setState(() {
-                                      HomeScreen.entryPoint = CampusType.seoul;
-                                      Navigator.pop(context, 'Cancel');
-                                    });
-                                  },
-                                  child: const Text(
-                                    "서울캠퍼스",
-                                  ),
-                                ),
-                                CupertinoActionSheetAction(
-                                  onPressed: () {
-                                    setState(() {
-                                      HomeScreen.entryPoint = CampusType.ansung;
-                                      Navigator.pop(context, 'Cancel');
-                                    });
-                                  },
-                                  child: const Text(
-                                    "안성캠퍼스",
-                                  ),
-                                ),
-                              ],
-                              cancelButton: CupertinoActionSheetAction(
-                                isDefaultAction: true,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: NyamColors.gradientBG,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 30,
+                left: 10,
+                right: 10,
+                bottom: 4,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Directionality(
+                    textDirection: ui.TextDirection.rtl,
+                    child: TextButton.icon(
+                      onPressed: (() {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) => CupertinoActionSheet(
+                            title: const Text("캠퍼스를 선택해주세요."),
+                            actions: <Widget>[
+                              CupertinoActionSheetAction(
                                 onPressed: () {
-                                  Navigator.pop(context, 'Cancel');
+                                  setState(() {
+                                    HomeScreen.entryPoint = CampusType.seoul;
+                                    Navigator.pop(context, 'Cancel');
+                                  });
                                 },
-                                child: const Text("취소"),
+                                child: const Text(
+                                  "서울캠퍼스",
+                                ),
                               ),
+                              CupertinoActionSheetAction(
+                                onPressed: () {
+                                  setState(() {
+                                    HomeScreen.entryPoint = CampusType.ansung;
+                                    Navigator.pop(context, 'Cancel');
+                                  });
+                                },
+                                child: const Text(
+                                  "안성캠퍼스",
+                                ),
+                              ),
+                            ],
+                            cancelButton: CupertinoActionSheetAction(
+                              isDefaultAction: true,
+                              onPressed: () {
+                                Navigator.pop(context, 'Cancel');
+                              },
+                              child: const Text("취소"),
                             ),
-                          );
-                        }),
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: NyamColors.customGrey,
-                          size: 35,
+                          ),
+                        );
+                      }),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: NyamColors.customGrey,
+                        size: 35,
+                      ),
+                      label: Text(
+                        HomeScreen.entryPoint == CampusType.seoul
+                            ? "서울캠퍼스"
+                            : "안성캠퍼스",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
                         ),
-                        label: Text(
-                          HomeScreen.entryPoint == CampusType.seoul
-                              ? "서울캠퍼스"
-                              : "안성캠퍼스",
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.settings),
+                    color: NyamColors.customGrey,
+                    iconSize: 25,
+                  )
+                ],
+              ),
+            ),
+            Container(
+              height: 10,
+              color: NyamColors.customSkyBlue,
+            ),
+            SevenDatePicker(
+              isSelectedDate: isSelectedDate,
+              sevenDays: sevenDays,
+              sevenDaysOfWeek: sevenDaysOfWeek,
+            ),
+            Container(
+              height: 10,
+              color: NyamColors.customSkyBlue,
+            ),
+            RestaurantPicker(
+              isSelectedRestaurant: isSelectedRestaurant,
+              seoulRestaurantName: seoulRestaurantName,
+              ansungRestaurantName: ansungRestaurantName,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height - 210,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(
+                          left: 10,
+                          bottom: 10,
+                        ),
+                        child: Text(
+                          "경영경제관 310관 B4층",
+                          style: TextStyle(
+                            color: NyamColors.grey50,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.settings),
-                      color: NyamColors.customGrey,
-                      iconSize: 25,
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                height: 10,
-                color: NyamColors.customSkyBlue,
-              ),
-              SevenDatePicker(
-                isSelectedDate: isSelectedDate,
-                sevenDays: sevenDays,
-                sevenDaysOfWeek: sevenDaysOfWeek,
-              ),
-              Container(
-                height: 10,
-                color: NyamColors.customSkyBlue,
-              ),
-              RestaurantPicker(
-                isSelectedRestaurant: isSelectedRestaurant,
-                seoulRestaurantName: seoulRestaurantName,
-                ansungRestaurantName: ansungRestaurantName,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        bottom: 10,
+                      Menu(
+                        mealTime: "조식",
                       ),
-                      child: Text(
-                        "경영경제관 310관 B4층",
-                        style: TextStyle(
-                          color: NyamColors.grey50,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      const SizedBox(
+                        height: 14,
                       ),
-                    ),
-                    Menu(
-                      mealTime: "조식",
-                    ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    Menu(
-                      mealTime: "중식",
-                    ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    Menu(
-                      mealTime: "석식",
-                    ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                  ],
+                      Menu(
+                        mealTime: "중식",
+                      ),
+                      const SizedBox(
+                        height: 14,
+                      ),
+                      Menu(
+                        mealTime: "석식",
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
