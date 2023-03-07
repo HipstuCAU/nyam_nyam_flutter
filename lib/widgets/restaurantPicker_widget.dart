@@ -4,14 +4,12 @@ import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 
 class RestaurantPicker extends StatefulWidget {
-  RestaurantPicker({
+  const RestaurantPicker({
     super.key,
-    required this.isSelectedRestaurant,
     required this.seoulRestaurantName,
     required this.ansungRestaurantName,
   });
 
-  List<bool> isSelectedRestaurant;
   final List<String> seoulRestaurantName;
   final List<String> ansungRestaurantName;
 
@@ -22,14 +20,15 @@ class RestaurantPicker extends StatefulWidget {
 class _RestaurantPickerState extends State<RestaurantPicker> {
   void touchUpToInsideToSelectRestaurant(int index) {
     setState(() {
-      widget.isSelectedRestaurant = [
+      HomeScreen.isSelectedRestaurant = [
         false,
         false,
         false,
         false,
         false,
       ];
-      widget.isSelectedRestaurant[index] = true;
+      HomeScreen.isSelectedRestaurant[index] = true;
+      HomeScreen.pageController.jumpToPage(index);
     });
   }
 
@@ -65,7 +64,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                       color: Colors.black.withOpacity(0.1),
                     )
                   ],
-                  color: widget.isSelectedRestaurant[index]
+                  color: HomeScreen.isSelectedRestaurant[index]
                       ? NyamColors.cauBlue
                       : Colors.white,
                   borderRadius: BorderRadius.circular(30),
@@ -85,7 +84,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                           ? widget.seoulRestaurantName[index]
                           : widget.ansungRestaurantName[index],
                       style: TextStyle(
-                        color: widget.isSelectedRestaurant[index]
+                        color: HomeScreen.isSelectedRestaurant[index]
                             ? Colors.white
                             : Colors.black,
                         fontSize: 16,

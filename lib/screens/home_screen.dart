@@ -13,6 +13,18 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   static CampusType entryPoint = CampusType.seoul;
+  static List<bool> isSelectedRestaurant = [
+    true,
+    false,
+    false,
+    false,
+    false,
+  ];
+  static PageController pageController = PageController(
+    initialPage: 0,
+    viewportFraction: 0.9,
+  );
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -30,18 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
     false,
   ];
-  List<bool> isSelectedRestaurant = [
-    true,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
   List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원'];
 
   List<String> ansungRestaurantName = ['카우이츠', '카우버거', '라면'];
+
+  var currentPageIndex = 0;
 
   @override
   void initState() {
@@ -51,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Map<String, String> get7daysFromToday() {
     var today = DateTime.now().add(const Duration(hours: 19));
-    print(today);
     for (int i = 0; i < 7; i++) {
       initializeDateFormatting();
       DateTime date = today.subtract(Duration(days: -i));
@@ -59,8 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
       sevenDaysOfWeek.add(DateFormat.E('ko_KR').format(date));
       sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
     }
-
-    print(sevenDaysOfWeek);
 
     return sevenDates;
   }
@@ -98,6 +100,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   setState(() {
                                     HomeScreen.entryPoint = CampusType.seoul;
                                     Navigator.pop(context, 'Cancel');
+                                    HomeScreen.isSelectedRestaurant = [
+                                      true,
+                                      false,
+                                      false,
+                                      false,
+                                      false,
+                                    ];
                                   });
                                 },
                                 child: const Text(
@@ -109,6 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   setState(() {
                                     HomeScreen.entryPoint = CampusType.ansung;
                                     Navigator.pop(context, 'Cancel');
+                                    HomeScreen.isSelectedRestaurant = [
+                                      true,
+                                      false,
+                                      false,
+                                    ];
                                   });
                                 },
                                 child: const Text(
@@ -166,13 +180,34 @@ class _HomeScreenState extends State<HomeScreen> {
               color: NyamColors.customSkyBlue,
             ),
             RestaurantPicker(
-              isSelectedRestaurant: isSelectedRestaurant,
               seoulRestaurantName: seoulRestaurantName,
               ansungRestaurantName: ansungRestaurantName,
             ),
             Expanded(
               child: PageView.builder(
-                controller: PageController(initialPage: 0),
+                controller: HomeScreen.pageController,
+                onPageChanged: (value) {
+                  setState(() {
+                    if (HomeScreen.entryPoint == CampusType.seoul) {
+                      HomeScreen.isSelectedRestaurant = [
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                      ];
+                    } else {
+                      HomeScreen.isSelectedRestaurant = [
+                        false,
+                        false,
+                        false,
+                      ];
+                    }
+
+                    HomeScreen.isSelectedRestaurant[value] = true;
+                  });
+                  // print(value);
+                },
                 itemCount: HomeScreen.entryPoint == CampusType.seoul
                     ? seoulRestaurantName.length
                     : ansungRestaurantName.length,
@@ -199,8 +234,8 @@ class MealsOfRestaurant extends StatelessWidget {
       height: MediaQuery.of(context).size.height - 210,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
+          padding: const EdgeInsets.only(
+            right: 20,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
