@@ -104,6 +104,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "scroll_to_index",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/scroll_to_index-3.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///opt/homebrew/Caskroom/flutter/3.7.3/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -158,7 +164,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-03-06T07:41:19.394440Z",
+  "generated": "2023-03-07T18:18:10.777139Z",
   "generator": "pub",
   "generatorVersion": "2.19.2"
 }
