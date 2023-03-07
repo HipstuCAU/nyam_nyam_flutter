@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
     initialPage: 0,
     viewportFraction: 0.9,
   );
+  static AutoScrollController autoScrollController = AutoScrollController();
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -205,14 +207,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
 
                     HomeScreen.isSelectedRestaurant[value] = true;
+                    HomeScreen.autoScrollController.animateTo(
+                      value * 30,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                    );
                   });
-                  // print(value);
                 },
                 itemCount: HomeScreen.entryPoint == CampusType.seoul
                     ? seoulRestaurantName.length
                     : ansungRestaurantName.length,
                 itemBuilder: (context, index) {
-                  return const MealsOfRestaurant();
+                  return MealsOfRestaurant(
+                    restaurantName: seoulRestaurantName[index],
+                  );
                 },
               ),
             ),
@@ -224,9 +232,12 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class MealsOfRestaurant extends StatelessWidget {
-  const MealsOfRestaurant({
+  MealsOfRestaurant({
     super.key,
+    required this.restaurantName,
   });
+
+  String restaurantName;
 
   @override
   Widget build(BuildContext context) {
@@ -240,14 +251,14 @@ class MealsOfRestaurant extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(
+              Padding(
+                padding: const EdgeInsets.only(
                   left: 10,
                   bottom: 10,
                 ),
                 child: Text(
-                  "경영경제관 310관 B4층",
-                  style: TextStyle(
+                  restaurantName,
+                  style: const TextStyle(
                     color: NyamColors.grey50,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

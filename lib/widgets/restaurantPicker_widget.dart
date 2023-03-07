@@ -5,7 +5,7 @@ import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class RestaurantPicker extends StatefulWidget {
-  RestaurantPicker({
+  const RestaurantPicker({
     super.key,
     required this.seoulRestaurantName,
     required this.ansungRestaurantName,
@@ -13,7 +13,6 @@ class RestaurantPicker extends StatefulWidget {
 
   final List<String> seoulRestaurantName;
   final List<String> ansungRestaurantName;
-  AutoScrollController autoScrollController = AutoScrollController();
 
   @override
   State<RestaurantPicker> createState() => _RestaurantPickerState();
@@ -31,8 +30,8 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
       ];
       HomeScreen.isSelectedRestaurant[index] = true;
       HomeScreen.pageController.jumpToPage(index);
-      widget.autoScrollController.animateTo(
-        index * 100,
+      HomeScreen.autoScrollController.animateTo(
+        index * 30,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
@@ -48,7 +47,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
       child: SizedBox(
         height: 50,
         child: ListView.builder(
-          controller: widget.autoScrollController,
+          controller: HomeScreen.autoScrollController,
           scrollDirection: Axis.horizontal,
           itemCount: HomeScreen.entryPoint == CampusType.seoul
               ? widget.seoulRestaurantName.length
@@ -56,7 +55,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
           itemBuilder: (context, index) {
             return AutoScrollTag(
               key: ValueKey(index),
-              controller: widget.autoScrollController,
+              controller: HomeScreen.autoScrollController,
               index: index,
               child: Padding(
                 padding: EdgeInsets.only(
