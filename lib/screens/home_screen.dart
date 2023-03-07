@@ -49,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Map<String, String> get7daysFromToday() {
-    var today = DateTime.now();
-
+    var today = DateTime.now().add(const Duration(hours: 19));
+    print(today);
     for (int i = 0; i < 7; i++) {
       initializeDateFormatting();
       DateTime date = today.subtract(Duration(days: -i));
@@ -58,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
       sevenDaysOfWeek.add(DateFormat.E('ko_KR').format(date));
       sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
     }
+
+    print(sevenDaysOfWeek);
 
     return sevenDates;
   }
