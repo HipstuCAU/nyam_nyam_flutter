@@ -335,6 +335,7 @@ class _MenuState extends State<Menu> {
                       bottom: 10,
                     ),
                     child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
