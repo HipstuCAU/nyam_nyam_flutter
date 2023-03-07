@@ -270,9 +270,8 @@ class _MenuState extends State<Menu> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 0,
+        padding: const EdgeInsets.only(
+          left: 20,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
