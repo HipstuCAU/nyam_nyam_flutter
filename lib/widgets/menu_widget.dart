@@ -20,6 +20,31 @@ class _MenuState extends State<Menu> {
   bool isOpenedToSee = true;
 
   @override
+  void initState() {
+    super.initState();
+    switch (widget.mealTime) {
+      case "조식":
+        icon = const Icon(
+          Icons.sunny_snowing,
+          size: 20,
+        );
+        break;
+      case "중식":
+        icon = const Icon(
+          Icons.sunny,
+          size: 20,
+        );
+        break;
+      case "석식":
+        icon = const Icon(
+          Icons.nights_stay,
+          size: 20,
+        );
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -39,10 +64,7 @@ class _MenuState extends State<Menu> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.sunny_snowing,
-                      size: 20,
-                    ),
+                    icon,
                     Text(
                       "  ${widget.mealTime}",
                       style: const TextStyle(
