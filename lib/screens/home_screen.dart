@@ -246,7 +246,8 @@ class MealsOfRestaurant extends StatelessWidget {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
-            right: 20,
+            right: 10,
+            left: 10,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
