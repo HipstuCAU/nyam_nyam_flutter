@@ -5,6 +5,7 @@ import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'dart:ui' as ui;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nyam_nyam_flutter/screens/setting_screen.dart';
 import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
@@ -160,7 +161,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(1, 0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end).chain(
+                              CurveTween(
+                                curve: curve,
+                              ),
+                            );
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const SettingScreen(),
+                        ),
+                      );
+                    },
                     icon: const Icon(Icons.settings),
                     color: NyamColors.customGrey,
                     iconSize: 25,
