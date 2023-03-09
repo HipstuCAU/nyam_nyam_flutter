@@ -27,6 +27,18 @@ class HomeScreen extends StatefulWidget {
     viewportFraction: 0.9,
   );
   static AutoScrollController autoScrollController = AutoScrollController();
+  static List<String> seoulRestaurantName = [
+    '참슬기',
+    '생활관A',
+    '생활관B',
+    '학생식당',
+    '교직원'
+  ];
+  static List<String> ansungRestaurantName = [
+    '카우이츠',
+    '카우버거',
+    '라면',
+  ];
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -45,9 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
     false,
   ];
-  List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원'];
-
-  List<String> ansungRestaurantName = ['카우이츠', '카우버거', '라면'];
 
   var currentPageIndex = 0;
 
@@ -207,8 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
               color: NyamColors.customSkyBlue,
             ),
             RestaurantPicker(
-              seoulRestaurantName: seoulRestaurantName,
-              ansungRestaurantName: ansungRestaurantName,
+              seoulRestaurantName: HomeScreen.seoulRestaurantName,
+              ansungRestaurantName: HomeScreen.ansungRestaurantName,
             ),
             Expanded(
               child: PageView.builder(
@@ -240,11 +249,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
                 },
                 itemCount: HomeScreen.entryPoint == CampusType.seoul
-                    ? seoulRestaurantName.length
-                    : ansungRestaurantName.length,
+                    ? HomeScreen.seoulRestaurantName.length
+                    : HomeScreen.ansungRestaurantName.length,
                 itemBuilder: (context, index) {
                   return MealsOfRestaurant(
-                    restaurantName: seoulRestaurantName[index],
+                    restaurantName: HomeScreen.seoulRestaurantName[index],
                   );
                 },
               ),
