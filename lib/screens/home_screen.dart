@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  const SettingScreen(),
+                                  SettingScreen(),
                         ),
                       );
                     },

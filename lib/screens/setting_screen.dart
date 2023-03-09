@@ -3,7 +3,12 @@ import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
+  SettingScreen({super.key});
+  List<String> settingList = [
+    '학교 포털 연결',
+    '개인정보 정책',
+    '문의하기',
+  ];
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -122,13 +127,11 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(
                         maxHeight: 300,
-                        minHeight: 100,
+                        minHeight: 0,
                       ),
                       child: ReorderableListView(
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 0,
-                          ),
                           onReorder: (oldIndex, newIndex) {
                             setState(() {
                               if (oldIndex < newIndex) {
@@ -148,64 +151,131 @@ class _SettingScreenState extends State<SettingScreen> {
                                 key: Key('$index'),
                                 title: Container(
                                     padding: const EdgeInsets.only(
-                                      left: 10,
+                                      left: 6,
                                     ),
                                     color: Colors.white,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4, right: 24),
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                width: 14,
-                                                height: 14,
-                                                decoration: BoxDecoration(
-                                                  color: NyamColors.customGrey,
-                                                  borderRadius:
-                                                      BorderRadius.circular(25),
-                                                ),
-                                                clipBehavior: Clip.hardEdge,
-                                                child: Text(
-                                                  "${index + 1}",
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              HomeScreen
-                                                  .seoulRestaurantName[index],
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: NyamColors.customGrey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 4),
-                                          child: Image.asset(
-                                              'assets/images/equal.png'),
-                                        )
+                                          padding: const EdgeInsets.only(
+                                              top: 6, right: 24),
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            width: 14,
+                                            height: 14,
+                                            decoration: BoxDecoration(
+                                              color: NyamColors.customGrey,
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                            ),
+                                            clipBehavior: Clip.hardEdge,
+                                            child: Text(
+                                              "${index + 1}",
+                                              style: const TextStyle(
+                                                fontSize: 8,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: NyamColors.grey50
+                                                      .withOpacity(0.5),
+                                                ),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                bottom: 10,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    HomeScreen
+                                                            .seoulRestaurantName[
+                                                        index],
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color:
+                                                          NyamColors.customGrey,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 4),
+                                                    child: Image.asset(
+                                                        'assets/images/equal.png'),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     )),
                               )
                           ]),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
           ),
+          const SizedBox(
+            height: 16,
+          ),
+          Container(
+            color: Colors.white,
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 16,
+                    top: 12,
+                    bottom: 12,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.settingList[index],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: NyamColors.customGrey,
+                      ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) => Container(
+                color: NyamColors.grey50.withOpacity(0.5),
+                child: const SizedBox(height: 1),
+              ),
+              itemCount: 3,
+            ),
+          )
         ],
       ),
     );
