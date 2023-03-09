@@ -72,6 +72,43 @@ class SettingScreen extends StatelessWidget {
           const SizedBox(
             height: 16,
           ),
+          Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 14,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: const [
+                      Text(
+                        "식당 순서 설정",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 12,
+                        ),
+                        child: Text(
+                          "설정한 순서는 자동으로 저장돼요",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: NyamColors.grey50,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
