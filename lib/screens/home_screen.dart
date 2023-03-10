@@ -5,10 +5,12 @@ import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'dart:ui' as ui;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nyam_nyam_flutter/screens/setting_screen.dart';
 import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +28,30 @@ class HomeScreen extends StatefulWidget {
     viewportFraction: 0.9,
   );
   static AutoScrollController autoScrollController = AutoScrollController();
+  static List<String> seoulRestaurantName = [
+    '참슬기',
+    '생활관A',
+    '생활관B',
+    '학생식당',
+    '교직원'
+  ];
+  static List<String> ansungRestaurantName = [
+    '카우이츠',
+    '카우버거',
+    '라면',
+  ];
+
+  static List<bool> isSelectedDate = [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+
+  static late SharedPreferences preferences;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,15 +70,55 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
     false,
   ];
-  List<String> seoulRestaurantName = ['참슬기', '생활관A', '생활관B', '학생식당', '교직원'];
-
-  List<String> ansungRestaurantName = ['카우이츠', '카우버거', '라면'];
 
   var currentPageIndex = 0;
+
+  Future initPreferences() async {
+    HomeScreen.preferences = await SharedPreferences.getInstance();
+    final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
+    final sortedSeoulRestaurants =
+        HomeScreen.preferences.getStringList('sortedSeoulRestaurants');
+    final sortedAnsungRestaurants =
+        HomeScreen.preferences.getStringList('sortedAnsungRestaurants');
+    setState(() {
+      if (favoriteCampus != null) {
+        if (favoriteCampus == "서울") {
+          HomeScreen.entryPoint = CampusType.seoul;
+        } else {
+          HomeScreen.entryPoint = CampusType.ansung;
+        }
+      } else {
+        HomeScreen.preferences.setString('favoriteCampus', '');
+      }
+
+      if (sortedSeoulRestaurants != null) {
+        HomeScreen.seoulRestaurantName = sortedSeoulRestaurants;
+      } else {
+        HomeScreen.preferences.setStringList('sortedSeoulRestaurants', [
+          '참슬기',
+          '생활관A',
+          '생활관B',
+          '학생식당',
+          '교직원',
+        ]);
+      }
+
+      if (sortedAnsungRestaurants != null) {
+        HomeScreen.ansungRestaurantName = sortedAnsungRestaurants;
+      } else {
+        HomeScreen.preferences.setStringList('sortedAnsungRestaurants', [
+          '카우이츠',
+          '카우버거',
+          '라면',
+        ]);
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    initPreferences();
     get7daysFromToday();
   }
 
@@ -160,7 +226,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(1, 0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end).chain(
+                              CurveTween(
+                                curve: curve,
+                              ),
+                            );
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  SettingScreen(),
+                        ),
+                      );
+                      setState(() {});
+                    },
                     icon: const Icon(Icons.settings),
                     color: NyamColors.customGrey,
                     iconSize: 25,
@@ -173,7 +264,6 @@ class _HomeScreenState extends State<HomeScreen> {
               color: NyamColors.customSkyBlue,
             ),
             SevenDatePicker(
-              isSelectedDate: isSelectedDate,
               sevenDays: sevenDays,
               sevenDaysOfWeek: sevenDaysOfWeek,
             ),
@@ -182,8 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
               color: NyamColors.customSkyBlue,
             ),
             RestaurantPicker(
-              seoulRestaurantName: seoulRestaurantName,
-              ansungRestaurantName: ansungRestaurantName,
+              seoulRestaurantName: HomeScreen.seoulRestaurantName,
+              ansungRestaurantName: HomeScreen.ansungRestaurantName,
             ),
             Expanded(
               child: PageView.builder(
@@ -215,11 +305,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
                 },
                 itemCount: HomeScreen.entryPoint == CampusType.seoul
-                    ? seoulRestaurantName.length
-                    : ansungRestaurantName.length,
+                    ? HomeScreen.seoulRestaurantName.length
+                    : HomeScreen.ansungRestaurantName.length,
                 itemBuilder: (context, index) {
                   return MealsOfRestaurant(
-                    restaurantName: seoulRestaurantName[index],
+                    restaurantName: HomeScreen.seoulRestaurantName[index],
                   );
                 },
               ),

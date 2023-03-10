@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
+import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 
 class SevenDatePicker extends StatefulWidget {
-  SevenDatePicker({
+  const SevenDatePicker({
     super.key,
-    required this.isSelectedDate,
     required this.sevenDays,
     required this.sevenDaysOfWeek,
   });
 
-  List<bool> isSelectedDate;
   final List sevenDays;
   final List sevenDaysOfWeek;
 
@@ -20,10 +19,10 @@ class SevenDatePicker extends StatefulWidget {
 class _SevenDatePickerState extends State<SevenDatePicker> {
   void touchUpToInsideToSelectDate(int index) {
     setState(() {
-      if (widget.isSelectedDate[index] == true) {
+      if (HomeScreen.isSelectedDate[index] == true) {
         return;
       } else {
-        widget.isSelectedDate = [
+        HomeScreen.isSelectedDate = [
           false,
           false,
           false,
@@ -32,7 +31,7 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
           false,
           false,
         ];
-        widget.isSelectedDate[index] = true;
+        HomeScreen.isSelectedDate[index] = true;
       }
     });
   }
@@ -58,7 +57,7 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
                 width: MediaQuery.of(context).size.width / 14,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: widget.isSelectedDate[index]
+                    color: HomeScreen.isSelectedDate[index]
                         ? NyamColors.cauBlue
                         : NyamColors.customSkyBlue,
                     borderRadius: BorderRadius.circular(15),
@@ -82,7 +81,7 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
                         Text(
                           widget.sevenDays[index],
                           style: TextStyle(
-                            color: widget.isSelectedDate[index]
+                            color: HomeScreen.isSelectedDate[index]
                                 ? Colors.white
                                 : NyamColors.customBlack,
                             fontSize: 16,
@@ -92,7 +91,7 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
                         Text(
                           widget.sevenDaysOfWeek[index],
                           style: TextStyle(
-                            color: widget.isSelectedDate[index]
+                            color: HomeScreen.isSelectedDate[index]
                                 ? Colors.white
                                 : NyamColors.customBlack,
                             fontSize: 10,
