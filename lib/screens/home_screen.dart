@@ -10,6 +10,7 @@ import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,6 +41,8 @@ class HomeScreen extends StatefulWidget {
     '라면',
   ];
 
+  static late SharedPreferences preferences;
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -60,9 +63,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var currentPageIndex = 0;
 
+  Future initPreferences() async {
+    HomeScreen.preferences = await SharedPreferences.getInstance();
+    final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
+    final sortedSeoulRestaurants =
+        HomeScreen.preferences.getStringList('sortedSeoulRestaurants');
+    final sortedAnsungRestaurants =
+        HomeScreen.preferences.getStringList('sortedAnsungRestaurants');
+    setState(() {
+      if (favoriteCampus != null) {
+        if (favoriteCampus == "서울") {
+          HomeScreen.entryPoint = CampusType.seoul;
+        } else {
+          HomeScreen.entryPoint = CampusType.ansung;
+        }
+      } else {
+        HomeScreen.preferences.setString('favoriteCampus', '');
+      }
+
+      if (sortedSeoulRestaurants != null) {
+        HomeScreen.seoulRestaurantName = sortedSeoulRestaurants;
+      } else {
+        HomeScreen.preferences.setStringList('sortedSeoulRestaurants', [
+          '참슬기',
+          '생활관A',
+          '생활관B',
+          '학생식당',
+          '교직원',
+        ]);
+      }
+
+      if (sortedAnsungRestaurants != null) {
+        HomeScreen.ansungRestaurantName = sortedAnsungRestaurants;
+      } else {
+        HomeScreen.preferences.setStringList('sortedAnsungRestaurants', [
+          '카우이츠',
+          '카우버거',
+          '라면',
+        ]);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    initPreferences();
     get7daysFromToday();
   }
 
@@ -171,6 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   IconButton(
                     onPressed: () {
+                      setState(() {});
                       Navigator.push(
                         context,
                         PageRouteBuilder(

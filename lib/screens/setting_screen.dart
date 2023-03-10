@@ -7,25 +7,12 @@ import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 class SettingScreen extends StatefulWidget {
   SettingScreen({super.key});
 
-  CampusType favoriteCampus = CampusType.seoul;
+  CampusType selectedCampus = CampusType.seoul;
 
   List<String> settingList = [
     '학교 포털 연결',
     '개인정보 정책',
     '문의하기',
-  ];
-
-  List<String> seoulRestaurantNames = [
-    '참슬기',
-    '생활관A',
-    '생활관B',
-    '학생식당',
-    '교직원',
-  ];
-  List<String> ansungRestaurantNames = [
-    '카우이츠',
-    '카우버거',
-    '라면',
   ];
 
   int campusRestaurantCount = 5;
@@ -35,6 +22,79 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  Future initPreferences() async {
+    final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
+    final sortedSeoulRestaurants =
+        HomeScreen.preferences.getStringList('sortedSeoulRestaurants');
+    final sortedAnsungRestaurants =
+        HomeScreen.preferences.getStringList('sortedAnsungRestaurants');
+    setState(() {
+      if (favoriteCampus == '서울') {
+        widget.selectedCampus = CampusType.seoul;
+        widget.campusRestaurantCount = HomeScreen.seoulRestaurantName.length;
+      } else {
+        widget.selectedCampus = CampusType.ansung;
+        widget.campusRestaurantCount = HomeScreen.ansungRestaurantName.length;
+      }
+
+      if (sortedSeoulRestaurants != null) {
+        HomeScreen.seoulRestaurantName = sortedSeoulRestaurants;
+      } else {
+        HomeScreen.preferences.setStringList('sortedSeoulRestaurants', [
+          '참슬기',
+          '생활관A',
+          '생활관B',
+          '학생식당',
+          '교직원',
+        ]);
+      }
+
+      if (sortedAnsungRestaurants != null) {
+        HomeScreen.ansungRestaurantName = sortedAnsungRestaurants;
+      } else {
+        HomeScreen.preferences.setStringList('sortedAnsungRestaurants', [
+          '카우이츠',
+          '카우버거',
+          '라면',
+        ]);
+      }
+    });
+  }
+
+  touchUpInsideToChangeFavoriteCampus(String campus) async {
+    final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
+    if (favoriteCampus != null) {
+      await HomeScreen.preferences.setString('favoriteCampus', campus);
+      setState(() {
+        if (campus == '서울') {
+          widget.selectedCampus = CampusType.seoul;
+          widget.campusRestaurantCount = HomeScreen.seoulRestaurantName.length;
+          HomeScreen.entryPoint = CampusType.seoul;
+        } else {
+          widget.selectedCampus = CampusType.ansung;
+          widget.campusRestaurantCount = HomeScreen.ansungRestaurantName.length;
+          HomeScreen.entryPoint = CampusType.ansung;
+        }
+      });
+    }
+  }
+
+  updateRestaurantSorting() async {
+    if (widget.selectedCampus == CampusType.seoul) {
+      await HomeScreen.preferences.setStringList(
+          'sortedSeoulRestaurants', HomeScreen.seoulRestaurantName);
+    } else {
+      await HomeScreen.preferences.setStringList(
+          'sortedAnsungRestaurants', HomeScreen.ansungRestaurantName);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initPreferences();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,9 +142,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             CupertinoActionSheetAction(
                               onPressed: () {
                                 setState(() {
-                                  widget.favoriteCampus = CampusType.seoul;
-                                  widget.campusRestaurantCount =
-                                      widget.seoulRestaurantNames.length;
+                                  touchUpInsideToChangeFavoriteCampus('서울');
                                   Navigator.pop(context, 'Cancel');
                                   HomeScreen.isSelectedRestaurant = [
                                     true,
@@ -102,9 +160,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             CupertinoActionSheetAction(
                               onPressed: () {
                                 setState(() {
-                                  widget.favoriteCampus = CampusType.ansung;
-                                  widget.campusRestaurantCount =
-                                      widget.ansungRestaurantNames.length;
+                                  touchUpInsideToChangeFavoriteCampus('안성');
                                   Navigator.pop(context, 'Cancel');
                                   HomeScreen.isSelectedRestaurant = [
                                     true,
@@ -133,7 +189,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          widget.favoriteCampus == CampusType.seoul
+                          widget.selectedCampus == CampusType.seoul
                               ? "서울"
                               : "안성",
                           style: const TextStyle(
@@ -215,16 +271,17 @@ class _SettingScreenState extends State<SettingScreen> {
                                   newIndex -= 1;
                                 }
                                 final String item =
-                                    widget.favoriteCampus == CampusType.seoul
-                                        ? widget.seoulRestaurantNames
+                                    widget.selectedCampus == CampusType.seoul
+                                        ? HomeScreen.seoulRestaurantName
                                             .removeAt(oldIndex)
-                                        : widget.ansungRestaurantNames
+                                        : HomeScreen.ansungRestaurantName
                                             .removeAt(oldIndex);
-                                widget.favoriteCampus == CampusType.seoul
-                                    ? widget.seoulRestaurantNames
+                                widget.selectedCampus == CampusType.seoul
+                                    ? HomeScreen.seoulRestaurantName
                                         .insert(newIndex, item)
-                                    : widget.ansungRestaurantNames
+                                    : HomeScreen.ansungRestaurantName
                                         .insert(newIndex, item);
+                                updateRestaurantSorting();
                               },
                             );
                           },
@@ -235,10 +292,11 @@ class _SettingScreenState extends State<SettingScreen> {
                               ListTile(
                                 key: Key('$index'),
                                 title: Container(
+                                    margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.only(
-                                      left: 6,
+                                      left: 11,
                                     ),
-                                    color: Colors.white,
+                                    // color: Colors.white,
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -286,11 +344,13 @@ class _SettingScreenState extends State<SettingScreen> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    widget.favoriteCampus ==
+                                                    widget.selectedCampus ==
                                                             CampusType.seoul
-                                                        ? widget.seoulRestaurantNames[
+                                                        ? HomeScreen
+                                                                .seoulRestaurantName[
                                                             index]
-                                                        : widget.ansungRestaurantNames[
+                                                        : HomeScreen
+                                                                .ansungRestaurantName[
                                                             index],
                                                     style: const TextStyle(
                                                       fontSize: 16,
