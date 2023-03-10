@@ -216,9 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.push(
+                    onPressed: () async {
+                      final result = await Navigator.push(
                         context,
                         PageRouteBuilder(
                           transitionsBuilder:
@@ -241,6 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SettingScreen(),
                         ),
                       );
+                      setState(() {});
                     },
                     icon: const Icon(Icons.settings),
                     color: NyamColors.customGrey,

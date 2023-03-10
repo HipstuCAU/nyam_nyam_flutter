@@ -102,6 +102,12 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: NyamColors.customGrey,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         title: const Text(
           "설정",
           style: TextStyle(
