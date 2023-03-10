@@ -1,14 +1,34 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
+import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen({super.key});
+
+  CampusType favoriteCampus = CampusType.seoul;
+
   List<String> settingList = [
     '학교 포털 연결',
     '개인정보 정책',
     '문의하기',
   ];
+
+  List<String> seoulRestaurantNames = [
+    '참슬기',
+    '생활관A',
+    '생활관B',
+    '학생식당',
+    '교직원',
+  ];
+  List<String> ansungRestaurantNames = [
+    '카우이츠',
+    '카우버거',
+    '라면',
+  ];
+
+  int campusRestaurantCount = 5;
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -53,19 +73,75 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) => CupertinoActionSheet(
+                          title: const Text("캠퍼스를 선택해주세요."),
+                          actions: <Widget>[
+                            CupertinoActionSheetAction(
+                              onPressed: () {
+                                setState(() {
+                                  widget.favoriteCampus = CampusType.seoul;
+                                  widget.campusRestaurantCount =
+                                      widget.seoulRestaurantNames.length;
+                                  Navigator.pop(context, 'Cancel');
+                                  HomeScreen.isSelectedRestaurant = [
+                                    true,
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                  ];
+                                });
+                              },
+                              child: const Text(
+                                "서울캠퍼스",
+                              ),
+                            ),
+                            CupertinoActionSheetAction(
+                              onPressed: () {
+                                setState(() {
+                                  widget.favoriteCampus = CampusType.ansung;
+                                  widget.campusRestaurantCount =
+                                      widget.ansungRestaurantNames.length;
+                                  Navigator.pop(context, 'Cancel');
+                                  HomeScreen.isSelectedRestaurant = [
+                                    true,
+                                    false,
+                                    false,
+                                  ];
+                                });
+                              },
+                              child: const Text(
+                                "안성캠퍼스",
+                              ),
+                            ),
+                          ],
+                          cancelButton: CupertinoActionSheetAction(
+                            isDefaultAction: true,
+                            onPressed: () {
+                              Navigator.pop(context, 'Cancel');
+                            },
+                            child: const Text("취소"),
+                          ),
+                        ),
+                      );
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
-                          "서울",
-                          style: TextStyle(
+                          widget.favoriteCampus == CampusType.seoul
+                              ? "서울"
+                              : "안성",
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w600),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.only(top: 3, left: 8),
                           child: Icon(
                             Icons.arrow_forward_ios_rounded,
@@ -133,19 +209,28 @@ class _SettingScreenState extends State<SettingScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           onReorder: (oldIndex, newIndex) {
-                            setState(() {
-                              if (oldIndex < newIndex) {
-                                newIndex -= 1;
-                              }
-                              final String item = HomeScreen.seoulRestaurantName
-                                  .removeAt(oldIndex);
-                              HomeScreen.seoulRestaurantName
-                                  .insert(newIndex, item);
-                            });
+                            setState(
+                              () {
+                                if (oldIndex < newIndex) {
+                                  newIndex -= 1;
+                                }
+                                final String item =
+                                    widget.favoriteCampus == CampusType.seoul
+                                        ? widget.seoulRestaurantNames
+                                            .removeAt(oldIndex)
+                                        : widget.ansungRestaurantNames
+                                            .removeAt(oldIndex);
+                                widget.favoriteCampus == CampusType.seoul
+                                    ? widget.seoulRestaurantNames
+                                        .insert(newIndex, item)
+                                    : widget.ansungRestaurantNames
+                                        .insert(newIndex, item);
+                              },
+                            );
                           },
                           children: <Widget>[
                             for (int index = 0;
-                                index < HomeScreen.seoulRestaurantName.length;
+                                index < widget.campusRestaurantCount;
                                 index++)
                               ListTile(
                                 key: Key('$index'),
@@ -201,9 +286,12 @@ class _SettingScreenState extends State<SettingScreen> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    HomeScreen
-                                                            .seoulRestaurantName[
-                                                        index],
+                                                    widget.favoriteCampus ==
+                                                            CampusType.seoul
+                                                        ? widget.seoulRestaurantNames[
+                                                            index]
+                                                        : widget.ansungRestaurantNames[
+                                                            index],
                                                     style: const TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
