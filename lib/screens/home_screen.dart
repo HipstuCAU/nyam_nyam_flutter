@@ -41,6 +41,16 @@ class HomeScreen extends StatefulWidget {
     '라면',
   ];
 
+  static List<bool> isSelectedDate = [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+
   static late SharedPreferences preferences;
 
   @override
@@ -254,7 +264,6 @@ class _HomeScreenState extends State<HomeScreen> {
               color: NyamColors.customSkyBlue,
             ),
             SevenDatePicker(
-              isSelectedDate: isSelectedDate,
               sevenDays: sevenDays,
               sevenDaysOfWeek: sevenDaysOfWeek,
             ),
