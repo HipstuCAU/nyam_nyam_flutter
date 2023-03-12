@@ -1,12 +1,14 @@
+import 'package:nyam_nyam_flutter/models/meal.dart';
+
 enum RestaurantType {
   chamsulgi,
   domitoryA,
-  domirotyB,
+  domitoryB,
   student,
   staff,
-  ansungCauEats,
-  ansungCauBurger,
-  ansungRamen,
+  cauEats,
+  cauBurger,
+  ramen,
 }
 
 enum CampusType {
@@ -19,3 +21,19 @@ enum MealTime {
   lunch,
   dinner,
 }
+
+enum OpenType {
+  closeOnWeekends,
+  everyday,
+}
+
+enum MealType {
+  western,
+  korean,
+  special,
+  studentDinner,
+  ordinaryDinner,
+  illpum1,
+}
+
+typedef MealsForWeek = Map<DateTime, List<MealModel>>;
