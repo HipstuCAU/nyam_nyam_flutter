@@ -1,3 +1,5 @@
+import 'package:nyam_nyam_flutter/models/meal.dart';
+
 enum RestaurantType {
   chamsulgi,
   domitoryA,
@@ -33,3 +35,5 @@ enum MealType {
   ordinaryDinner,
   illpum1,
 }
+
+typedef MealsForWeek = Map<DateTime, List<MealModel>>;

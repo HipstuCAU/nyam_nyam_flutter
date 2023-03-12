@@ -20,11 +20,4 @@ class MealModel {
     required this.menu,
     required this.price,
   });
-
-  // MealModel.fromJson(Map<String, dynamic> json)
-  //     : menu = json['menu'],
-  //       price = json['price'],
-  //       restaurant = json['cafetria'],
-  //       date = json['date'],
-  //       mealTime = json['mealTime'];
 }

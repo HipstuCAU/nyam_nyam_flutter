@@ -8,7 +8,7 @@ import 'package:nyam_nyam_flutter/models/mealsByCampus.dart';
 import 'package:nyam_nyam_flutter/models/mealsForDay.dart';
 
 class ApiService {
-  Future<List<MealsByCampusModel>> getMeals() async {
+  Future<List<MealsForWeek>> getMeals() async {
     final String response =
         await rootBundle.loadString('assets/jsons/CAU_Cafeteria_Menu.json');
     final Map<String, dynamic> decodedResponse = await json.decode(response);
@@ -17,9 +17,10 @@ class ApiService {
     MealsByCampusModel ansungMealsInstances =
         MealsByCampusModel.AnsungfromJson(decodedResponse);
 
-    getMealsByCampus(seoulMealsInstances);
+    var mealsForWeekSeoul = getMealsForWeek(seoulMealsInstances);
+    var mealsForWeekAnsung = getMealsForWeek(ansungMealsInstances);
 
-    return [seoulMealsInstances, ansungMealsInstances];
+    return [mealsForWeekSeoul, mealsForWeekAnsung];
   }
 
   List<MealModel> getMealsByCampus(MealsByCampusModel mealsByCampusModel) {
@@ -146,10 +147,21 @@ class ApiService {
     return meals;
   }
 
-  List<MealsForDayModel> getMealsForWeek(
-      MealsByCampusModel mealsByCampusModel) {
-    List<MealsForDayModel> mealsForWeek = [];
-    getMealsByCampus(mealsByCampusModel);
+  MealsForWeek getMealsForWeek(MealsByCampusModel mealsByCampusModel) {
+    Map<DateTime, List<MealModel>> mealsForWeek = {};
+    List<MealModel> meals = getMealsByCampus(mealsByCampusModel);
+    List<MealModel> mealsForDay = [];
+    for (var element in meals) {
+      if (mealsForWeek.containsKey(element.date)) {
+        mealsForDay = mealsForWeek[element.date]!;
+        mealsForDay.add(element);
+        mealsForWeek[element.date] = mealsForDay;
+      } else {
+        mealsForDay.add(element);
+        mealsForWeek[element.date] = mealsForDay;
+      }
+    }
+
     return mealsForWeek;
   }
 }
