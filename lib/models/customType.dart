@@ -1,12 +1,12 @@
 enum RestaurantType {
   chamsulgi,
   domitoryA,
-  domirotyB,
+  domitoryB,
   student,
   staff,
-  ansungCauEats,
-  ansungCauBurger,
-  ansungRamen,
+  cauEats,
+  cauBurger,
+  ramen,
 }
 
 enum CampusType {
@@ -18,4 +18,18 @@ enum MealTime {
   breakfase,
   lunch,
   dinner,
+}
+
+enum OpenType {
+  closeOnWeekends,
+  everyday,
+}
+
+enum MealType {
+  western,
+  korean,
+  special,
+  studentDinner,
+  ordinaryDinner,
+  illpum1,
 }

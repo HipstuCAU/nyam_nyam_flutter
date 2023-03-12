@@ -6,6 +6,7 @@ import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'dart:ui' as ui;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nyam_nyam_flutter/screens/setting_screen.dart';
+import 'package:nyam_nyam_flutter/services/api_service.dart';
 import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
@@ -120,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     initPreferences();
     get7daysFromToday();
+    ApiService().getMeals();
   }
 
   Map<String, String> get7daysFromToday() {
@@ -131,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sevenDaysOfWeek.add(DateFormat.E('ko_KR').format(date));
       sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
     }
-
+    print(sevenDates);
     return sevenDates;
   }
 
