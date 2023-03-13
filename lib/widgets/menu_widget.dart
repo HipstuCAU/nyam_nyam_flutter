@@ -18,7 +18,10 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  late Icon icon;
+  Icon icon = const Icon(
+    Icons.nights_stay,
+    size: 20,
+  );
 
   bool isOpenedToSee = true;
   String mealsTitle = "";
@@ -51,6 +54,12 @@ class _MenuState extends State<Menu> {
             size: 20,
           );
           break;
+        default:
+          icon = const Icon(
+            Icons.nights_stay,
+            size: 20,
+          );
+          break;
       }
     }
   }
@@ -64,6 +73,9 @@ class _MenuState extends State<Menu> {
             break;
           case RestaurantType.ramen:
             mealsTitle = "라면";
+            break;
+          default:
+            mealsTitle = "기타";
             break;
         }
       } else {

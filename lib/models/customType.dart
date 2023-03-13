@@ -36,5 +36,5 @@ enum MealType {
   illpum1,
 }
 
-typedef MealsForWeek = Map<DateTime, MealsForDay>;
+typedef MealsForWeek = Map<String, MealsForDay>;
 typedef MealsForDay = List<MealModel>;
