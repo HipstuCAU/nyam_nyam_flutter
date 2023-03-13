@@ -17,7 +17,7 @@ enum CampusType {
 }
 
 enum MealTime {
-  breakfase,
+  breakfast,
   lunch,
   dinner,
 }

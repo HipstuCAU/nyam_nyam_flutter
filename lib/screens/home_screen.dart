@@ -313,13 +313,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     : HomeScreen.ansungRestaurantName.length,
                 itemBuilder: (context, index) {
                   return MealsOfRestaurant(
+                    isBurgerOrRamen: false,
                     index: index,
                     mealsForDay: [
                       MealModel(
                         date: DateTime.now(),
                         openTime: [DateTime.now(), DateTime.now()],
                         restaurantType: RestaurantType.chamsulgi,
-                        mealTime: MealTime.breakfase,
+                        mealTime: MealTime.breakfast,
+                        mealType: MealType.korean,
+                        openType: OpenType.everyday,
+                        menu: ["참깨", "비빔면", "냉면"],
+                        price: "4,800 원",
+                      ),
+                      MealModel(
+                        date: DateTime.now(),
+                        openTime: [DateTime.now(), DateTime.now()],
+                        restaurantType: RestaurantType.chamsulgi,
+                        mealTime: MealTime.breakfast,
                         mealType: MealType.korean,
                         openType: OpenType.everyday,
                         menu: ["참깨", "비빔면", "냉면"],
@@ -362,6 +373,7 @@ class MealsOfRestaurant extends StatefulWidget {
     super.key,
     required this.mealsForDay,
     required this.index,
+    required this.isBurgerOrRamen,
   });
 
   int index;
@@ -376,6 +388,8 @@ class MealsOfRestaurant extends StatefulWidget {
 
   String ansungRestaurantDetailName = "707관";
 
+  bool isBurgerOrRamen;
+
   @override
   State<MealsOfRestaurant> createState() => _MealsOfRestaurantState();
 }
@@ -384,6 +398,23 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
   @override
   void initState() {
     super.initState();
+    setMealsByTime();
+  }
+
+  MealsForDay breakfast = [];
+  MealsForDay lunch = [];
+  MealsForDay dinner = [];
+
+  void setMealsByTime() {
+    breakfast = widget.mealsForDay.where((element) {
+      return element.mealTime == MealTime.breakfast;
+    }).toList();
+    lunch = widget.mealsForDay.where((element) {
+      return element.mealTime == MealTime.lunch;
+    }).toList();
+    dinner = widget.mealsForDay.where((element) {
+      return element.mealTime == MealTime.dinner;
+    }).toList();
   }
 
   @override
@@ -402,7 +433,6 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
               Padding(
                 padding: const EdgeInsets.only(
                   left: 10,
-                  bottom: 10,
                 ),
                 child: Text(
                   HomeScreen.entryPoint == CampusType.seoul
@@ -415,23 +445,27 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                   ),
                 ),
               ),
-              Menu(
-                mealTime: "조식",
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              Menu(
-                mealTime: "중식",
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              Menu(
-                mealTime: "석식",
-              ),
-              const SizedBox(
-                height: 30,
+              MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.isBurgerOrRamen ? 1 : 3,
+                  itemBuilder: (context, index) {
+                    var meals = [breakfast, lunch, dinner];
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        top: 7,
+                        bottom: 7,
+                      ),
+                      child: Menu(
+                        mealsForDay: meals[index],
+                        isBurgerOrRamen: widget.isBurgerOrRamen,
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

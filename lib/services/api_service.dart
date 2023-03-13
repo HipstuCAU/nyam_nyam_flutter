@@ -43,7 +43,7 @@ class ApiService {
         mealsByDay.forEach((key, value) {
           switch (key) {
             case "0":
-              mealTime = MealTime.breakfase;
+              mealTime = MealTime.breakfast;
               break;
             case "1":
               mealTime = MealTime.lunch;
@@ -52,7 +52,7 @@ class ApiService {
               mealTime = MealTime.dinner;
               break;
             default:
-              mealTime = MealTime.breakfase;
+              mealTime = MealTime.breakfast;
           }
           Map<String, dynamic> mealsByTime = value;
           mealsByTime.forEach((key, value) {
