@@ -5,6 +5,7 @@ import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'dart:ui' as ui;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nyam_nyam_flutter/models/meal.dart';
 import 'package:nyam_nyam_flutter/screens/setting_screen.dart';
 import 'package:nyam_nyam_flutter/services/api_service.dart';
 import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
@@ -74,6 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var currentPageIndex = 0;
 
+  late Future<List<MealsForWeek>> meals;
+
   Future initPreferences() async {
     HomeScreen.preferences = await SharedPreferences.getInstance();
     final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
@@ -121,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     initPreferences();
     get7daysFromToday();
-    ApiService().getMeals();
+    meals = ApiService().getMeals();
   }
 
   Map<String, String> get7daysFromToday() {
@@ -133,7 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
       sevenDaysOfWeek.add(DateFormat.E('ko_KR').format(date));
       sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
     }
-    print(sevenDates);
     return sevenDates;
   }
 
@@ -311,7 +313,39 @@ class _HomeScreenState extends State<HomeScreen> {
                     : HomeScreen.ansungRestaurantName.length,
                 itemBuilder: (context, index) {
                   return MealsOfRestaurant(
-                    restaurantName: HomeScreen.seoulRestaurantName[index],
+                    index: index,
+                    mealsForDay: [
+                      MealModel(
+                        date: DateTime.now(),
+                        openTime: [DateTime.now(), DateTime.now()],
+                        restaurantType: RestaurantType.chamsulgi,
+                        mealTime: MealTime.breakfase,
+                        mealType: MealType.korean,
+                        openType: OpenType.everyday,
+                        menu: ["참깨", "비빔면", "냉면"],
+                        price: "4,800 원",
+                      ),
+                      MealModel(
+                        date: DateTime.now(),
+                        openTime: [DateTime.now(), DateTime.now()],
+                        restaurantType: RestaurantType.chamsulgi,
+                        mealTime: MealTime.lunch,
+                        mealType: MealType.korean,
+                        openType: OpenType.everyday,
+                        menu: ["참깨", "비빔면", "냉면"],
+                        price: "4,800 원",
+                      ),
+                      MealModel(
+                        date: DateTime.now(),
+                        openTime: [DateTime.now(), DateTime.now()],
+                        restaurantType: RestaurantType.chamsulgi,
+                        mealTime: MealTime.dinner,
+                        mealType: MealType.korean,
+                        openType: OpenType.everyday,
+                        menu: ["참깨", "비빔면", "냉면"],
+                        price: "4,800 원",
+                      ),
+                    ],
                   );
                 },
               ),
@@ -323,13 +357,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MealsOfRestaurant extends StatelessWidget {
+class MealsOfRestaurant extends StatefulWidget {
   MealsOfRestaurant({
     super.key,
-    required this.restaurantName,
+    required this.mealsForDay,
+    required this.index,
   });
 
-  String restaurantName;
+  int index;
+  MealsForDay mealsForDay;
+  List<String> seoulRestaurantDetailNames = [
+    "경영경제관 310관 B4층",
+    "블루미르관 308관",
+    "블루미르관 309관",
+    "법학관 303관 B1층",
+    "법학관 303관 B1층",
+  ];
+
+  String ansungRestaurantDetailName = "707관";
+
+  @override
+  State<MealsOfRestaurant> createState() => _MealsOfRestaurantState();
+}
+
+class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -350,7 +405,9 @@ class MealsOfRestaurant extends StatelessWidget {
                   bottom: 10,
                 ),
                 child: Text(
-                  restaurantName,
+                  HomeScreen.entryPoint == CampusType.seoul
+                      ? widget.seoulRestaurantDetailNames[widget.index]
+                      : widget.ansungRestaurantDetailName,
                   style: const TextStyle(
                     color: NyamColors.grey50,
                     fontSize: 12,
