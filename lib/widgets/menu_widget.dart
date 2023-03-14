@@ -179,9 +179,11 @@ class _MenuState extends State<Menu> {
                       padding: const EdgeInsets.only(left: 10),
                       child: mealsTitle,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: OpenState(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: OpenState(
+                        isNotRunning: widget.isNotRunning,
+                      ),
                     ),
                   ],
                 ),
@@ -273,29 +275,60 @@ class _MenuState extends State<Menu> {
   }
 }
 
-class OpenState extends StatelessWidget {
-  const OpenState({
+class OpenState extends StatefulWidget {
+  OpenState({
     super.key,
+    required this.isNotRunning,
   });
+
+  bool isNotRunning;
+
+  @override
+  State<OpenState> createState() => _OpenStateState();
+}
+
+class _OpenStateState extends State<OpenState> {
+  Color backgrounColor = NyamColors.grey50;
+  Color titleColor = NyamColors.customGrey;
+  String title = "미운영";
+
+  @override
+  void initState() {
+    super.initState();
+    setColor();
+    setTitle();
+  }
+
+  void setColor() {
+    if (widget.isNotRunning) {
+      return;
+    }
+  }
+
+  void setTitle() {
+    if (widget.isNotRunning) {
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: NyamColors.customYellow.withOpacity(0.2),
+        color: backgrounColor,
         borderRadius: BorderRadius.circular(15),
       ),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
           horizontal: 8,
           vertical: 2,
         ),
         child: Text(
-          "준비중",
+          title,
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
-            color: NyamColors.customYellow,
+            color: titleColor,
           ),
         ),
       ),
