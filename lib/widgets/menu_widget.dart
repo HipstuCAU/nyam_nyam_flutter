@@ -26,8 +26,16 @@ class _MenuState extends State<Menu> {
     size: 20,
   );
 
+  Text mealsTitle = const Text(
+    "",
+    style: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+    ),
+  );
+
   bool isOpenedToSee = true;
-  String mealsTitle = "";
 
   @override
   void initState() {
@@ -39,6 +47,8 @@ class _MenuState extends State<Menu> {
 
   void checkIsRunning() {
     widget.isNotRunning = widget.mealsForDay.isEmpty ? true : false;
+    print(widget.mealsForDay);
+    print("check!");
   }
 
   void setIcon() {
@@ -78,28 +88,67 @@ class _MenuState extends State<Menu> {
     if (widget.isBurgerOrRamen) {
       switch (widget.mealsForDay[0].restaurantType) {
         case RestaurantType.cauBurger:
-          mealsTitle = "카우버거";
+          mealsTitle = Text(
+            "카우버거",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+            ),
+          );
           break;
         case RestaurantType.ramen:
-          mealsTitle = "라면";
+          mealsTitle = Text(
+            "라면",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+            ),
+          );
           break;
         default:
-          mealsTitle = "기타";
+          mealsTitle = Text(
+            "기타",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+            ),
+          );
           break;
       }
     } else {
       switch (widget.timeIndex) {
         case 0:
-          mealsTitle = "조식";
+          mealsTitle = Text(
+            "조식",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+            ),
+          );
           break;
         case 1:
-          mealsTitle = "중식";
+          mealsTitle = Text(
+            "중식",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+            ),
+          );
           break;
         case 2:
-          mealsTitle = "석식";
-          break;
-        default:
-          mealsTitle = "조식";
+          mealsTitle = Text(
+            "석식",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+            ),
+          );
           break;
       }
     }
@@ -128,16 +177,7 @@ class _MenuState extends State<Menu> {
                     if (!widget.isBurgerOrRamen) icon,
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        mealsTitle,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: widget.isNotRunning
-                              ? NyamColors.grey50
-                              : Colors.black,
-                        ),
-                      ),
+                      child: mealsTitle,
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 10),
@@ -148,7 +188,9 @@ class _MenuState extends State<Menu> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        isOpenedToSee = !isOpenedToSee;
+                        if (!widget.isNotRunning) {
+                          isOpenedToSee = !isOpenedToSee;
+                        }
                       });
                     },
                     icon: Icon(
