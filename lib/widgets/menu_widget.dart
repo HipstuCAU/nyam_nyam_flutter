@@ -47,8 +47,6 @@ class _MenuState extends State<Menu> {
 
   void checkIsRunning() {
     widget.isNotRunning = widget.mealsForDay.isEmpty ? true : false;
-    print(widget.mealsForDay);
-    print("check!");
   }
 
   void setIcon() {
@@ -182,7 +180,7 @@ class _MenuState extends State<Menu> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: OpenState(
-                        isNotRunning: widget.isNotRunning,
+                        mealsForDay: widget.mealsForDay,
                       ),
                     ),
                   ],
@@ -278,10 +276,10 @@ class _MenuState extends State<Menu> {
 class OpenState extends StatefulWidget {
   OpenState({
     super.key,
-    required this.isNotRunning,
+    required this.mealsForDay,
   });
 
-  bool isNotRunning;
+  MealsForDay mealsForDay;
 
   @override
   State<OpenState> createState() => _OpenStateState();
@@ -291,23 +289,66 @@ class _OpenStateState extends State<OpenState> {
   Color backgrounColor = NyamColors.grey50;
   Color titleColor = NyamColors.customGrey;
   String title = "미운영";
+  int openTimeint = 0;
+  int closeTimeint = 0;
+  int now = 0;
+  String openTimeString = "";
+  String closeTimeString = "";
 
   @override
   void initState() {
     super.initState();
+    setOpenTime();
     setColor();
     setTitle();
   }
 
+  void setOpenTime() {
+    if (widget.mealsForDay.isNotEmpty) {
+      openTimeString =
+          widget.mealsForDay[0].openTime[0].toString().substring(11, 16);
+      closeTimeString =
+          widget.mealsForDay[0].openTime[1].toString().substring(11, 16);
+
+      openTimeint = int.parse(openTimeString.replaceAll(":", ""));
+      closeTimeint = int.parse(closeTimeString.replaceAll(":", ""));
+    }
+
+    now = int.parse(
+        DateTime.now().toString().substring(11, 16).replaceAll(":", ""));
+    print(openTimeint);
+    print(closeTimeint);
+    print(now);
+  }
+
   void setColor() {
-    if (widget.isNotRunning) {
+    if (widget.mealsForDay.isEmpty) {
       return;
+    } else {
+      if (now < openTimeint) {
+        backgrounColor = NyamColors.customYellow.withOpacity(0.2);
+        titleColor = NyamColors.customYellow;
+      } else if (openTimeint < now && now < closeTimeint) {
+        backgrounColor = NyamColors.customBlue.withOpacity(0.2);
+        titleColor = NyamColors.customBlue;
+      } else {
+        backgrounColor = NyamColors.customRed.withOpacity(0.2);
+        titleColor = NyamColors.customRed;
+      }
     }
   }
 
   void setTitle() {
-    if (widget.isNotRunning) {
+    if (widget.mealsForDay.isEmpty) {
       return;
+    } else {
+      if (now < openTimeint) {
+        title = "준비중 $openTimeString~$closeTimeString";
+      } else if (openTimeint < now && now < closeTimeint) {
+        title = "운영중 $openTimeString~$closeTimeString";
+      } else {
+        title = "운영종료";
+      }
     }
   }
 
