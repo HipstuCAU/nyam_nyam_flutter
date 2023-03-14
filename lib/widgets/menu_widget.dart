@@ -7,11 +7,14 @@ class Menu extends StatefulWidget {
     super.key,
     required this.mealsForDay,
     required this.isBurgerOrRamen,
+    required this.timeIndex,
   });
 
   MealsForDay mealsForDay;
   bool isBurgerOrRamen;
+  bool isNotRunning = false;
   DateTime now = DateTime.now();
+  int timeIndex;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -29,67 +32,75 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
+    checkIsRunning();
     setIcon();
     setTitle();
   }
 
+  void checkIsRunning() {
+    widget.isNotRunning = widget.mealsForDay.isEmpty ? true : false;
+  }
+
   void setIcon() {
-    if (widget.mealsForDay.isNotEmpty) {
-      switch (widget.mealsForDay[0].mealTime) {
-        case MealTime.breakfast:
-          icon = const Icon(
-            Icons.sunny_snowing,
-            size: 20,
-          );
-          break;
-        case MealTime.lunch:
-          icon = const Icon(
-            Icons.sunny,
-            size: 20,
-          );
-          break;
-        case MealTime.dinner:
-          icon = const Icon(
-            Icons.nights_stay,
-            size: 20,
-          );
-          break;
-        default:
-          icon = const Icon(
-            Icons.nights_stay,
-            size: 20,
-          );
-          break;
-      }
+    switch (widget.timeIndex) {
+      case 0:
+        icon = Icon(
+          Icons.sunny_snowing,
+          size: 20,
+          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+        );
+        break;
+      case 1:
+        icon = Icon(
+          Icons.sunny,
+          size: 20,
+          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+        );
+        break;
+      case 2:
+        icon = Icon(
+          Icons.nights_stay,
+          size: 20,
+          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+        );
+        break;
+      default:
+        icon = Icon(
+          Icons.nights_stay,
+          size: 20,
+          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+        );
+        break;
     }
   }
 
   void setTitle() {
-    if (widget.mealsForDay.isNotEmpty) {
-      if (widget.isBurgerOrRamen) {
-        switch (widget.mealsForDay[0].restaurantType) {
-          case RestaurantType.cauBurger:
-            mealsTitle = "카우버거";
-            break;
-          case RestaurantType.ramen:
-            mealsTitle = "라면";
-            break;
-          default:
-            mealsTitle = "기타";
-            break;
-        }
-      } else {
-        switch (widget.mealsForDay[0].mealTime) {
-          case MealTime.breakfast:
-            mealsTitle = "조식";
-            break;
-          case MealTime.lunch:
-            mealsTitle = "중식";
-            break;
-          case MealTime.dinner:
-            mealsTitle = "석식";
-            break;
-        }
+    if (widget.isBurgerOrRamen) {
+      switch (widget.mealsForDay[0].restaurantType) {
+        case RestaurantType.cauBurger:
+          mealsTitle = "카우버거";
+          break;
+        case RestaurantType.ramen:
+          mealsTitle = "라면";
+          break;
+        default:
+          mealsTitle = "기타";
+          break;
+      }
+    } else {
+      switch (widget.timeIndex) {
+        case 0:
+          mealsTitle = "조식";
+          break;
+        case 1:
+          mealsTitle = "중식";
+          break;
+        case 2:
+          mealsTitle = "석식";
+          break;
+        default:
+          mealsTitle = "조식";
+          break;
       }
     }
   }
@@ -119,9 +130,12 @@ class _MenuState extends State<Menu> {
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
                         mealsTitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: widget.isNotRunning
+                              ? NyamColors.grey50
+                              : Colors.black,
                         ),
                       ),
                     ),

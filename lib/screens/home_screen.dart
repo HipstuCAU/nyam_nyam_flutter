@@ -478,6 +478,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                         bottom: 7,
                       ),
                       child: Menu(
+                        timeIndex: index,
                         mealsForDay: meals[index],
                         isBurgerOrRamen: widget.isBurgerOrRamen,
                       ),
