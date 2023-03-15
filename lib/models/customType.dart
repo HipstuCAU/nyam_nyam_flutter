@@ -36,5 +36,12 @@ enum MealType {
   illpum1,
 }
 
+enum OpenStatusType {
+  notRunning,
+  preparing,
+  running,
+  closed,
+}
+
 typedef MealsForWeek = Map<String, MealsForDay>;
 typedef MealsForDay = List<MealModel>;

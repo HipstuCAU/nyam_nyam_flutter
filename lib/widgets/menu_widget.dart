@@ -12,7 +12,6 @@ class Menu extends StatefulWidget {
 
   MealsForDay mealsForDay;
   bool isBurgerOrRamen;
-  bool isNotRunning = false;
   DateTime now = DateTime.now();
   int timeIndex;
 
@@ -36,17 +35,51 @@ class _MenuState extends State<Menu> {
   );
 
   bool isOpenedToSee = true;
+  int openTimeint = 0;
+  int closeTimeint = 0;
+  int now = 0;
+  String openTimeString = "";
+  String closeTimeString = "";
+  OpenStatusType openStatus = OpenStatusType.notRunning;
 
   @override
   void initState() {
     super.initState();
-    checkIsRunning();
+    setOpenTime();
+    setStatus();
     setIcon();
     setTitle();
   }
 
-  void checkIsRunning() {
-    widget.isNotRunning = widget.mealsForDay.isEmpty ? true : false;
+  void setOpenTime() {
+    if (widget.mealsForDay.isNotEmpty) {
+      openTimeString =
+          widget.mealsForDay[0].openTime[0].toString().substring(11, 16);
+      closeTimeString =
+          widget.mealsForDay[0].openTime[1].toString().substring(11, 16);
+
+      openTimeint = int.parse(openTimeString.replaceAll(":", ""));
+      closeTimeint = int.parse(closeTimeString.replaceAll(":", ""));
+    }
+
+    now = int.parse(
+        DateTime.now().toString().substring(11, 16).replaceAll(":", ""));
+  }
+
+  void setStatus() {
+    setState(() {});
+    if (widget.mealsForDay.isNotEmpty) {
+      if (now < openTimeint) {
+        openStatus = OpenStatusType.preparing;
+      } else if (openTimeint < now && now < closeTimeint) {
+        openStatus = OpenStatusType.running;
+      } else {
+        openStatus = OpenStatusType.closed;
+        isOpenedToSee = false;
+      }
+    } else {
+      openStatus = OpenStatusType.notRunning;
+    }
   }
 
   void setIcon() {
@@ -55,28 +88,36 @@ class _MenuState extends State<Menu> {
         icon = Icon(
           Icons.sunny_snowing,
           size: 20,
-          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+          color: openStatus == OpenStatusType.notRunning
+              ? NyamColors.grey50
+              : Colors.black,
         );
         break;
       case 1:
         icon = Icon(
           Icons.sunny,
           size: 20,
-          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+          color: openStatus == OpenStatusType.notRunning
+              ? NyamColors.grey50
+              : Colors.black,
         );
         break;
       case 2:
         icon = Icon(
           Icons.nights_stay,
           size: 20,
-          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+          color: openStatus == OpenStatusType.notRunning
+              ? NyamColors.grey50
+              : Colors.black,
         );
         break;
       default:
         icon = Icon(
           Icons.nights_stay,
           size: 20,
-          color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+          color: openStatus == OpenStatusType.notRunning
+              ? NyamColors.grey50
+              : Colors.black,
         );
         break;
     }
@@ -91,7 +132,9 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+              color: openStatus == OpenStatusType.notRunning
+                  ? NyamColors.grey50
+                  : Colors.black,
             ),
           );
           break;
@@ -101,7 +144,9 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+              color: openStatus == OpenStatusType.notRunning
+                  ? NyamColors.grey50
+                  : Colors.black,
             ),
           );
           break;
@@ -111,7 +156,9 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+              color: openStatus == OpenStatusType.notRunning
+                  ? NyamColors.grey50
+                  : Colors.black,
             ),
           );
           break;
@@ -124,7 +171,9 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+              color: openStatus == OpenStatusType.notRunning
+                  ? NyamColors.grey50
+                  : Colors.black,
             ),
           );
           break;
@@ -134,7 +183,9 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+              color: openStatus == OpenStatusType.notRunning
+                  ? NyamColors.grey50
+                  : Colors.black,
             ),
           );
           break;
@@ -144,7 +195,9 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: widget.isNotRunning ? NyamColors.grey50 : Colors.black,
+              color: openStatus == OpenStatusType.notRunning
+                  ? NyamColors.grey50
+                  : Colors.black,
             ),
           );
           break;
@@ -180,6 +233,9 @@ class _MenuState extends State<Menu> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: OpenState(
+                        openTimeString: openTimeString,
+                        closeTimeString: closeTimeString,
+                        openStatusType: openStatus,
                         mealsForDay: widget.mealsForDay,
                       ),
                     ),
@@ -188,7 +244,7 @@ class _MenuState extends State<Menu> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        if (!widget.isNotRunning) {
+                        if (openStatus == OpenStatusType.notRunning) {
                           isOpenedToSee = !isOpenedToSee;
                         }
                       });
@@ -277,9 +333,15 @@ class OpenState extends StatefulWidget {
   OpenState({
     super.key,
     required this.mealsForDay,
+    required this.openStatusType,
+    required this.openTimeString,
+    required this.closeTimeString,
   });
 
   MealsForDay mealsForDay;
+  OpenStatusType openStatusType;
+  String openTimeString = "";
+  String closeTimeString = "";
 
   @override
   State<OpenState> createState() => _OpenStateState();
@@ -289,66 +351,49 @@ class _OpenStateState extends State<OpenState> {
   Color backgrounColor = NyamColors.grey50;
   Color titleColor = NyamColors.customGrey;
   String title = "미운영";
-  int openTimeint = 0;
-  int closeTimeint = 0;
-  int now = 0;
-  String openTimeString = "";
-  String closeTimeString = "";
 
   @override
   void initState() {
     super.initState();
-    setOpenTime();
     setColor();
     setTitle();
   }
 
-  void setOpenTime() {
-    if (widget.mealsForDay.isNotEmpty) {
-      openTimeString =
-          widget.mealsForDay[0].openTime[0].toString().substring(11, 16);
-      closeTimeString =
-          widget.mealsForDay[0].openTime[1].toString().substring(11, 16);
-
-      openTimeint = int.parse(openTimeString.replaceAll(":", ""));
-      closeTimeint = int.parse(closeTimeString.replaceAll(":", ""));
-    }
-
-    now = int.parse(
-        DateTime.now().toString().substring(11, 16).replaceAll(":", ""));
-    print(openTimeint);
-    print(closeTimeint);
-    print(now);
-  }
-
   void setColor() {
-    if (widget.mealsForDay.isEmpty) {
-      return;
-    } else {
-      if (now < openTimeint) {
+    switch (widget.openStatusType) {
+      case OpenStatusType.preparing:
         backgrounColor = NyamColors.customYellow.withOpacity(0.2);
         titleColor = NyamColors.customYellow;
-      } else if (openTimeint < now && now < closeTimeint) {
+        break;
+      case OpenStatusType.running:
         backgrounColor = NyamColors.customBlue.withOpacity(0.2);
         titleColor = NyamColors.customBlue;
-      } else {
+        break;
+      case OpenStatusType.closed:
         backgrounColor = NyamColors.customRed.withOpacity(0.2);
         titleColor = NyamColors.customRed;
-      }
+        break;
+      case OpenStatusType.notRunning:
+        backgrounColor = NyamColors.grey50;
+        titleColor = NyamColors.customGrey;
+        break;
     }
   }
 
   void setTitle() {
-    if (widget.mealsForDay.isEmpty) {
-      return;
-    } else {
-      if (now < openTimeint) {
-        title = "준비중 $openTimeString~$closeTimeString";
-      } else if (openTimeint < now && now < closeTimeint) {
-        title = "운영중 $openTimeString~$closeTimeString";
-      } else {
+    switch (widget.openStatusType) {
+      case OpenStatusType.preparing:
+        title = "준비중 ${widget.openTimeString}~${widget.closeTimeString}";
+        break;
+      case OpenStatusType.running:
+        title = "운영중 ${widget.openTimeString}~${widget.closeTimeString}";
+        break;
+      case OpenStatusType.closed:
         title = "운영종료";
-      }
+        break;
+      case OpenStatusType.notRunning:
+        title = "미운영";
+        break;
     }
   }
 
