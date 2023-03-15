@@ -88,7 +88,8 @@ class _MenuState extends State<Menu> {
         icon = Icon(
           Icons.sunny_snowing,
           size: 20,
-          color: openStatus == OpenStatusType.notRunning
+          color: openStatus == OpenStatusType.notRunning ||
+                  openStatus == OpenStatusType.closed
               ? NyamColors.grey50
               : Colors.black,
         );
@@ -97,7 +98,8 @@ class _MenuState extends State<Menu> {
         icon = Icon(
           Icons.sunny,
           size: 20,
-          color: openStatus == OpenStatusType.notRunning
+          color: openStatus == OpenStatusType.notRunning ||
+                  openStatus == OpenStatusType.closed
               ? NyamColors.grey50
               : Colors.black,
         );
@@ -106,7 +108,8 @@ class _MenuState extends State<Menu> {
         icon = Icon(
           Icons.nights_stay,
           size: 20,
-          color: openStatus == OpenStatusType.notRunning
+          color: openStatus == OpenStatusType.notRunning ||
+                  openStatus == OpenStatusType.closed
               ? NyamColors.grey50
               : Colors.black,
         );
@@ -115,7 +118,8 @@ class _MenuState extends State<Menu> {
         icon = Icon(
           Icons.nights_stay,
           size: 20,
-          color: openStatus == OpenStatusType.notRunning
+          color: openStatus == OpenStatusType.notRunning ||
+                  openStatus == OpenStatusType.closed
               ? NyamColors.grey50
               : Colors.black,
         );
@@ -132,7 +136,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning
+              color: openStatus == OpenStatusType.notRunning ||
+                      openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : Colors.black,
             ),
@@ -144,7 +149,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning
+              color: openStatus == OpenStatusType.notRunning ||
+                      openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : Colors.black,
             ),
@@ -156,7 +162,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning
+              color: openStatus == OpenStatusType.notRunning ||
+                      openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : Colors.black,
             ),
@@ -171,7 +178,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning
+              color: openStatus == OpenStatusType.notRunning ||
+                      openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : Colors.black,
             ),
@@ -183,7 +191,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning
+              color: openStatus == OpenStatusType.notRunning ||
+                      openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : Colors.black,
             ),
@@ -195,7 +204,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning
+              color: openStatus == OpenStatusType.notRunning ||
+                      openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : Colors.black,
             ),
