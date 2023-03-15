@@ -17,7 +17,7 @@ enum CampusType {
 }
 
 enum MealTime {
-  breakfase,
+  breakfast,
   lunch,
   dinner,
 }
@@ -36,4 +36,12 @@ enum MealType {
   illpum1,
 }
 
-typedef MealsForWeek = Map<DateTime, List<MealModel>>;
+enum OpenStatusType {
+  notRunning,
+  preparing,
+  running,
+  closed,
+}
+
+typedef MealsForWeek = Map<String, MealsForDay>;
+typedef MealsForDay = List<MealModel>;

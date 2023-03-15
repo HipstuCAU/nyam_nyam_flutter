@@ -61,6 +61,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var sevenDays = [];
   var sevenDaysOfWeek = [];
+  var sevenDateTime = [];
   Map<String, String> sevenDates = {};
   List<bool> isSelectedDate = [
     true,
@@ -73,6 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   var currentPageIndex = 0;
+
+  late Future<List<MealsForWeek>> meals;
 
   Future initPreferences() async {
     HomeScreen.preferences = await SharedPreferences.getInstance();
@@ -121,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     initPreferences();
     get7daysFromToday();
-    ApiService().getMeals();
+    meals = ApiService().getMeals();
   }
 
   Map<String, String> get7daysFromToday() {
@@ -129,11 +132,11 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int i = 0; i < 7; i++) {
       initializeDateFormatting();
       DateTime date = today.subtract(Duration(days: -i));
+      sevenDateTime.add(DateFormat('yyyy-MM-dd').format(date));
       sevenDays.add(int.parse(DateFormat('dd').format(date)).toString());
       sevenDaysOfWeek.add(DateFormat.E('ko_KR').format(date));
       sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
     }
-    print(sevenDates);
     return sevenDates;
   }
 
@@ -278,41 +281,59 @@ class _HomeScreenState extends State<HomeScreen> {
               ansungRestaurantName: HomeScreen.ansungRestaurantName,
             ),
             Expanded(
-              child: PageView.builder(
-                controller: HomeScreen.pageController,
-                onPageChanged: (value) {
-                  setState(() {
-                    if (HomeScreen.entryPoint == CampusType.seoul) {
-                      HomeScreen.isSelectedRestaurant = [
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                      ];
-                    } else {
-                      HomeScreen.isSelectedRestaurant = [
-                        false,
-                        false,
-                        false,
-                      ];
-                    }
+              child: FutureBuilder(
+                future: meals,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return PageView.builder(
+                      controller: HomeScreen.pageController,
+                      onPageChanged: (value) {
+                        setState(() {
+                          if (HomeScreen.entryPoint == CampusType.seoul) {
+                            HomeScreen.isSelectedRestaurant = [
+                              false,
+                              false,
+                              false,
+                              false,
+                              false,
+                            ];
+                          } else {
+                            HomeScreen.isSelectedRestaurant = [
+                              false,
+                              false,
+                              false,
+                            ];
+                          }
 
-                    HomeScreen.isSelectedRestaurant[value] = true;
-                    HomeScreen.autoScrollController.animateTo(
-                      value * 30,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeIn,
+                          HomeScreen.isSelectedRestaurant[value] = true;
+                          HomeScreen.autoScrollController.animateTo(
+                            value * 30,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeIn,
+                          );
+                        });
+                      },
+                      itemCount: HomeScreen.entryPoint == CampusType.seoul
+                          ? HomeScreen.seoulRestaurantName.length
+                          : HomeScreen.ansungRestaurantName.length,
+                      itemBuilder: (context, index) {
+                        var mealsForDay = snapshot.data![0]
+                            [sevenDateTime[isSelectedDate.indexOf(true)]];
+                        mealsForDay = mealsForDay!.where((element) {
+                          return element.date ==
+                              DateFormat('yyyy-MM-dd').parse(
+                                  sevenDateTime[isSelectedDate.indexOf(true)]);
+                        }).toList();
+                        return MealsOfRestaurant(
+                            restaurantName:
+                                HomeScreen.seoulRestaurantName[index],
+                            isBurgerOrRamen: false,
+                            index: index,
+                            mealsForDay: mealsForDay);
+                      },
                     );
-                  });
-                },
-                itemCount: HomeScreen.entryPoint == CampusType.seoul
-                    ? HomeScreen.seoulRestaurantName.length
-                    : HomeScreen.ansungRestaurantName.length,
-                itemBuilder: (context, index) {
-                  return MealsOfRestaurant(
-                    restaurantName: HomeScreen.seoulRestaurantName[index],
-                  );
+                  }
+                  return const Text("...");
                 },
               ),
             ),
@@ -323,13 +344,96 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MealsOfRestaurant extends StatelessWidget {
+class MealsOfRestaurant extends StatefulWidget {
   MealsOfRestaurant({
     super.key,
+    required this.mealsForDay,
+    required this.index,
+    required this.isBurgerOrRamen,
     required this.restaurantName,
   });
 
+  int index;
+  MealsForDay mealsForDay;
+  List<String> seoulRestaurantDetailNames = [
+    "경영경제관 310관 B4층",
+    "블루미르관 308관",
+    "블루미르관 309관",
+    "법학관 303관 B1층",
+    "법학관 303관 B1층",
+  ];
+
+  String ansungRestaurantDetailName = "707관";
+
   String restaurantName;
+
+  bool isBurgerOrRamen;
+
+  @override
+  State<MealsOfRestaurant> createState() => _MealsOfRestaurantState();
+}
+
+class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
+  @override
+  void initState() {
+    super.initState();
+    setRestaurantName(widget.restaurantName);
+    setMealsByTime();
+  }
+
+  MealsForDay mealsOfRestaurant = [];
+  MealsForDay breakfast = [];
+  MealsForDay lunch = [];
+  MealsForDay dinner = [];
+
+  void setRestaurantName(String restaurantName) {
+    RestaurantType restaurantType;
+    switch (restaurantName) {
+      case "참슬기":
+        restaurantType = RestaurantType.chamsulgi;
+        break;
+      case "생활관A":
+        restaurantType = RestaurantType.domitoryA;
+        break;
+      case "생활관B":
+        restaurantType = RestaurantType.domitoryB;
+        break;
+      case "학생식당":
+        restaurantType = RestaurantType.student;
+        break;
+      case "교직원":
+        restaurantType = RestaurantType.staff;
+        break;
+      case "카우이츠":
+        restaurantType = RestaurantType.cauEats;
+        break;
+      case "카우버거":
+        restaurantType = RestaurantType.cauBurger;
+        break;
+      case "라면":
+        restaurantType = RestaurantType.ramen;
+        break;
+      default:
+        restaurantType = RestaurantType.chamsulgi;
+        break;
+    }
+
+    mealsOfRestaurant = widget.mealsForDay.where((element) {
+      return element.restaurantType == restaurantType;
+    }).toList();
+  }
+
+  void setMealsByTime() {
+    breakfast = mealsOfRestaurant.where((element) {
+      return element.mealTime == MealTime.breakfast;
+    }).toList();
+    lunch = mealsOfRestaurant.where((element) {
+      return element.mealTime == MealTime.lunch;
+    }).toList();
+    dinner = mealsOfRestaurant.where((element) {
+      return element.mealTime == MealTime.dinner;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -347,10 +451,11 @@ class MealsOfRestaurant extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(
                   left: 10,
-                  bottom: 10,
                 ),
                 child: Text(
-                  restaurantName,
+                  HomeScreen.entryPoint == CampusType.seoul
+                      ? widget.seoulRestaurantDetailNames[widget.index]
+                      : widget.ansungRestaurantDetailName,
                   style: const TextStyle(
                     color: NyamColors.grey50,
                     fontSize: 12,
@@ -358,23 +463,28 @@ class MealsOfRestaurant extends StatelessWidget {
                   ),
                 ),
               ),
-              Menu(
-                mealTime: "조식",
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              Menu(
-                mealTime: "중식",
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              Menu(
-                mealTime: "석식",
-              ),
-              const SizedBox(
-                height: 30,
+              MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.isBurgerOrRamen ? 1 : 3,
+                  itemBuilder: (context, index) {
+                    var meals = [breakfast, lunch, dinner];
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        top: 7,
+                        bottom: 7,
+                      ),
+                      child: Menu(
+                        timeIndex: index,
+                        mealsForDay: meals[index],
+                        isBurgerOrRamen: widget.isBurgerOrRamen,
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
