@@ -251,7 +251,9 @@ class _MenuState extends State<Menu> {
                   children: [
                     if (!isBurgerOrRamen) icon,
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: isBurgerOrRamen
+                          ? EdgeInsets.zero
+                          : const EdgeInsets.only(left: 10),
                       child: mealsTitle,
                     ),
                     Padding(
@@ -297,6 +299,14 @@ class _MenuState extends State<Menu> {
                     ),
                     itemCount: widget.mealsForDay.length,
                     itemBuilder: (context, index) {
+                      var crossCount = 2;
+                      var menu = widget.mealsForDay[index].menu;
+                      if (widget.restaurantName == "라면") {
+                        menu = menu.sublist(1);
+                      } else if (widget.restaurantName == "카우버거") {
+                        menu = menu[0].split("/").sublist(1);
+                        crossCount = 1;
+                      }
                       return Padding(
                         padding: const EdgeInsets.only(
                           top: 10,
@@ -327,16 +337,15 @@ class _MenuState extends State<Menu> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 4,
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: crossCount,
+                                  childAspectRatio: 5,
                                 ),
-                                itemCount:
-                                    widget.mealsForDay[index].menu.length,
-                                itemBuilder: (context, index2) {
+                                itemCount: menu.length,
+                                itemBuilder: (context, index) {
                                   return SizedBox(
                                     child: Text(
-                                      widget.mealsForDay[index].menu[index2],
+                                      menu[index],
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
