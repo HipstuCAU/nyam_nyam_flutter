@@ -5,11 +5,11 @@ import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'dart:ui' as ui;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nyam_nyam_flutter/models/meal.dart';
 import 'package:nyam_nyam_flutter/screens/setting_screen.dart';
 import 'package:nyam_nyam_flutter/services/api_service.dart';
 import 'package:nyam_nyam_flutter/widgets/menu_widget.dart';
 import 'package:nyam_nyam_flutter/widgets/restaurantPicker_widget.dart';
-import 'package:nyam_nyam_flutter/widgets/sevenDatePicker_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var sevenDaysOfWeek = [];
   var sevenDateTime = [];
   Map<String, String> sevenDates = {};
+
   List<bool> isSelectedDate = [
     true,
     false,
@@ -75,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var currentPageIndex = 0;
 
-  late Future<List<MealsForWeek>> meals;
+  late Future<List<MealModel>> meals;
 
   Future initPreferences() async {
     HomeScreen.preferences = await SharedPreferences.getInstance();
@@ -124,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     initPreferences();
     get7daysFromToday();
-    meals = ApiService().getMeals();
+    meals = ApiService().getMeals(HomeScreen.entryPoint,
+        sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
   }
 
   Map<String, String> get7daysFromToday() {
@@ -138,6 +140,35 @@ class _HomeScreenState extends State<HomeScreen> {
       sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
     }
     return sevenDates;
+  }
+
+  void touchUpToInsideToSelectDate(int index) {
+    setState(() {
+      if (HomeScreen.isSelectedDate[index] == true) {
+        return;
+      } else {
+        HomeScreen.isSelectedDate = [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ];
+        HomeScreen.isSelectedDate[index] = true;
+      }
+      getMealsByDate();
+      HomeScreen.pageController = PageController(
+        initialPage: HomeScreen.isSelectedRestaurant.indexOf(true),
+        viewportFraction: 0.9,
+      );
+    });
+  }
+
+  void getMealsByDate() {
+    meals = ApiService().getMeals(HomeScreen.entryPoint,
+        sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
   }
 
   @override
@@ -268,9 +299,76 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 10,
               color: NyamColors.customSkyBlue,
             ),
-            SevenDatePicker(
-              sevenDays: sevenDays,
-              sevenDaysOfWeek: sevenDaysOfWeek,
+            Container(
+              color: NyamColors.customSkyBlue,
+              height: 45,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 7,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {});
+                      touchUpToInsideToSelectDate(index);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 28,
+                      ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 14,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: HomeScreen.isSelectedDate[index]
+                                ? NyamColors.cauBlue
+                                : NyamColors.customSkyBlue,
+                            borderRadius: BorderRadius.circular(15),
+                            border: index == 0
+                                ? Border.all(
+                                    width: 1,
+                                    color: NyamColors.cauBlue,
+                                  )
+                                : Border.all(
+                                    width: 0,
+                                    color: NyamColors.customSkyBlue,
+                                  ),
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 3,
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  sevenDays[index],
+                                  style: TextStyle(
+                                    color: HomeScreen.isSelectedDate[index]
+                                        ? Colors.white
+                                        : NyamColors.customBlack,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  sevenDaysOfWeek[index],
+                                  style: TextStyle(
+                                    color: HomeScreen.isSelectedDate[index]
+                                        ? Colors.white
+                                        : NyamColors.customBlack,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             Container(
               height: 10,
@@ -284,56 +382,49 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FutureBuilder(
                 future: meals,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return PageView.builder(
-                      controller: HomeScreen.pageController,
-                      onPageChanged: (value) {
-                        setState(() {
-                          if (HomeScreen.entryPoint == CampusType.seoul) {
-                            HomeScreen.isSelectedRestaurant = [
-                              false,
-                              false,
-                              false,
-                              false,
-                              false,
-                            ];
-                          } else {
-                            HomeScreen.isSelectedRestaurant = [
-                              false,
-                              false,
-                              false,
-                            ];
-                          }
-
-                          HomeScreen.isSelectedRestaurant[value] = true;
-                          HomeScreen.autoScrollController.animateTo(
-                            value * 30,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeIn,
-                          );
-                        });
-                      },
-                      itemCount: HomeScreen.entryPoint == CampusType.seoul
-                          ? HomeScreen.seoulRestaurantName.length
-                          : HomeScreen.ansungRestaurantName.length,
-                      itemBuilder: (context, index) {
-                        var mealsForDay = snapshot.data![0]
-                            [sevenDateTime[isSelectedDate.indexOf(true)]];
-                        mealsForDay = mealsForDay!.where((element) {
-                          return element.date ==
-                              DateFormat('yyyy-MM-dd').parse(
-                                  sevenDateTime[isSelectedDate.indexOf(true)]);
-                        }).toList();
-                        return MealsOfRestaurant(
-                            restaurantName:
-                                HomeScreen.seoulRestaurantName[index],
-                            isBurgerOrRamen: false,
-                            index: index,
-                            mealsForDay: mealsForDay);
-                      },
-                    );
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Text("Loading!");
                   }
-                  return const Text("...");
+                  return PageView.builder(
+                    controller: HomeScreen.pageController,
+                    onPageChanged: (value) {
+                      setState(() {
+                        if (HomeScreen.entryPoint == CampusType.seoul) {
+                          HomeScreen.isSelectedRestaurant = [
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                          ];
+                        } else {
+                          HomeScreen.isSelectedRestaurant = [
+                            false,
+                            false,
+                            false,
+                          ];
+                        }
+
+                        HomeScreen.isSelectedRestaurant[value] = true;
+                        HomeScreen.autoScrollController.animateTo(
+                          value * 30,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                        );
+                      });
+                    },
+                    itemCount: HomeScreen.entryPoint == CampusType.seoul
+                        ? HomeScreen.seoulRestaurantName.length
+                        : HomeScreen.ansungRestaurantName.length,
+                    itemBuilder: (context, index) {
+                      return MealsOfRestaurant(
+                        restaurantName: HomeScreen.seoulRestaurantName[index],
+                        isBurgerOrRamen: false,
+                        index: index,
+                        mealsForDay: snapshot.data!,
+                      );
+                    },
+                  );
                 },
               ),
             ),

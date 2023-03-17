@@ -7,10 +7,12 @@ class SevenDatePicker extends StatefulWidget {
     super.key,
     required this.sevenDays,
     required this.sevenDaysOfWeek,
+    required this.chageDate,
   });
 
   final List sevenDays;
   final List sevenDaysOfWeek;
+  final Function() chageDate;
 
   @override
   State<SevenDatePicker> createState() => _SevenDatePickerState();
@@ -33,6 +35,7 @@ class _SevenDatePickerState extends State<SevenDatePicker> {
         ];
         HomeScreen.isSelectedDate[index] = true;
       }
+      widget.chageDate();
     });
   }
 

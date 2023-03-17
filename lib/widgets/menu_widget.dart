@@ -75,7 +75,7 @@ class _MenuState extends State<Menu> {
         openStatus = OpenStatusType.running;
       } else {
         openStatus = OpenStatusType.closed;
-        isOpenedToSee = false;
+        // isOpenedToSee = false;
       }
     } else {
       openStatus = OpenStatusType.notRunning;
