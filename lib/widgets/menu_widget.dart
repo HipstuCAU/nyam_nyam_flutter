@@ -6,14 +6,16 @@ class Menu extends StatefulWidget {
   Menu({
     super.key,
     required this.mealsForDay,
-    required this.isBurgerOrRamen,
+    required this.restaurantName,
     required this.timeIndex,
+    required this.isTodayMeals,
   });
 
   MealsForDay mealsForDay;
-  bool isBurgerOrRamen;
+  String restaurantName;
   DateTime now = DateTime.now();
   int timeIndex;
+  bool isTodayMeals;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -35,6 +37,7 @@ class _MenuState extends State<Menu> {
   );
 
   bool isOpenedToSee = true;
+  bool isBurgerOrRamen = false;
   int openTimeint = 0;
   int closeTimeint = 0;
   int now = 0;
@@ -45,10 +48,17 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
+    checkIsBurgerOrRamen();
     setOpenTime();
     setStatus();
     setIcon();
     setTitle();
+  }
+
+  void checkIsBurgerOrRamen() {
+    if (widget.restaurantName == "카우버거" || widget.restaurantName == "라면") {
+      isBurgerOrRamen = true;
+    }
   }
 
   void setOpenTime() {
@@ -69,13 +79,17 @@ class _MenuState extends State<Menu> {
   void setStatus() {
     setState(() {});
     if (widget.mealsForDay.isNotEmpty) {
-      if (now < openTimeint) {
-        openStatus = OpenStatusType.preparing;
-      } else if (openTimeint < now && now < closeTimeint) {
-        openStatus = OpenStatusType.running;
+      if (widget.isTodayMeals) {
+        if (now < openTimeint) {
+          openStatus = OpenStatusType.preparing;
+        } else if (openTimeint < now && now < closeTimeint) {
+          openStatus = OpenStatusType.running;
+        } else {
+          openStatus = OpenStatusType.closed;
+          isOpenedToSee = false;
+        }
       } else {
-        openStatus = OpenStatusType.closed;
-        isOpenedToSee = false;
+        openStatus = OpenStatusType.preparing;
       }
     } else {
       openStatus = OpenStatusType.notRunning;
@@ -128,9 +142,9 @@ class _MenuState extends State<Menu> {
   }
 
   void setTitle() {
-    if (widget.isBurgerOrRamen) {
-      switch (widget.mealsForDay[0].restaurantType) {
-        case RestaurantType.cauBurger:
+    if (isBurgerOrRamen) {
+      switch (widget.restaurantName) {
+        case "카우버거":
           mealsTitle = Text(
             "카우버거",
             style: TextStyle(
@@ -143,7 +157,7 @@ class _MenuState extends State<Menu> {
             ),
           );
           break;
-        case RestaurantType.ramen:
+        case "라면":
           mealsTitle = Text(
             "라면",
             style: TextStyle(
@@ -235,9 +249,11 @@ class _MenuState extends State<Menu> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if (!widget.isBurgerOrRamen) icon,
+                    if (!isBurgerOrRamen) icon,
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: isBurgerOrRamen
+                          ? EdgeInsets.zero
+                          : const EdgeInsets.only(left: 10),
                       child: mealsTitle,
                     ),
                     Padding(
@@ -254,7 +270,7 @@ class _MenuState extends State<Menu> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        if (openStatus == OpenStatusType.notRunning) {
+                        if (openStatus != OpenStatusType.notRunning) {
                           isOpenedToSee = !isOpenedToSee;
                         }
                       });
@@ -283,6 +299,14 @@ class _MenuState extends State<Menu> {
                     ),
                     itemCount: widget.mealsForDay.length,
                     itemBuilder: (context, index) {
+                      var crossCount = 2;
+                      var menu = widget.mealsForDay[index].menu;
+                      if (widget.restaurantName == "라면") {
+                        menu = menu.sublist(1);
+                      } else if (widget.restaurantName == "카우버거") {
+                        menu = menu[0].split("/").sublist(1);
+                        crossCount = 1;
+                      }
                       return Padding(
                         padding: const EdgeInsets.only(
                           top: 10,
@@ -291,9 +315,16 @@ class _MenuState extends State<Menu> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.mealsForDay[index].price,
-                              style: const TextStyle(
-                                fontSize: 14,
+                              widget.mealsForDay[0].restaurantType ==
+                                      RestaurantType.cauBurger
+                                  ? ""
+                                  : widget.mealsForDay[index].price,
+                              style: TextStyle(
+                                fontSize:
+                                    widget.mealsForDay[0].restaurantType ==
+                                            RestaurantType.cauBurger
+                                        ? 0
+                                        : 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -306,16 +337,15 @@ class _MenuState extends State<Menu> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 4,
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: crossCount,
+                                  childAspectRatio: 5,
                                 ),
-                                itemCount:
-                                    widget.mealsForDay[index].menu.length,
-                                itemBuilder: (context, index2) {
+                                itemCount: menu.length,
+                                itemBuilder: (context, index) {
                                   return SizedBox(
                                     child: Text(
-                                      widget.mealsForDay[index].menu[index2],
+                                      menu[index],
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
