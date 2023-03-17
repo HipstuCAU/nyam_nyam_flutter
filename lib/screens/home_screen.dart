@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Map<String, String> get7daysFromToday() {
-    var today = DateTime.now().add(const Duration(hours: 19));
+    var today = DateTime.now().add(const Duration(hours: 0));
     for (int i = 0; i < 7; i++) {
       initializeDateFormatting();
       DateTime date = today.subtract(Duration(days: -i));
@@ -425,11 +425,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           HomeScreen.entryPoint == CampusType.seoul
                               ? HomeScreen.seoulRestaurantName[index]
                               : HomeScreen.ansungRestaurantName[index];
-                      print(MealsOfRestaurant(
-                        restaurantName: restaurantName,
-                        index: index,
-                        mealsForDay: snapshot.data!,
-                      ).mealsForDay[0].menu);
                       return MealsOfRestaurant(
                         restaurantName: restaurantName,
                         index: index,

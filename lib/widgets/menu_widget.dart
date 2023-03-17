@@ -270,7 +270,7 @@ class _MenuState extends State<Menu> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        if (openStatus == OpenStatusType.notRunning) {
+                        if (openStatus != OpenStatusType.notRunning) {
                           isOpenedToSee = !isOpenedToSee;
                         }
                       });

@@ -120,28 +120,32 @@ class ApiService {
                 break;
             }
             price = value['price'];
-            menu = value['menu'].split("|");
-            openType =
-                menu == "주말운영없음" ? OpenType.closeOnWeekends : OpenType.everyday;
+            var menuFullString = value['menu'];
+            if (menuFullString != "") {
+              menu = menuFullString.split("|");
+              openType = menu == "주말운영없음"
+                  ? OpenType.closeOnWeekends
+                  : OpenType.everyday;
 
-            if (value['time'] != null) {
-              openTime = [];
-              var tmpOpenTimeList = value['time'].split('~');
-              openTime.add(DateFormat("hh:mm").parse(tmpOpenTimeList[0]));
-              openTime.add(DateFormat("hh:mm").parse(tmpOpenTimeList[1]));
+              if (value['time'] != null) {
+                openTime = [];
+                var tmpOpenTimeList = value['time'].split('~');
+                openTime.add(DateFormat("hh:mm").parse(tmpOpenTimeList[0]));
+                openTime.add(DateFormat("hh:mm").parse(tmpOpenTimeList[1]));
+              }
+
+              MealModel meal = MealModel(
+                date: date,
+                openTime: openTime,
+                restaurantType: restaurantType,
+                mealTime: mealTime,
+                mealType: mealType,
+                openType: openType,
+                menu: menu,
+                price: price,
+              );
+              meals.add(meal);
             }
-
-            MealModel meal = MealModel(
-              date: date,
-              openTime: openTime,
-              restaurantType: restaurantType,
-              mealTime: mealTime,
-              mealType: mealType,
-              openType: openType,
-              menu: menu,
-              price: price,
-            );
-            meals.add(meal);
           });
         });
       });
