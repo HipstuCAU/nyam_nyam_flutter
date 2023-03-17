@@ -117,6 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
           '라면',
         ]);
       }
+      meals = ApiService().getMeals(HomeScreen.entryPoint,
+          sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
     });
   }
 
@@ -211,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       false,
                                       false,
                                     ];
+                                    getMealsByDate();
                                   });
                                 },
                                 child: const Text(
@@ -227,6 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       false,
                                       false,
                                     ];
+                                    getMealsByDate();
                                   });
                                 },
                                 child: const Text(
@@ -417,9 +421,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? HomeScreen.seoulRestaurantName.length
                         : HomeScreen.ansungRestaurantName.length,
                     itemBuilder: (context, index) {
+                      var restaurantName =
+                          HomeScreen.entryPoint == CampusType.seoul
+                              ? HomeScreen.seoulRestaurantName[index]
+                              : HomeScreen.ansungRestaurantName[index];
+                      print(MealsOfRestaurant(
+                        restaurantName: restaurantName,
+                        index: index,
+                        mealsForDay: snapshot.data!,
+                      ).mealsForDay[0].menu);
                       return MealsOfRestaurant(
-                        restaurantName: HomeScreen.seoulRestaurantName[index],
-                        isBurgerOrRamen: false,
+                        restaurantName: restaurantName,
                         index: index,
                         mealsForDay: snapshot.data!,
                       );
@@ -440,7 +452,6 @@ class MealsOfRestaurant extends StatefulWidget {
     super.key,
     required this.mealsForDay,
     required this.index,
-    required this.isBurgerOrRamen,
     required this.restaurantName,
   });
 
@@ -458,8 +469,6 @@ class MealsOfRestaurant extends StatefulWidget {
 
   String restaurantName;
 
-  bool isBurgerOrRamen;
-
   @override
   State<MealsOfRestaurant> createState() => _MealsOfRestaurantState();
 }
@@ -471,6 +480,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
     setRestaurantName(widget.restaurantName);
     setMealsByTime();
     checkIsTodayMeals();
+    checkIsBurgerOrRamen();
   }
 
   MealsForDay mealsOfRestaurant = [];
@@ -478,6 +488,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
   MealsForDay lunch = [];
   MealsForDay dinner = [];
   bool isTodayMeals = true;
+  bool isBurgerOrRamen = false;
 
   void checkIsTodayMeals() {
     if (widget.mealsForDay.isNotEmpty) {
@@ -486,6 +497,12 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                   DateFormat('yyyy-MM-dd').format(DateTime.now())
               ? true
               : false;
+    }
+  }
+
+  void checkIsBurgerOrRamen() {
+    if (widget.restaurantName == "카우버거" || widget.restaurantName == "라면") {
+      isBurgerOrRamen = true;
     }
   }
 
@@ -572,7 +589,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.isBurgerOrRamen ? 1 : 3,
+                  itemCount: isBurgerOrRamen ? 1 : 3,
                   itemBuilder: (context, index) {
                     var meals = [breakfast, lunch, dinner];
                     return Padding(
@@ -584,7 +601,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                         isTodayMeals: isTodayMeals,
                         timeIndex: index,
                         mealsForDay: meals[index],
-                        isBurgerOrRamen: widget.isBurgerOrRamen,
+                        restaurantName: widget.restaurantName,
                       ),
                     );
                   },

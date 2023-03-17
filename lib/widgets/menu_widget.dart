@@ -6,13 +6,13 @@ class Menu extends StatefulWidget {
   Menu({
     super.key,
     required this.mealsForDay,
-    required this.isBurgerOrRamen,
+    required this.restaurantName,
     required this.timeIndex,
     required this.isTodayMeals,
   });
 
   MealsForDay mealsForDay;
-  bool isBurgerOrRamen;
+  String restaurantName;
   DateTime now = DateTime.now();
   int timeIndex;
   bool isTodayMeals;
@@ -37,6 +37,7 @@ class _MenuState extends State<Menu> {
   );
 
   bool isOpenedToSee = true;
+  bool isBurgerOrRamen = false;
   int openTimeint = 0;
   int closeTimeint = 0;
   int now = 0;
@@ -47,10 +48,17 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
+    checkIsBurgerOrRamen();
     setOpenTime();
     setStatus();
     setIcon();
     setTitle();
+  }
+
+  void checkIsBurgerOrRamen() {
+    if (widget.restaurantName == "카우버거" || widget.restaurantName == "라면") {
+      isBurgerOrRamen = true;
+    }
   }
 
   void setOpenTime() {
@@ -134,9 +142,9 @@ class _MenuState extends State<Menu> {
   }
 
   void setTitle() {
-    if (widget.isBurgerOrRamen) {
-      switch (widget.mealsForDay[0].restaurantType) {
-        case RestaurantType.cauBurger:
+    if (isBurgerOrRamen) {
+      switch (widget.restaurantName) {
+        case "카우버거":
           mealsTitle = Text(
             "카우버거",
             style: TextStyle(
@@ -149,7 +157,7 @@ class _MenuState extends State<Menu> {
             ),
           );
           break;
-        case RestaurantType.ramen:
+        case "라면":
           mealsTitle = Text(
             "라면",
             style: TextStyle(
@@ -241,7 +249,7 @@ class _MenuState extends State<Menu> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if (!widget.isBurgerOrRamen) icon,
+                    if (!isBurgerOrRamen) icon,
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: mealsTitle,
@@ -297,9 +305,16 @@ class _MenuState extends State<Menu> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.mealsForDay[index].price,
-                              style: const TextStyle(
-                                fontSize: 14,
+                              widget.mealsForDay[0].restaurantType ==
+                                      RestaurantType.cauBurger
+                                  ? ""
+                                  : widget.mealsForDay[index].price,
+                              style: TextStyle(
+                                fontSize:
+                                    widget.mealsForDay[0].restaurantType ==
+                                            RestaurantType.cauBurger
+                                        ? 0
+                                        : 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
