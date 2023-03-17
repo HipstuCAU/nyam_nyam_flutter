@@ -470,12 +470,24 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
     super.initState();
     setRestaurantName(widget.restaurantName);
     setMealsByTime();
+    checkIsTodayMeals();
   }
 
   MealsForDay mealsOfRestaurant = [];
   MealsForDay breakfast = [];
   MealsForDay lunch = [];
   MealsForDay dinner = [];
+  bool isTodayMeals = true;
+
+  void checkIsTodayMeals() {
+    if (widget.mealsForDay.isNotEmpty) {
+      isTodayMeals =
+          DateFormat('yyyy-MM-dd').format(widget.mealsForDay[0].date) ==
+                  DateFormat('yyyy-MM-dd').format(DateTime.now())
+              ? true
+              : false;
+    }
+  }
 
   void setRestaurantName(String restaurantName) {
     RestaurantType restaurantType;
@@ -569,6 +581,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                         bottom: 7,
                       ),
                       child: Menu(
+                        isTodayMeals: isTodayMeals,
                         timeIndex: index,
                         mealsForDay: meals[index],
                         isBurgerOrRamen: widget.isBurgerOrRamen,

@@ -8,12 +8,14 @@ class Menu extends StatefulWidget {
     required this.mealsForDay,
     required this.isBurgerOrRamen,
     required this.timeIndex,
+    required this.isTodayMeals,
   });
 
   MealsForDay mealsForDay;
   bool isBurgerOrRamen;
   DateTime now = DateTime.now();
   int timeIndex;
+  bool isTodayMeals;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -69,13 +71,17 @@ class _MenuState extends State<Menu> {
   void setStatus() {
     setState(() {});
     if (widget.mealsForDay.isNotEmpty) {
-      if (now < openTimeint) {
-        openStatus = OpenStatusType.preparing;
-      } else if (openTimeint < now && now < closeTimeint) {
-        openStatus = OpenStatusType.running;
+      if (widget.isTodayMeals) {
+        if (now < openTimeint) {
+          openStatus = OpenStatusType.preparing;
+        } else if (openTimeint < now && now < closeTimeint) {
+          openStatus = OpenStatusType.running;
+        } else {
+          openStatus = OpenStatusType.closed;
+          isOpenedToSee = false;
+        }
       } else {
-        openStatus = OpenStatusType.closed;
-        // isOpenedToSee = false;
+        openStatus = OpenStatusType.preparing;
       }
     } else {
       openStatus = OpenStatusType.notRunning;

@@ -30,11 +30,6 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
       ];
       HomeScreen.isSelectedRestaurant[index] = true;
       HomeScreen.pageController.jumpToPage(index);
-      // HomeScreen.autoScrollController.animateTo(
-      // index * 30,
-      // duration: const Duration(milliseconds: 300),
-      // curve: Curves.easeIn,
-      // );
     });
   }
 
