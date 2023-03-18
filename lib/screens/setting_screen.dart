@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen({super.key});
@@ -89,23 +90,12 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
-  initializeRestaurantPicker() {
-    if (widget.selectedCampus == CampusType.seoul) {
-      HomeScreen.isSelectedRestaurant = [
-        false,
-        false,
-        false,
-        false,
-        false,
-      ];
-    } else {
-      HomeScreen.isSelectedRestaurant = [
-        false,
-        false,
-        false,
-      ];
-    }
-    HomeScreen.isSelectedRestaurant[0] = true;
+  luanchURL(int index) async {
+    const urls = [
+      "https://mportal.cau.ac.kr/main.do",
+      "https://haksik.notion.site/d579aa25f97b4d8a92ec6f18e90c4ff5"
+    ];
+    await launchUrlString(urls[index]);
   }
 
   @override
@@ -307,7 +297,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                     : HomeScreen.ansungRestaurantName
                                         .insert(newIndex, item);
                                 updateRestaurantSorting();
-                                initializeRestaurantPicker();
                               },
                             );
                           },
@@ -322,6 +311,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     padding: const EdgeInsets.only(
                                       left: 11,
                                     ),
+                                    // color: Colors.white,
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -423,22 +413,29 @@ class _SettingScreenState extends State<SettingScreen> {
                     top: 12,
                     bottom: 12,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.settingList[index],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (index == 0 || index == 1) {
+                        luanchURL(index);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.settingList[index],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: NyamColors.customGrey,
-                      ),
-                    ],
+                        const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14,
+                          color: NyamColors.customGrey,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
