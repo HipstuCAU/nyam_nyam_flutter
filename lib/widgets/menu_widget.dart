@@ -342,6 +342,7 @@ class _MenuState extends State<Menu> {
                               ),
                             if (widget.restaurantName != "학생식당")
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     widget.mealsForDay[0].restaurantType ==
