@@ -292,6 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       setState(() {
                         getMealsByDate();
+                        HomeScreen.pageController = PageController(
+                            initialPage: 0, viewportFraction: 0.9);
                       });
                     },
                     icon: const Icon(Icons.settings),
