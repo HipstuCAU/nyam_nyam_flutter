@@ -112,12 +112,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
     try {
       await FlutterEmailSender.send(email);
-      print("hi");
-    } catch (error) {
-      String title = "기본 메일 앱을 사용할 수 없는 상황입니다. 설정을 확인해주세요.";
-      String message = "";
-      print("error");
-    }
+    } catch (error) {}
   }
 
   @override
