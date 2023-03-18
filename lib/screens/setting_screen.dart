@@ -91,6 +91,25 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
+  initializeRestaurantPicker() {
+    if (widget.selectedCampus == CampusType.seoul) {
+      HomeScreen.isSelectedRestaurant = [
+        false,
+        false,
+        false,
+        false,
+        false,
+      ];
+    } else {
+      HomeScreen.isSelectedRestaurant = [
+        false,
+        false,
+        false,
+      ];
+    }
+    HomeScreen.isSelectedRestaurant[0] = true;
+  }
+
   luanchURL(int index) async {
     const urls = [
       "https://mportal.cau.ac.kr/main.do",
@@ -112,12 +131,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
     try {
       await FlutterEmailSender.send(email);
-      print("hi");
-    } catch (error) {
-      String title = "기본 메일 앱을 사용할 수 없는 상황입니다. 설정을 확인해주세요.";
-      String message = "";
-      print("error");
-    }
+    } catch (error) {}
   }
 
   @override
@@ -319,6 +333,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                     : HomeScreen.ansungRestaurantName
                                         .insert(newIndex, item);
                                 updateRestaurantSorting();
+                                initializeRestaurantPicker();
+                                HomeScreen.pageController.jumpToPage(0);
                               },
                             );
                           },

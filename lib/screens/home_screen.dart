@@ -292,6 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       setState(() {
                         getMealsByDate();
+                        HomeScreen.pageController = PageController(
+                            initialPage: 0, viewportFraction: 0.9);
                       });
                     },
                     icon: const Icon(Icons.settings),
@@ -389,7 +391,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 future: meals,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    return const Text("Loading!");
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                   return PageView.builder(
                     controller: HomeScreen.pageController,
@@ -558,6 +562,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
           padding: const EdgeInsets.only(
             right: 10,
             left: 10,
+            bottom: 20,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
