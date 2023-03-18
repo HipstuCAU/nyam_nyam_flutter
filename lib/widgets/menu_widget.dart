@@ -340,8 +340,8 @@ class _MenuState extends State<Menu> {
                                     ),
                                   ],
                                 ),
-                              ),
-                            if (widget.restaurantName != "학생식당")
+                              )
+                            else
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
