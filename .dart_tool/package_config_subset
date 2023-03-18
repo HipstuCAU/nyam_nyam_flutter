@@ -1,3 +1,7 @@
+_flutterfire_internals
+2.16
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.0.18/
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.0.18/lib/
 async
 2.18
 file:///Users/seungyun/.pub-cache/hosted/pub.dev/async-2.10.0/
@@ -14,6 +18,18 @@ clock
 2.12
 file:///Users/seungyun/.pub-cache/hosted/pub.dev/clock-1.1.1/
 file:///Users/seungyun/.pub-cache/hosted/pub.dev/clock-1.1.1/lib/
+cloud_firestore
+2.16
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/cloud_firestore-4.4.5/
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/cloud_firestore-4.4.5/lib/
+cloud_firestore_platform_interface
+2.16
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/cloud_firestore_platform_interface-5.11.5/
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/cloud_firestore_platform_interface-5.11.5/lib/
+cloud_firestore_web
+2.16
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.3.5/
+file:///Users/seungyun/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.3.5/lib/
 collection
 2.12
 file:///Users/seungyun/.pub-cache/hosted/pub.dev/collection-1.17.0/
