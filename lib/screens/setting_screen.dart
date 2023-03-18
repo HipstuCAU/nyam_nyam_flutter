@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
@@ -96,6 +97,27 @@ class _SettingScreenState extends State<SettingScreen> {
       "https://haksik.notion.site/d579aa25f97b4d8a92ec6f18e90c4ff5"
     ];
     await launchUrlString(urls[index]);
+  }
+
+  sendEmail() async {
+    final Email email = Email(
+      body: '',
+      subject: '[중대한학식 문의]',
+      recipients: ['junhong5577@cau.ac.kr'],
+      cc: [],
+      bcc: [],
+      attachmentPaths: [],
+      isHTML: false,
+    );
+
+    try {
+      await FlutterEmailSender.send(email);
+      print("hi");
+    } catch (error) {
+      String title = "기본 메일 앱을 사용할 수 없는 상황입니다. 설정을 확인해주세요.";
+      String message = "";
+      print("error");
+    }
   }
 
   @override
@@ -417,6 +439,8 @@ class _SettingScreenState extends State<SettingScreen> {
                     onTap: () {
                       if (index == 0 || index == 1) {
                         luanchURL(index);
+                      } else {
+                        sendEmail();
                       }
                     },
                     child: Row(

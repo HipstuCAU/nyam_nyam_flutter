@@ -19,7 +19,7 @@
 17    <application
 18        android:name="android.app.Application"
 19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-19-->[androidx.core:core:1.6.0] /Users/seungyun/.gradle/caches/transforms-3/4ca28c4a71705f8a687c69dda140a277/transformed/core-1.6.0/AndroidManifest.xml:24:18-86
+19-->[androidx.core:core:1.8.0] /Users/seungyun/.gradle/caches/transforms-3/270e9501dde0430a83746f97bf9ab544/transformed/core-1.8.0/AndroidManifest.xml:24:18-86
 20        android:debuggable="true"
 21        android:icon="@mipmap/ic_launcher"
 22        android:label="nyam_nyam_flutter" >
@@ -56,27 +56,67 @@
 53            android:name="flutterEmbedding"
 54            android:value="2" />
 55
-56        <activity
-56-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
-57            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-57-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
-58            android:exported="false"
-58-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
-59            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-59-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
-60
-61        <uses-library
-61-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
-62            android:name="androidx.window.extensions"
-62-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
-63            android:required="false" />
-63-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
-64        <uses-library
-64-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
-65            android:name="androidx.window.sidecar"
-65-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
-66            android:required="false" />
-66-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
-67    </application>
-68
-69</manifest>
+56        <provider
+56-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
+57            android:name="com.sidlatau.flutteremailsender.FlutterEmailSenderFileProvider"
+57-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-90
+58            android:authorities="com.example.nyam_nyam_flutter.file_provider"
+58-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-65
+59            android:exported="false"
+59-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
+60            android:grantUriPermissions="true" >
+60-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
+61            <meta-data
+61-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:61
+62                android:name="android.support.FILE_PROVIDER_PATHS"
+62-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
+63                android:resource="@xml/shared_file_paths" />
+63-->[:flutter_email_sender] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-58
+64        </provider>
+65
+66        <activity
+66-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
+67            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+67-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
+68            android:exported="false"
+68-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
+69            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+69-->[:url_launcher_android] /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
+70
+71        <uses-library
+71-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+72            android:name="androidx.window.extensions"
+72-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+73            android:required="false" />
+73-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+74        <uses-library
+74-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+75            android:name="androidx.window.sidecar"
+75-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+76            android:required="false" />
+76-->[androidx.window:window:1.0.0-beta04] /Users/seungyun/.gradle/caches/transforms-3/dee59bb480020f42d53c2ea15e4501f7/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+77
+78        <provider
+78-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+79            android:name="androidx.startup.InitializationProvider"
+79-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+80            android:authorities="com.example.nyam_nyam_flutter.androidx-startup"
+80-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+81            android:exported="false" >
+81-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+82            <meta-data
+82-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+83                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+83-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+84                android:value="androidx.startup" />
+84-->[androidx.emoji2:emoji2:1.2.0] /Users/seungyun/.gradle/caches/transforms-3/f3da131123e9b4eccc244f6ad91f009f/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+85            <meta-data
+85-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/seungyun/.gradle/caches/transforms-3/bfb294eadd9142ad90bb62295accd8ec/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+86                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+86-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/seungyun/.gradle/caches/transforms-3/bfb294eadd9142ad90bb62295accd8ec/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+87                android:value="androidx.startup" />
+87-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/seungyun/.gradle/caches/transforms-3/bfb294eadd9142ad90bb62295accd8ec/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+88        </provider>
+89    </application>
+90
+91</manifest>
