@@ -93,6 +93,7 @@ class _MenuState extends State<Menu> {
       }
     } else {
       openStatus = OpenStatusType.notRunning;
+      isOpenedToSee = false;
     }
   }
 
@@ -285,7 +286,8 @@ class _MenuState extends State<Menu> {
             if (isOpenedToSee)
               Padding(
                 padding: const EdgeInsets.only(
-                  right: 20.0,
+                  right: 20,
+                  bottom: 10,
                 ),
                 child: MediaQuery.removePadding(
                   removeTop: true,
@@ -314,47 +316,79 @@ class _MenuState extends State<Menu> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.mealsForDay[0].restaurantType ==
-                                      RestaurantType.cauBurger
-                                  ? ""
-                                  : widget.mealsForDay[index].price,
-                              style: TextStyle(
-                                fontSize:
-                                    widget.mealsForDay[0].restaurantType ==
-                                            RestaurantType.cauBurger
-                                        ? 0
-                                        : 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 10,
-                                bottom: 10,
-                              ),
-                              child: GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossCount,
-                                  childAspectRatio: 5,
-                                ),
-                                itemCount: menu.length,
-                                itemBuilder: (context, index) {
-                                  return SizedBox(
-                                    child: Text(
-                                      menu[index],
+                            if (widget.restaurantName == "학생식당" &&
+                                menu.length == 1)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      menu[0],
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                  );
-                                },
+                                    Text(
+                                      widget.mealsForDay[index].price,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+                            if (widget.restaurantName != "학생식당")
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.mealsForDay[0].restaurantType ==
+                                            RestaurantType.cauBurger
+                                        ? ""
+                                        : widget.mealsForDay[index].price,
+                                    style: TextStyle(
+                                      fontSize: widget.mealsForDay[0]
+                                                  .restaurantType ==
+                                              RestaurantType.cauBurger
+                                          ? 0
+                                          : 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 10,
+                                      bottom: 10,
+                                    ),
+                                    child: GridView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: crossCount,
+                                        childAspectRatio: 5,
+                                      ),
+                                      itemCount: menu.length,
+                                      itemBuilder: (context, index) {
+                                        return SizedBox(
+                                          child: Text(
+                                            menu[index],
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )
                           ],
                         ),
                       );

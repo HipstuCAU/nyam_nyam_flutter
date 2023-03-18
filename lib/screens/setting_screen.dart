@@ -89,6 +89,25 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
+  initializeRestaurantPicker() {
+    if (widget.selectedCampus == CampusType.seoul) {
+      HomeScreen.isSelectedRestaurant = [
+        false,
+        false,
+        false,
+        false,
+        false,
+      ];
+    } else {
+      HomeScreen.isSelectedRestaurant = [
+        false,
+        false,
+        false,
+      ];
+    }
+    HomeScreen.isSelectedRestaurant[0] = true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -288,6 +307,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     : HomeScreen.ansungRestaurantName
                                         .insert(newIndex, item);
                                 updateRestaurantSorting();
+                                initializeRestaurantPicker();
                               },
                             );
                           },
@@ -302,7 +322,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                     padding: const EdgeInsets.only(
                                       left: 11,
                                     ),
-                                    // color: Colors.white,
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
