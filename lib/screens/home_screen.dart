@@ -290,7 +290,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SettingScreen(),
                         ),
                       );
-                      setState(() {});
+                      setState(() {
+                        getMealsByDate();
+                      });
                     },
                     icon: const Icon(Icons.settings),
                     color: NyamColors.customGrey,
@@ -427,7 +429,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               : HomeScreen.ansungRestaurantName[index];
                       return MealsOfRestaurant(
                         restaurantName: restaurantName,
-                        index: index,
                         mealsForDay: snapshot.data!,
                       );
                     },
@@ -446,21 +447,10 @@ class MealsOfRestaurant extends StatefulWidget {
   MealsOfRestaurant({
     super.key,
     required this.mealsForDay,
-    required this.index,
     required this.restaurantName,
   });
 
-  int index;
   MealsForDay mealsForDay;
-  List<String> seoulRestaurantDetailNames = [
-    "경영경제관 310관 B4층",
-    "블루미르관 308관",
-    "블루미르관 309관",
-    "법학관 303관 B1층",
-    "법학관 303관 B1층",
-  ];
-
-  String ansungRestaurantDetailName = "707관";
 
   String restaurantName;
 
@@ -484,6 +474,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
   MealsForDay dinner = [];
   bool isTodayMeals = true;
   bool isBurgerOrRamen = false;
+  String restaurantDetailName = "";
 
   void checkIsTodayMeals() {
     if (widget.mealsForDay.isNotEmpty) {
@@ -506,27 +497,35 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
     switch (restaurantName) {
       case "참슬기":
         restaurantType = RestaurantType.chamsulgi;
+        restaurantDetailName = "경영경제관 310관 B4층";
         break;
       case "생활관A":
         restaurantType = RestaurantType.domitoryA;
+        restaurantDetailName = "블루미르관 308관";
         break;
       case "생활관B":
         restaurantType = RestaurantType.domitoryB;
+        restaurantDetailName = "블루미르관 309관";
         break;
       case "학생식당":
         restaurantType = RestaurantType.student;
+        restaurantDetailName = "법학관 303관 B1층";
         break;
       case "교직원":
         restaurantType = RestaurantType.staff;
+        restaurantDetailName = "법학관 303관 B1층";
         break;
       case "카우이츠":
         restaurantType = RestaurantType.cauEats;
+        restaurantDetailName = "707관";
         break;
       case "카우버거":
         restaurantType = RestaurantType.cauBurger;
+        restaurantDetailName = "707관";
         break;
       case "라면":
         restaurantType = RestaurantType.ramen;
+        restaurantDetailName = "707관";
         break;
       default:
         restaurantType = RestaurantType.chamsulgi;
@@ -568,9 +567,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                   left: 10,
                 ),
                 child: Text(
-                  HomeScreen.entryPoint == CampusType.seoul
-                      ? widget.seoulRestaurantDetailNames[widget.index]
-                      : widget.ansungRestaurantDetailName,
+                  restaurantDetailName,
                   style: const TextStyle(
                     color: NyamColors.grey50,
                     fontSize: 12,
