@@ -93,6 +93,7 @@ class _MenuState extends State<Menu> {
       }
     } else {
       openStatus = OpenStatusType.notRunning;
+      isOpenedToSee = false;
     }
   }
 
@@ -286,7 +287,7 @@ class _MenuState extends State<Menu> {
               Padding(
                 padding: const EdgeInsets.only(
                   right: 20,
-                  bottom: 20,
+                  bottom: 10,
                 ),
                 child: MediaQuery.removePadding(
                   removeTop: true,
