@@ -86,15 +86,17 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                         horizontal: 10,
                         vertical: 5,
                       ),
-                      child: Text(
-                        HomeScreen.entryPoint == CampusType.seoul
-                            ? widget.seoulRestaurantName[index]
-                            : widget.ansungRestaurantName[index],
-                        style: TextStyle(
-                          color: HomeScreen.isSelectedRestaurant[index]
-                              ? Colors.white
-                              : Colors.black,
-                          fontSize: 16,
+                      child: Center(
+                        child: Text(
+                          HomeScreen.entryPoint == CampusType.seoul
+                              ? widget.seoulRestaurantName[index]
+                              : widget.ansungRestaurantName[index],
+                          style: TextStyle(
+                            color: HomeScreen.isSelectedRestaurant[index]
+                                ? Colors.white
+                                : Colors.black,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
