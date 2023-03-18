@@ -389,7 +389,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 future: meals,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    return const Text("Loading!");
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                   return PageView.builder(
                     controller: HomeScreen.pageController,
