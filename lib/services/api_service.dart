@@ -1,31 +1,37 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/models/meal.dart';
 import 'package:nyam_nyam_flutter/models/mealsByCampus.dart';
 
 class ApiService {
+  final firestore = FirebaseFirestore.instance;
+
   Future<List<MealModel>> getMeals(CampusType campus, String date) async {
-    final String response =
-        await rootBundle.loadString('assets/jsons/CAU_Cafeteria_Menu.json');
-    final Map<String, dynamic> decodedResponse = await json.decode(response);
-    MealsByCampusModel seoulMealsInstances =
-        MealsByCampusModel.SeoulfromJson(decodedResponse);
-    MealsByCampusModel ansungMealsInstances =
-        MealsByCampusModel.AnsungfromJson(decodedResponse);
+    var response = await firestore
+        .collection('CAU_Haksik')
+        .doc("CAU_Cafeteria_Menu")
+        .get();
+    var data = response.data();
 
     List<MealModel> meals = [];
 
-    var mealsForWeek = campus == CampusType.seoul
-        ? getMealsForWeek(seoulMealsInstances)
-        : getMealsForWeek(ansungMealsInstances);
-    if (mealsForWeek[date] != null) {
-      meals = mealsForWeek[date]!.where((element) {
-        return element.date == DateFormat('yyyy-MM-dd').parse(date);
-      }).toList();
+    if (data != null) {
+      MealsByCampusModel seoulMealsInstances =
+          MealsByCampusModel.SeoulfromJson(data);
+      MealsByCampusModel ansungMealsInstances =
+          MealsByCampusModel.AnsungfromJson(data);
+
+      var mealsForWeek = campus == CampusType.seoul
+          ? getMealsForWeek(seoulMealsInstances)
+          : getMealsForWeek(ansungMealsInstances);
+      if (mealsForWeek[date] != null) {
+        meals = mealsForWeek[date]!.where((element) {
+          return element.date == DateFormat('yyyy-MM-dd').parse(date);
+        }).toList();
+      }
     }
+
     return meals;
   }
 

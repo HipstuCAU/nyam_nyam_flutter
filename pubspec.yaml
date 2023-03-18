@@ -41,6 +41,8 @@ dependencies:
   shared_preferences: ^2.0.18
   url_launcher: ^6.1.10
   flutter_email_sender: ^5.2.0
+  firebase_core: ^2.8.0
+  cloud_firestore: ^4.4.5
 
 dev_dependencies:
   flutter_test:
