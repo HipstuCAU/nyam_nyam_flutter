@@ -1,16 +1,35 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.nyam_nyam_flutter.app-mergeDebugResources-9:/values-v16/values-v16.xml",
+            "outputFile": "com.example.nyam_nyam_flutter.app-mergeDebugResources-23:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "/Users/seungyun/.gradle/caches/transforms-3/4ca28c4a71705f8a687c69dda140a277/transformed/core-1.6.0/res/values-v16/values-v16.xml",
+                    "source": "/Users/seungyun/.gradle/caches/transforms-3/270e9501dde0430a83746f97bf9ab544/transformed/core-1.8.0/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
                         "startOffsets": "55",
                         "endColumns": "65",
                         "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "/Users/seungyun/.gradle/caches/transforms-3/dd7933181bcd1a44ab10530c6cc929bb/transformed/appcompat-1.5.1/res/values-v16/values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "223"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "121",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "289"
                     }
                 }
             ]

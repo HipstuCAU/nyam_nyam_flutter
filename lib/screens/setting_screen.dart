@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen({super.key});
@@ -89,23 +91,33 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
-  initializeRestaurantPicker() {
-    if (widget.selectedCampus == CampusType.seoul) {
-      HomeScreen.isSelectedRestaurant = [
-        false,
-        false,
-        false,
-        false,
-        false,
-      ];
-    } else {
-      HomeScreen.isSelectedRestaurant = [
-        false,
-        false,
-        false,
-      ];
+  luanchURL(int index) async {
+    const urls = [
+      "https://mportal.cau.ac.kr/main.do",
+      "https://haksik.notion.site/d579aa25f97b4d8a92ec6f18e90c4ff5"
+    ];
+    await launchUrlString(urls[index]);
+  }
+
+  sendEmail() async {
+    final Email email = Email(
+      body: '',
+      subject: '[중대한학식 문의]',
+      recipients: ['junhong5577@cau.ac.kr'],
+      cc: [],
+      bcc: [],
+      attachmentPaths: [],
+      isHTML: false,
+    );
+
+    try {
+      await FlutterEmailSender.send(email);
+      print("hi");
+    } catch (error) {
+      String title = "기본 메일 앱을 사용할 수 없는 상황입니다. 설정을 확인해주세요.";
+      String message = "";
+      print("error");
     }
-    HomeScreen.isSelectedRestaurant[0] = true;
   }
 
   @override
@@ -307,7 +319,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                     : HomeScreen.ansungRestaurantName
                                         .insert(newIndex, item);
                                 updateRestaurantSorting();
-                                initializeRestaurantPicker();
                               },
                             );
                           },
@@ -322,6 +333,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     padding: const EdgeInsets.only(
                                       left: 11,
                                     ),
+                                    // color: Colors.white,
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -423,22 +435,31 @@ class _SettingScreenState extends State<SettingScreen> {
                     top: 12,
                     bottom: 12,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.settingList[index],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (index == 0 || index == 1) {
+                        luanchURL(index);
+                      } else {
+                        sendEmail();
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.settingList[index],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: NyamColors.customGrey,
-                      ),
-                    ],
+                        const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14,
+                          color: NyamColors.customGrey,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

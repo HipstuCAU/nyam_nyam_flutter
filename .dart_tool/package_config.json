@@ -62,6 +62,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_email_sender",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/flutter_email_sender-5.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/flutter_lints-2.0.1",
       "packageUri": "lib/",
@@ -266,6 +272,54 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "url_launcher",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher-6.1.10",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
+      "name": "url_launcher_android",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.25",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "url_launcher_ios",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_ios-6.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "url_launcher_linux",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_linux-3.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "url_launcher_macos",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_macos-3.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "url_launcher_platform_interface",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_platform_interface-2.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "url_launcher_web",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_web-2.0.16",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "url_launcher_windows",
+      "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/url_launcher_windows-3.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///Users/seungyun/.pub-cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -290,7 +344,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-03-12T19:17:35.633889Z",
+  "generated": "2023-03-18T13:22:28.565857Z",
   "generator": "pub",
   "generatorVersion": "2.19.2"
 }

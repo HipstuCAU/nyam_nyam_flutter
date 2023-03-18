@@ -39,6 +39,8 @@ dependencies:
   scroll_to_index: ^3.0.1
   http: ^0.13.5
   shared_preferences: ^2.0.18
+  url_launcher: ^6.1.10
+  flutter_email_sender: ^5.2.0
 
 dev_dependencies:
   flutter_test:
