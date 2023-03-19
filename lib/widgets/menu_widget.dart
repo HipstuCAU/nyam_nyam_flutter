@@ -306,7 +306,7 @@ class _MenuState extends State<Menu> {
                       if (widget.restaurantName == "라면") {
                         menu = menu.sublist(1);
                       } else if (widget.restaurantName == "카우버거") {
-                        menu = menu[0].split("/").sublist(1);
+                        menu = ["햄버거 판매시간 ${menu[0].substring(6)}"];
                         crossCount = 1;
                       }
                       return Padding(
@@ -345,24 +345,18 @@ class _MenuState extends State<Menu> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    widget.mealsForDay[0].restaurantType ==
-                                            RestaurantType.cauBurger
-                                        ? ""
-                                        : widget.mealsForDay[index].price,
-                                    style: TextStyle(
-                                      fontSize: widget.mealsForDay[0]
-                                                  .restaurantType ==
-                                              RestaurantType.cauBurger
-                                          ? 0
-                                          : 14,
-                                      fontWeight: FontWeight.w500,
+                                  if (widget.restaurantName != "카우버거")
+                                    Text(
+                                      widget.mealsForDay[index].price,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                  ),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       top: 10,
-                                      bottom: 10,
+                                      // bottom: 10,
                                     ),
                                     child: GridView.builder(
                                       physics:
