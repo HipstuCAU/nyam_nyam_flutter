@@ -25,5 +25,6 @@ com.example.nyam_nyam_flutter.app-mergeDebugResources-23 /Users/seungyun/project
 com.example.nyam_nyam_flutter.app-mergeDebugResources-24 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/app/intermediates/incremental/debug/mergeDebugResources/stripped.dir
 com.example.nyam_nyam_flutter.app-merged_res-25 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/app/intermediates/merged_res/debug
 com.example.nyam_nyam_flutter.app-packaged_res-26 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_email_sender/intermediates/packaged_res/debug
-com.example.nyam_nyam_flutter.app-packaged_res-27 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/shared_preferences_android/intermediates/packaged_res/debug
-com.example.nyam_nyam_flutter.app-packaged_res-28 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/packaged_res/debug
+com.example.nyam_nyam_flutter.app-packaged_res-27 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/flutter_native_splash/intermediates/packaged_res/debug
+com.example.nyam_nyam_flutter.app-packaged_res-28 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/shared_preferences_android/intermediates/packaged_res/debug
+com.example.nyam_nyam_flutter.app-packaged_res-29 /Users/seungyun/projects/flutter/Flutter_nyamnyam/build/url_launcher_android/intermediates/packaged_res/debug
