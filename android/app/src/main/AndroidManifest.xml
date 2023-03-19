@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.nyam_nyam_flutter">
    <application
-        android:label="nyam_nyam_flutter"
+        android:label="중대한학식"
         android:name="${applicationName}"
         android:roundIcon="@mipmap/ic_launcher"
         android:icon="@mipmap/ic_launcher">
