@@ -3,6 +3,7 @@
    <application
         android:label="nyam_nyam_flutter"
         android:name="${applicationName}"
+        android:roundIcon="@mipmap/ic_launcher"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

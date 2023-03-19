@@ -22,7 +22,8 @@
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="nyam_nyam_flutter" >
+        android:label="nyam_nyam_flutter"
+        android:roundIcon="@mipmap/ic_launcher" >
         <activity
             android:name="com.example.nyam_nyam_flutter.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
