@@ -444,21 +444,21 @@ class _SettingScreenState extends State<SettingScreen> {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 16,
-                    top: 12,
-                    bottom: 12,
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (index == 0 || index == 1) {
-                        luanchURL(index);
-                      } else {
-                        sendEmail();
-                      }
-                    },
+                return GestureDetector(
+                  onTap: () {
+                    if (index == 0 || index == 1) {
+                      luanchURL(index);
+                    } else {
+                      sendEmail();
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 20,
+                      right: 16,
+                      top: 16,
+                      bottom: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
