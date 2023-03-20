@@ -60,27 +60,27 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                   right:
                       index == widget.seoulRestaurantName.length - 1 ? 20 : 0,
                 ),
-                child: Container(
-                  height: 30,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 0),
-                        blurRadius: 3,
-                        spreadRadius: 1,
-                        color: Colors.black.withOpacity(0.1),
-                      )
-                    ],
-                    color: HomeScreen.isSelectedRestaurant[index]
-                        ? NyamColors.cauBlue
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  clipBehavior: Clip.none,
-                  child: GestureDetector(
-                    onTap: () {
-                      touchUpToInsideToSelectRestaurant(index);
-                    },
+                child: GestureDetector(
+                  onTap: () {
+                    touchUpToInsideToSelectRestaurant(index);
+                  },
+                  child: Container(
+                    height: 30,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, 0),
+                          blurRadius: 3,
+                          spreadRadius: 1,
+                          color: Colors.black.withOpacity(0.1),
+                        )
+                      ],
+                      color: HomeScreen.isSelectedRestaurant[index]
+                          ? NyamColors.cauBlue
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    clipBehavior: Clip.none,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
