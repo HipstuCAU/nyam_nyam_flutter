@@ -43,6 +43,7 @@ dependencies:
   flutter_email_sender: ^5.2.0
   firebase_core: ^2.8.0
   cloud_firestore: ^4.4.5
+  fluttertoast: ^8.2.1
 
 dev_dependencies:
   flutter_test:

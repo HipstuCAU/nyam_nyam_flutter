@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
@@ -163,9 +164,20 @@ class _HomeScreenState extends State<HomeScreen> {
           viewportFraction: 0.9,
         );
       } else {
-        print("isNotUploaded");
+        showToast();
       }
     });
+  }
+
+  void showToast() {
+    Fluttertoast.showToast(
+      msg: "😂 아직 식단이 업데이트 되지 않았어요",
+      gravity: ToastGravity.TOP,
+      backgroundColor: const Color(0xFF4E5968).withOpacity(0.98),
+      fontSize: 16,
+      textColor: Colors.white,
+      toastLength: Toast.LENGTH_SHORT,
+    );
   }
 
   void getMealsByDate() {
