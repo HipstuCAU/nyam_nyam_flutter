@@ -313,10 +313,24 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FutureBuilder(
                 future: isUploadedDates,
                 builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                   return ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 7,
                     itemBuilder: (context, index) {
+                      Color textColor = NyamColors.grey50;
+                      if (snapshot.data![index] == true) {
+                        if (HomeScreen.isSelectedDate[index]) {
+                          textColor = Colors.white;
+                        } else {
+                          textColor = NyamColors.customBlack;
+                        }
+                      }
+
                       return GestureDetector(
                         onTap: () {
                           setState(() {
@@ -356,9 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Text(
                                       sevenDays[index],
                                       style: TextStyle(
-                                        color: HomeScreen.isSelectedDate[index]
-                                            ? Colors.white
-                                            : NyamColors.customBlack,
+                                        color: textColor,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -366,9 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Text(
                                       sevenDaysOfWeek[index],
                                       style: TextStyle(
-                                        color: HomeScreen.isSelectedDate[index]
-                                            ? Colors.white
-                                            : NyamColors.customBlack,
+                                        color: textColor,
                                         fontSize: 10,
                                         fontWeight: FontWeight.w600,
                                       ),
