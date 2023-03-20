@@ -563,6 +563,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
             right: 10,
             left: 10,
             bottom: 20,
+            top: 10,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
