@@ -113,7 +113,7 @@ class _SettingScreenState extends State<SettingScreen> {
   luanchURL(int index) async {
     const urls = [
       "https://mportal.cau.ac.kr/main.do",
-      "https://haksik.notion.site/d579aa25f97b4d8a92ec6f18e90c4ff5"
+      "https://docs.google.com/document/d/1bpCB8lzZzmw1yTrK54HRttgz3kWzHao_EyYe91kpiFw/edit?usp=sharing"
     ];
     await launchUrlString(urls[index]);
   }
