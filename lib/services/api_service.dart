@@ -7,6 +7,46 @@ import 'package:nyam_nyam_flutter/models/mealsByCampus.dart';
 class ApiService {
   final firestore = FirebaseFirestore.instance;
 
+  Future<List<bool>> getUploadedSevenDatesBool(
+      CampusType campus, List<String> dates) async {
+    var response = await firestore
+        .collection('CAU_Haksik')
+        .doc("CAU_Cafeteria_Menu")
+        .get();
+    var data = response.data();
+
+    List<bool> isUploadedDates = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
+
+    if (data != null) {
+      MealsByCampusModel seoulMealsInstances =
+          MealsByCampusModel.SeoulfromJson(data);
+      MealsByCampusModel ansungMealsInstances =
+          MealsByCampusModel.AnsungfromJson(data);
+
+      var mealsForWeek = campus == CampusType.seoul
+          ? getMealsForWeek(seoulMealsInstances)
+          : getMealsForWeek(ansungMealsInstances);
+
+      for (int i = 0; i < 7; i++) {
+        if (mealsForWeek[dates[i]] != null) {
+          isUploadedDates[i] = true;
+        } else {
+          isUploadedDates[i] = false;
+        }
+      }
+    }
+
+    return isUploadedDates;
+  }
+
   Future<List<MealModel>> getMeals(CampusType campus, String date) async {
     var response = await firestore
         .collection('CAU_Haksik')

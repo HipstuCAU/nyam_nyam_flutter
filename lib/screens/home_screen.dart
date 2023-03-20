@@ -61,22 +61,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var sevenDays = [];
   var sevenDaysOfWeek = [];
-  var sevenDateTime = [];
+  List<String> sevenDateTime = [];
   Map<String, String> sevenDates = {};
-
-  List<bool> isSelectedDate = [
-    true,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
 
   var currentPageIndex = 0;
 
   late Future<List<MealModel>> meals;
+
+  late Future<List<bool>> isUploadedDates;
 
   Future initPreferences() async {
     HomeScreen.preferences = await SharedPreferences.getInstance();
@@ -117,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
           '라면',
         ]);
       }
+      isUploadedDates = ApiService()
+          .getUploadedSevenDatesBool(HomeScreen.entryPoint, sevenDateTime);
       meals = ApiService().getMeals(HomeScreen.entryPoint,
           sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
     });
@@ -127,6 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     initPreferences();
     get7daysFromToday();
+    isUploadedDates = ApiService()
+        .getUploadedSevenDatesBool(HomeScreen.entryPoint, sevenDateTime);
     meals = ApiService().getMeals(HomeScreen.entryPoint,
         sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
   }
@@ -144,27 +140,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return sevenDates;
   }
 
-  void touchUpToInsideToSelectDate(int index) {
+  void touchUpToInsideToSelectDate(int index, bool isUploadedDate) {
     setState(() {
-      if (HomeScreen.isSelectedDate[index] == true) {
-        return;
+      if (isUploadedDate) {
+        if (HomeScreen.isSelectedDate[index] == true) {
+          return;
+        } else {
+          HomeScreen.isSelectedDate = [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+          ];
+          HomeScreen.isSelectedDate[index] = true;
+        }
+        getMealsByDate();
+        HomeScreen.pageController = PageController(
+          initialPage: HomeScreen.isSelectedRestaurant.indexOf(true),
+          viewportFraction: 0.9,
+        );
       } else {
-        HomeScreen.isSelectedDate = [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ];
-        HomeScreen.isSelectedDate[index] = true;
+        print("isNotUploaded");
       }
-      getMealsByDate();
-      HomeScreen.pageController = PageController(
-        initialPage: HomeScreen.isSelectedRestaurant.indexOf(true),
-        viewportFraction: 0.9,
-      );
     });
   }
 
@@ -310,70 +310,77 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               color: NyamColors.customSkyBlue,
               height: 45,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 7,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {});
-                      touchUpToInsideToSelectDate(index);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width / 28,
-                      ),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 14,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: HomeScreen.isSelectedDate[index]
-                                ? NyamColors.cauBlue
-                                : NyamColors.customSkyBlue,
-                            borderRadius: BorderRadius.circular(15),
-                            border: index == 0
-                                ? Border.all(
-                                    width: 1,
-                                    color: NyamColors.cauBlue,
-                                  )
-                                : Border.all(
-                                    width: 0,
-                                    color: NyamColors.customSkyBlue,
-                                  ),
+              child: FutureBuilder(
+                future: isUploadedDates,
+                builder: (context, snapshot) {
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 7,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            touchUpToInsideToSelectDate(
+                                index, snapshot.data![index]);
+                          });
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width / 28,
                           ),
-                          clipBehavior: Clip.hardEdge,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 3,
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  sevenDays[index],
-                                  style: TextStyle(
-                                    color: HomeScreen.isSelectedDate[index]
-                                        ? Colors.white
-                                        : NyamColors.customBlack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 14,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: HomeScreen.isSelectedDate[index]
+                                    ? NyamColors.cauBlue
+                                    : NyamColors.customSkyBlue,
+                                borderRadius: BorderRadius.circular(15),
+                                border: index == 0
+                                    ? Border.all(
+                                        width: 1,
+                                        color: NyamColors.cauBlue,
+                                      )
+                                    : Border.all(
+                                        width: 0,
+                                        color: NyamColors.customSkyBlue,
+                                      ),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 3,
                                 ),
-                                Text(
-                                  sevenDaysOfWeek[index],
-                                  style: TextStyle(
-                                    color: HomeScreen.isSelectedDate[index]
-                                        ? Colors.white
-                                        : NyamColors.customBlack,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      sevenDays[index],
+                                      style: TextStyle(
+                                        color: HomeScreen.isSelectedDate[index]
+                                            ? Colors.white
+                                            : NyamColors.customBlack,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      sevenDaysOfWeek[index],
+                                      style: TextStyle(
+                                        color: HomeScreen.isSelectedDate[index]
+                                            ? Colors.white
+                                            : NyamColors.customBlack,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
               ),
