@@ -7,9 +7,45 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:612115892689:android:87b957d4d8e73a5c0f78f0",
+        "android_client_info": {
+          "package_name": "com.example.nyam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612115892689-v0u55bflmtna8g0bp0aipek282c2erg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGy5ndUfIHy5Pp0ibCUhW-hxyhEanEYqc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612115892689-v0u55bflmtna8g0bp0aipek282c2erg7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "612115892689-a48528u18b24i51hmlusjgeb2un1qiup.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "hipstu.NyamNyam"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:612115892689:android:0e3e999dfef3b1e70f78f0",
         "android_client_info": {
-          "package_name": "com.example.nyam_nyam_flutter"
+          "package_name": "com.hipstudy.nyam_nyam_CAU"
         }
       },
       "oauth_client": [
