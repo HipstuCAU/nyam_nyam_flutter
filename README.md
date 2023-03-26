@@ -1,4 +1,4 @@
-# nyam_nyam_flutter
+# nyam
 
 A new Flutter project.
 

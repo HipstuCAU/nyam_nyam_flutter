@@ -1,4 +1,4 @@
-package com.example.nyam_nyam_flutter
+package com.hipstudy.nyam_nyam_CAU
 
 import io.flutter.embedding.android.FlutterActivity
 

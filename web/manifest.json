@@ -1,6 +1,6 @@
 {
-    "name": "nyam_nyam_flutter",
-    "short_name": "nyam_nyam_flutter",
+    "name": "nyam",
+    "short_name": "nyam",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

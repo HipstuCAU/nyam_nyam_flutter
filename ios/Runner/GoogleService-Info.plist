@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>612115892689-qn4q4pl3i015mm86avutnj2luuhpbp2f.apps.googleusercontent.com</string>
+	<string>612115892689-ohp85cr8b6s5bgdu1hpnq2srjuqmpfpc.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.612115892689-qn4q4pl3i015mm86avutnj2luuhpbp2f</string>
+	<string>com.googleusercontent.apps.612115892689-ohp85cr8b6s5bgdu1hpnq2srjuqmpfpc</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCRp0KBr9y143ybdbNiq4LoCZ9FR3oftX4</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.nyamNyamFlutter</string>
+	<string>com.example.nyam</string>
 	<key>PROJECT_ID</key>
 	<string>haksik-e3b46</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:612115892689:ios:0fc05c5bd0f5fb240f78f0</string>
+	<string>1:612115892689:ios:1a10220a8e72f7de0f78f0</string>
 </dict>
 </plist>

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Flutter_nyamnyam.iml" filepath="$PROJECT_DIR$/.idea/Flutter_nyamnyam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nyam.iml" filepath="$PROJECT_DIR$/nyam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/nyam_android.iml" filepath="$PROJECT_DIR$/android/nyam_android.iml" />
     </modules>
   </component>
 </project>

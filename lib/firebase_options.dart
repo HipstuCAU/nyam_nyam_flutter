@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBGy5ndUfIHy5Pp0ibCUhW-hxyhEanEYqc',
-    appId: '1:612115892689:android:0e3e999dfef3b1e70f78f0',
+    appId: '1:612115892689:android:87b957d4d8e73a5c0f78f0',
     messagingSenderId: '612115892689',
     projectId: 'haksik-e3b46',
     storageBucket: 'haksik-e3b46.appspot.com',
@@ -63,23 +63,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCRp0KBr9y143ybdbNiq4LoCZ9FR3oftX4',
-    appId: '1:612115892689:ios:0fc05c5bd0f5fb240f78f0',
+    appId: '1:612115892689:ios:1a10220a8e72f7de0f78f0',
     messagingSenderId: '612115892689',
     projectId: 'haksik-e3b46',
     storageBucket: 'haksik-e3b46.appspot.com',
     iosClientId:
-        '612115892689-qn4q4pl3i015mm86avutnj2luuhpbp2f.apps.googleusercontent.com',
-    iosBundleId: 'com.example.nyamNyamFlutter',
+        '612115892689-ohp85cr8b6s5bgdu1hpnq2srjuqmpfpc.apps.googleusercontent.com',
+    iosBundleId: 'com.example.nyam',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCRp0KBr9y143ybdbNiq4LoCZ9FR3oftX4',
-    appId: '1:612115892689:ios:0fc05c5bd0f5fb240f78f0',
+    appId: '1:612115892689:ios:1a10220a8e72f7de0f78f0',
     messagingSenderId: '612115892689',
     projectId: 'haksik-e3b46',
     storageBucket: 'haksik-e3b46.appspot.com',
     iosClientId:
-        '612115892689-qn4q4pl3i015mm86avutnj2luuhpbp2f.apps.googleusercontent.com',
-    iosBundleId: 'com.example.nyamNyamFlutter',
+        '612115892689-ohp85cr8b6s5bgdu1hpnq2srjuqmpfpc.apps.googleusercontent.com',
+    iosBundleId: 'com.example.nyam',
   );
 }
