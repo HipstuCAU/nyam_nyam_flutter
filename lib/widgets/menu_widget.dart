@@ -376,6 +376,7 @@ class _MenuState extends State<Menu> {
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         );
                                       },
