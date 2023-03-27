@@ -248,6 +248,9 @@ class _MenuState extends State<Menu> {
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20,
+            right: 10,
+            top: 10,
+            bottom: 10,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,6 +291,7 @@ class _MenuState extends State<Menu> {
                   padding: const EdgeInsets.only(
                     right: 20,
                     bottom: 10,
+                    top: 10,
                   ),
                   child: MediaQuery.removePadding(
                     removeTop: true,
