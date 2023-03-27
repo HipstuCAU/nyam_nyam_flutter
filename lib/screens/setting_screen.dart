@@ -165,77 +165,77 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       body: Column(
         children: [
-          Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 14,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "기본 캠퍼스 설정",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+          GestureDetector(
+            onTap: () {
+              showCupertinoModalPopup(
+                context: context,
+                builder: (context) => CupertinoActionSheet(
+                  title: const Text("캠퍼스를 선택해주세요."),
+                  actions: <Widget>[
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        setState(() {
+                          touchUpInsideToChangeFavoriteCampus('서울');
+                          Navigator.pop(context, 'Cancel');
+                          HomeScreen.isSelectedRestaurant = [
+                            true,
+                            false,
+                            false,
+                            false,
+                            false,
+                          ];
+                        });
+                      },
+                      child: const Text(
+                        "서울캠퍼스",
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) => CupertinoActionSheet(
-                          title: const Text("캠퍼스를 선택해주세요."),
-                          actions: <Widget>[
-                            CupertinoActionSheetAction(
-                              onPressed: () {
-                                setState(() {
-                                  touchUpInsideToChangeFavoriteCampus('서울');
-                                  Navigator.pop(context, 'Cancel');
-                                  HomeScreen.isSelectedRestaurant = [
-                                    true,
-                                    false,
-                                    false,
-                                    false,
-                                    false,
-                                  ];
-                                });
-                              },
-                              child: const Text(
-                                "서울캠퍼스",
-                              ),
-                            ),
-                            CupertinoActionSheetAction(
-                              onPressed: () {
-                                setState(() {
-                                  touchUpInsideToChangeFavoriteCampus('안성');
-                                  Navigator.pop(context, 'Cancel');
-                                  HomeScreen.isSelectedRestaurant = [
-                                    true,
-                                    false,
-                                    false,
-                                  ];
-                                });
-                              },
-                              child: const Text(
-                                "안성캠퍼스",
-                              ),
-                            ),
-                          ],
-                          cancelButton: CupertinoActionSheetAction(
-                            isDefaultAction: true,
-                            onPressed: () {
-                              Navigator.pop(context, 'Cancel');
-                            },
-                            child: const Text("취소"),
-                          ),
-                        ),
-                      );
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        setState(() {
+                          touchUpInsideToChangeFavoriteCampus('안성');
+                          Navigator.pop(context, 'Cancel');
+                          HomeScreen.isSelectedRestaurant = [
+                            true,
+                            false,
+                            false,
+                          ];
+                        });
+                      },
+                      child: const Text(
+                        "안성캠퍼스",
+                      ),
+                    ),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    isDefaultAction: true,
+                    onPressed: () {
+                      Navigator.pop(context, 'Cancel');
                     },
-                    child: Row(
+                    child: const Text("취소"),
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "기본 캠퍼스 설정",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -257,9 +257,9 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                         ),
                       ],
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -452,6 +452,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       sendEmail();
                     }
                   },
+                  behavior: HitTestBehavior.opaque,
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 20,
