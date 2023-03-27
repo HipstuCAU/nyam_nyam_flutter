@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           HomeScreen.entryPoint = CampusType.ansung;
         }
       } else {
-        HomeScreen.preferences.setString('favoriteCampus', '');
+        HomeScreen.preferences.setString('favoriteCampus', '서울');
       }
 
       if (sortedSeoulRestaurants != null) {
