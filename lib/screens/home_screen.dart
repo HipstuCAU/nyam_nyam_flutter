@@ -185,6 +185,23 @@ class _HomeScreenState extends State<HomeScreen> {
         sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
   }
 
+  void resetRestaurantPicekr() {
+    HomeScreen.isSelectedRestaurant = HomeScreen.entryPoint == CampusType.seoul
+        ? [
+            true,
+            false,
+            false,
+            false,
+            false,
+          ]
+        : [
+            true,
+            false,
+            false,
+          ];
+    HomeScreen.pageController.jumpToPage(0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -304,6 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       setState(() {
                         getMealsByDate();
+                        resetRestaurantPicekr();
                         HomeScreen.pageController = PageController(
                             initialPage: 0, viewportFraction: 0.9);
                       });
