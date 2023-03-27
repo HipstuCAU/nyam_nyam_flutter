@@ -534,11 +534,11 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
         break;
       case "생활관A":
         restaurantType = RestaurantType.domitoryA;
-        restaurantDetailName = "블루미르관 308관";
+        restaurantDetailName = "블루미르홀 308관";
         break;
       case "생활관B":
         restaurantType = RestaurantType.domitoryB;
-        restaurantDetailName = "블루미르관 309관";
+        restaurantDetailName = "블루미르홀 309관";
         break;
       case "학생식당":
         restaurantType = RestaurantType.student;
