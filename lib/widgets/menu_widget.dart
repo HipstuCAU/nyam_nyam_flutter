@@ -232,166 +232,167 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 20,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (openStatus != OpenStatusType.notRunning) {
+            isOpenedToSee = !isOpenedToSee;
+          }
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (!isBurgerOrRamen) icon,
-                    Padding(
-                      padding: isBurgerOrRamen
-                          ? EdgeInsets.zero
-                          : const EdgeInsets.only(left: 10),
-                      child: mealsTitle,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: OpenState(
-                        openTimeString: openTimeString,
-                        closeTimeString: closeTimeString,
-                        openStatusType: openStatus,
-                        mealsForDay: widget.mealsForDay,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (!isBurgerOrRamen) icon,
+                      Padding(
+                        padding: isBurgerOrRamen
+                            ? EdgeInsets.zero
+                            : const EdgeInsets.only(left: 10),
+                        child: mealsTitle,
                       ),
-                    ),
-                  ],
-                ),
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (openStatus != OpenStatusType.notRunning) {
-                          isOpenedToSee = !isOpenedToSee;
-                        }
-                      });
-                    },
-                    icon: Icon(
-                      isOpenedToSee
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.keyboard_arrow_down_rounded,
-                    ))
-              ],
-            ),
-            if (isOpenedToSee)
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 20,
-                  bottom: 10,
-                ),
-                child: MediaQuery.removePadding(
-                  removeTop: true,
-                  context: context,
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) => Divider(
-                      height: 0.5,
-                      color: NyamColors.customGrey.withOpacity(0.5),
-                    ),
-                    itemCount: widget.mealsForDay.length,
-                    itemBuilder: (context, index) {
-                      var crossCount = 2;
-                      var menu = widget.mealsForDay[index].menu;
-                      if (widget.restaurantName == "라면") {
-                        menu = menu.sublist(1);
-                      } else if (widget.restaurantName == "카우버거") {
-                        menu = ["햄버거 판매시간 ${menu[0].substring(6)}"];
-                        crossCount = 1;
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: OpenState(
+                          openTimeString: openTimeString,
+                          closeTimeString: closeTimeString,
+                          openStatusType: openStatus,
+                          mealsForDay: widget.mealsForDay,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (widget.restaurantName == "학생식당" &&
-                                menu.length == 1)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 6),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      menu[0],
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    isOpenedToSee
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                  )
+                ],
+              ),
+              if (isOpenedToSee)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: 20,
+                    bottom: 10,
+                  ),
+                  child: MediaQuery.removePadding(
+                    removeTop: true,
+                    context: context,
+                    child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      separatorBuilder: (context, index) => Divider(
+                        height: 0.5,
+                        color: NyamColors.customGrey.withOpacity(0.5),
+                      ),
+                      itemCount: widget.mealsForDay.length,
+                      itemBuilder: (context, index) {
+                        var crossCount = 2;
+                        var menu = widget.mealsForDay[index].menu;
+                        if (widget.restaurantName == "라면") {
+                          menu = menu.sublist(1);
+                        } else if (widget.restaurantName == "카우버거") {
+                          menu = ["햄버거 판매시간 ${menu[0].substring(6)}"];
+                          crossCount = 1;
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.restaurantName == "학생식당" &&
+                                  menu.length == 1)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        menu[0],
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      widget.mealsForDay[index].price,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                                      Text(
+                                        widget.mealsForDay[index].price,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (widget.restaurantName != "카우버거")
+                                      Text(
+                                        widget.mealsForDay[index].price,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 10,
+                                        // bottom: 10,
+                                      ),
+                                      child: GridView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: crossCount,
+                                          childAspectRatio: 5,
+                                        ),
+                                        itemCount: menu.length,
+                                        itemBuilder: (context, index) {
+                                          return SizedBox(
+                                            child: Text(
+                                              menu[index],
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ],
-                                ),
-                              )
-                            else
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (widget.restaurantName != "카우버거")
-                                    Text(
-                                      widget.mealsForDay[index].price,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 10,
-                                      // bottom: 10,
-                                    ),
-                                    child: GridView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: crossCount,
-                                        childAspectRatio: 5,
-                                      ),
-                                      itemCount: menu.length,
-                                      itemBuilder: (context, index) {
-                                        return SizedBox(
-                                          child: Text(
-                                            menu[index],
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ],
-                        ),
-                      );
-                    },
+                                )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              )
-          ],
+                )
+            ],
+          ),
         ),
       ),
     );
