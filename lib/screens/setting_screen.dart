@@ -438,20 +438,21 @@ class _SettingScreenState extends State<SettingScreen> {
           const SizedBox(
             height: 16,
           ),
-          ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  if (index == 0 || index == 1) {
-                    luanchURL(index);
-                  } else {
-                    sendEmail();
-                  }
-                },
-                child: Container(
-                  color: Colors.white,
+          Container(
+            color: Colors.white,
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    if (index == 0 || index == 1) {
+                      luanchURL(index);
+                    } else {
+                      sendEmail();
+                    }
+                  },
+                  behavior: HitTestBehavior.opaque,
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 20,
@@ -477,14 +478,14 @@ class _SettingScreenState extends State<SettingScreen> {
                       ],
                     ),
                   ),
-                ),
-              );
-            },
-            separatorBuilder: (context, index) => Container(
-              color: NyamColors.grey50.withOpacity(0.5),
-              child: const SizedBox(height: 1),
+                );
+              },
+              separatorBuilder: (context, index) => Container(
+                color: NyamColors.grey50.withOpacity(0.5),
+                child: const SizedBox(height: 1),
+              ),
+              itemCount: 3,
             ),
-            itemCount: 3,
           )
         ],
       ),
