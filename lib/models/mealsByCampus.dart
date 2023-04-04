@@ -1,14 +1,8 @@
-import 'package:nyam_nyam_flutter/models/customType.dart';
-
 class MealsByCampusModel {
-  final CampusType campusType;
-  final Map<String, dynamic> mealsForWeak;
+  final Map<String, dynamic> seoulMeals;
+  final Map<String, dynamic> ansungMeals;
 
-  MealsByCampusModel.SeoulfromJson(Map<String, dynamic> json)
-      : campusType = CampusType.seoul,
-        mealsForWeak = json['0'];
-
-  MealsByCampusModel.AnsungfromJson(Map<String, dynamic> json)
-      : campusType = CampusType.ansung,
-        mealsForWeak = json['1'];
+  MealsByCampusModel.fromJson(Map<String, dynamic> json)
+      : seoulMeals = json['0'],
+        ansungMeals = json['1'];
 }

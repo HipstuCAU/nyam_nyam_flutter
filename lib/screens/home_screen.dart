@@ -64,14 +64,32 @@ class _HomeScreenState extends State<HomeScreen> {
   var sevenDaysOfWeek = [];
   List<String> sevenDateTime = [];
   Map<String, String> sevenDates = {};
+  Map<String, dynamic> data = {};
+  Future<List<Map<String, List<MealModel>>>> allMeals =
+      ApiService().getMeals({});
 
   var currentPageIndex = 0;
 
-  late Future<List<MealModel>> meals;
+  List<bool> isUploadedDates = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
 
-  late Future<List<bool>> isUploadedDates;
+  @override
+  void initState() {
+    super.initState();
+    initPreferences();
+    get7daysFromToday();
+  }
 
   Future initPreferences() async {
+    data = await ApiService().getJsonFromFirebase();
+    allMeals = ApiService().getMeals(data);
     HomeScreen.preferences = await SharedPreferences.getInstance();
     final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
     final sortedSeoulRestaurants =
@@ -110,22 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
           '라면',
         ]);
       }
-      isUploadedDates = ApiService()
-          .getUploadedSevenDatesBool(HomeScreen.entryPoint, sevenDateTime);
-      meals = ApiService().getMeals(HomeScreen.entryPoint,
-          sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initPreferences();
-    get7daysFromToday();
-    isUploadedDates = ApiService()
-        .getUploadedSevenDatesBool(HomeScreen.entryPoint, sevenDateTime);
-    meals = ApiService().getMeals(HomeScreen.entryPoint,
-        sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
   }
 
   Map<String, String> get7daysFromToday() {
@@ -141,34 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return sevenDates;
   }
 
-  void touchUpToInsideToSelectDate(int index, bool isUploadedDate) {
-    setState(() {
-      if (isUploadedDate) {
-        if (HomeScreen.isSelectedDate[index] == true) {
-          return;
-        } else {
-          HomeScreen.isSelectedDate = [
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-          ];
-          HomeScreen.isSelectedDate[index] = true;
-        }
-        getMealsByDate();
-        HomeScreen.pageController = PageController(
-          initialPage: HomeScreen.isSelectedRestaurant.indexOf(true),
-          viewportFraction: 0.9,
-        );
-      } else {
-        showToast();
-      }
-    });
-  }
-
   void showToast() {
     Fluttertoast.showToast(
       msg: "😂 아직 식단이 업데이트 되지 않았어요",
@@ -178,11 +153,6 @@ class _HomeScreenState extends State<HomeScreen> {
       textColor: Colors.white,
       toastLength: Toast.LENGTH_SHORT,
     );
-  }
-
-  void getMealsByDate() {
-    meals = ApiService().getMeals(HomeScreen.entryPoint,
-        sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
   }
 
   void resetRestaurantPicekr() {
@@ -202,6 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
     HomeScreen.pageController.jumpToPage(0);
   }
 
+  void refreshAllMeals() {
+    allMeals = ApiService().getMeals(data);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,151 +183,183 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: const BoxDecoration(
           gradient: NyamColors.gradientBG,
         ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 30,
-                left: 10,
-                right: 10,
-                bottom: 4,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Directionality(
-                    textDirection: ui.TextDirection.rtl,
-                    child: TextButton.icon(
-                      onPressed: (() {
-                        showCupertinoModalPopup(
-                          context: context,
-                          builder: (context) => CupertinoActionSheet(
-                            title: const Text("캠퍼스를 선택해주세요."),
-                            actions: <Widget>[
-                              CupertinoActionSheetAction(
-                                onPressed: () {
-                                  setState(() {
-                                    HomeScreen.entryPoint = CampusType.seoul;
+        child: FutureBuilder(
+          future: allMeals,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            Map<String, List<MealModel>> meals = {};
+            if (HomeScreen.entryPoint == CampusType.seoul) {
+              meals = snapshot.data![0];
+            } else {
+              meals = snapshot.data![1];
+            }
+            for (int i = 0; i < 7; i++) {
+              if (meals[sevenDateTime[i]] != null) {
+                isUploadedDates[i] = true;
+              } else {
+                isUploadedDates[i] = false;
+              }
+            }
+
+            List<MealModel> mealsByDate =
+                meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
+
+            mealsByDate = mealsByDate.where((element) {
+              return element.date ==
+                  DateTime.parse(
+                      sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
+            }).toList();
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 30,
+                    left: 10,
+                    right: 10,
+                    bottom: 4,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Directionality(
+                        textDirection: ui.TextDirection.rtl,
+                        child: TextButton.icon(
+                          onPressed: (() {
+                            showCupertinoModalPopup(
+                              context: context,
+                              builder: (context) => CupertinoActionSheet(
+                                title: const Text("캠퍼스를 선택해주세요."),
+                                actions: <Widget>[
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      setState(() {
+                                        HomeScreen.entryPoint =
+                                            CampusType.seoul;
+                                        Navigator.pop(context, 'Cancel');
+                                        HomeScreen.isSelectedRestaurant = [
+                                          true,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                        ];
+                                        refreshAllMeals();
+                                      });
+                                    },
+                                    child: const Text(
+                                      "서울캠퍼스",
+                                    ),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      setState(() {
+                                        HomeScreen.entryPoint =
+                                            CampusType.ansung;
+                                        Navigator.pop(context, 'Cancel');
+                                        HomeScreen.isSelectedRestaurant = [
+                                          true,
+                                          false,
+                                          false,
+                                        ];
+                                        refreshAllMeals();
+                                      });
+                                    },
+                                    child: const Text(
+                                      "안성캠퍼스",
+                                    ),
+                                  ),
+                                ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  isDefaultAction: true,
+                                  onPressed: () {
                                     Navigator.pop(context, 'Cancel');
-                                    HomeScreen.isSelectedRestaurant = [
-                                      true,
-                                      false,
-                                      false,
-                                      false,
-                                      false,
-                                    ];
-                                    getMealsByDate();
-                                  });
-                                },
-                                child: const Text(
-                                  "서울캠퍼스",
+                                  },
+                                  child: const Text("취소"),
                                 ),
                               ),
-                              CupertinoActionSheetAction(
-                                onPressed: () {
-                                  setState(() {
-                                    HomeScreen.entryPoint = CampusType.ansung;
-                                    Navigator.pop(context, 'Cancel');
-                                    HomeScreen.isSelectedRestaurant = [
-                                      true,
-                                      false,
-                                      false,
-                                    ];
-                                    getMealsByDate();
-                                  });
-                                },
-                                child: const Text(
-                                  "안성캠퍼스",
-                                ),
-                              ),
-                            ],
-                            cancelButton: CupertinoActionSheetAction(
-                              isDefaultAction: true,
-                              onPressed: () {
-                                Navigator.pop(context, 'Cancel');
-                              },
-                              child: const Text("취소"),
+                            );
+                          }),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: NyamColors.customGrey,
+                            size: 35,
+                          ),
+                          label: Text(
+                            HomeScreen.entryPoint == CampusType.seoul
+                                ? "서울캠퍼스"
+                                : "안성캠퍼스",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
                             ),
                           ),
-                        );
-                      }),
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down_rounded,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                var begin = const Offset(1, 0);
+                                var end = Offset.zero;
+                                var curve = Curves.ease;
+                                var tween = Tween(begin: begin, end: end).chain(
+                                  CurveTween(
+                                    curve: curve,
+                                  ),
+                                );
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: child,
+                                );
+                              },
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      SettingScreen(),
+                            ),
+                          );
+                          setState(() {
+                            refreshAllMeals();
+                            resetRestaurantPicekr();
+                            HomeScreen.pageController = PageController(
+                                initialPage: 0, viewportFraction: 0.9);
+                          });
+                        },
+                        icon: const Icon(Icons.settings),
                         color: NyamColors.customGrey,
-                        size: 35,
-                      ),
-                      label: Text(
-                        HomeScreen.entryPoint == CampusType.seoul
-                            ? "서울캠퍼스"
-                            : "안성캠퍼스",
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
+                        iconSize: 25,
+                      )
+                    ],
                   ),
-                  IconButton(
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            var begin = const Offset(1, 0);
-                            var end = Offset.zero;
-                            var curve = Curves.ease;
-                            var tween = Tween(begin: begin, end: end).chain(
-                              CurveTween(
-                                curve: curve,
-                              ),
-                            );
-                            return SlideTransition(
-                              position: animation.drive(tween),
-                              child: child,
-                            );
-                          },
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  SettingScreen(),
-                        ),
-                      );
-                      setState(() {
-                        getMealsByDate();
-                        resetRestaurantPicekr();
-                        HomeScreen.pageController = PageController(
-                            initialPage: 0, viewportFraction: 0.9);
-                      });
-                    },
-                    icon: const Icon(Icons.settings),
-                    color: NyamColors.customGrey,
-                    iconSize: 25,
-                  )
-                ],
-              ),
-            ),
-            Container(
-              height: 10,
-              color: NyamColors.customSkyBlue,
-            ),
-            Container(
-              color: NyamColors.customSkyBlue,
-              height: 45,
-              child: FutureBuilder(
-                future: isUploadedDates,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
+                ),
+                Container(
+                  height: 10,
+                  color: NyamColors.customSkyBlue,
+                ),
+                Container(
+                  color: NyamColors.customSkyBlue,
+                  height: 45,
+                  child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 7,
                     itemBuilder: (context, index) {
                       Color textColor = NyamColors.grey50;
-                      if (snapshot.data![index] == true) {
+                      if (isUploadedDates[index] == true) {
                         if (HomeScreen.isSelectedDate[index]) {
                           textColor = Colors.white;
                         } else {
@@ -364,8 +370,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            touchUpToInsideToSelectDate(
-                                index, snapshot.data![index]);
+                            if (isUploadedDates[index]) {
+                              if (HomeScreen.isSelectedDate[index] == true) {
+                                return;
+                              } else {
+                                HomeScreen.isSelectedDate = [
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                ];
+                                HomeScreen.isSelectedDate[index] = true;
+                              }
+                              mealsByDate = meals[sevenDateTime[index]]!;
+                              refreshAllMeals();
+                              HomeScreen.pageController = PageController(
+                                initialPage: HomeScreen.isSelectedRestaurant
+                                    .indexOf(true),
+                                viewportFraction: 0.9,
+                              );
+                            } else {
+                              showToast();
+                            }
                           });
                         },
                         child: Padding(
@@ -421,28 +450,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     },
-                  );
-                },
-              ),
-            ),
-            Container(
-              height: 10,
-              color: NyamColors.customSkyBlue,
-            ),
-            RestaurantPicker(
-              seoulRestaurantName: HomeScreen.seoulRestaurantName,
-              ansungRestaurantName: HomeScreen.ansungRestaurantName,
-            ),
-            Expanded(
-              child: FutureBuilder(
-                future: meals,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return PageView.builder(
+                  ),
+                ),
+                Container(
+                  height: 10,
+                  color: NyamColors.customSkyBlue,
+                ),
+                RestaurantPicker(
+                  seoulRestaurantName: HomeScreen.seoulRestaurantName,
+                  ansungRestaurantName: HomeScreen.ansungRestaurantName,
+                ),
+                Expanded(
+                  child: PageView.builder(
                     controller: HomeScreen.pageController,
                     onPageChanged: (value) {
                       setState(() {
@@ -480,14 +499,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               : HomeScreen.ansungRestaurantName[index];
                       return MealsOfRestaurant(
                         restaurantName: restaurantName,
-                        mealsForDay: snapshot.data!,
+                        mealsForDay: mealsByDate,
                       );
                     },
-                  );
-                },
-              ),
-            ),
-          ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

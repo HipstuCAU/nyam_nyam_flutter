@@ -24,6 +24,12 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    initPreferences();
+  }
+
   Future initPreferences() async {
     final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
     final sortedSeoulRestaurants =
@@ -132,12 +138,6 @@ class _SettingScreenState extends State<SettingScreen> {
     try {
       await FlutterEmailSender.send(email);
     } catch (error) {}
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initPreferences();
   }
 
   @override
