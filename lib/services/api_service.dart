@@ -47,19 +47,19 @@ class ApiService {
   //   return isUploadedDates;
   // }
 
-  Future<List<List<MealModel>>> getMeals() async {
+  Future<List<Map<String, List<MealModel>>>> getMeals() async {
     var response = await firestore
         .collection('CAU_Haksik')
         .doc("CAU_Cafeteria_Menu")
         .get();
     var data = response.data();
 
-    List<List<MealModel>> meals = [];
+    List<Map<String, List<MealModel>>> meals = [];
 
     if (data != null) {
       MealsByCampusModel mealsInstances = MealsByCampusModel.fromJson(data);
 
-      var mealsForWeek = getMealsForWeek(mealsInstances);
+      meals = getMealsForWeek(mealsInstances);
     }
 
     return meals;
@@ -309,8 +309,8 @@ class ApiService {
 
   List<MealsForWeek> getMealsForWeek(MealsByCampusModel mealsByCampusModel) {
     List<MealsForWeek> mealsForWeek = [];
-    Map<String, List<MealModel>> seoulMealsForWeek = {};
-    Map<String, List<MealModel>> ansungMealsForWeek = {};
+    MealsForWeek seoulMealsForWeek = {};
+    MealsForWeek ansungMealsForWeek = {};
     List<List<MealModel>> meals = getMealsByCampus(mealsByCampusModel);
     List<MealModel> mealsForDay = [];
     for (var element in meals[0]) {
