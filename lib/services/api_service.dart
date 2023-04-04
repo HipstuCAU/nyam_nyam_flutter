@@ -7,48 +7,7 @@ import 'package:nyam_nyam_flutter/models/mealsByCampus.dart';
 class ApiService {
   final firestore = FirebaseFirestore.instance;
 
-  // Future<List<bool>> getUploadedSevenDatesBool(
-  //     CampusType campus, List<String> dates) async {
-  //   var response = await firestore
-  //       .collection('CAU_Haksik')
-  //       .doc("CAU_Cafeteria_Menu")
-  //       .get();
-  //   var data = response.data();
-
-  //   List<bool> isUploadedDates = [
-  //     false,
-  //     false,
-  //     false,
-  //     false,
-  //     false,
-  //     false,
-  //     false,
-  //   ];
-
-  //   if (data != null) {
-  //     MealsByCampusModel seoulMealsInstances =
-  //         MealsByCampusModel.SeoulfromJson(data);
-  //     MealsByCampusModel ansungMealsInstances =
-  //         MealsByCampusModel.AnsungfromJson(data);
-
-  //     var mealsForWeek = campus == CampusType.seoul
-  //         ? getMealsForWeek(seoulMealsInstances)
-  //         : getMealsForWeek(ansungMealsInstances);
-
-  //     for (int i = 0; i < 7; i++) {
-  //       if (mealsForWeek[dates[i]] != null) {
-  //         isUploadedDates[i] = true;
-  //       } else {
-  //         isUploadedDates[i] = false;
-  //       }
-  //     }
-  //   }
-
-  //   return isUploadedDates;
-  // }
-
   Future<Map<String, dynamic>> getJsonFromFirebase() async {
-    print("loading firebase!!!!!!!!!!!!!!!!!!!!!!!!");
     var response = await firestore
         .collection('CAU_Haksik')
         .doc("CAU_Cafeteria_Menu")
@@ -315,36 +274,34 @@ class ApiService {
   }
 
   List<MealsForWeek> getMealsForWeek(MealsByCampusModel mealsByCampusModel) {
+    List<List<MealModel>> mealsByCampus = getMealsByCampus(mealsByCampusModel);
+
     List<MealsForWeek> mealsForWeek = [];
     MealsForWeek seoulMealsForWeek = {};
     MealsForWeek ansungMealsForWeek = {};
-    List<List<MealModel>> meals = getMealsByCampus(mealsByCampusModel);
     List<MealModel> mealsForDay = [];
-    for (var element in meals[0]) {
-      if (seoulMealsForWeek.containsKey(element.date)) {
-        mealsForDay = seoulMealsForWeek[element.date]!;
-        mealsForDay.add(element);
-        seoulMealsForWeek[element.date.toString().substring(0, 10)] =
-            mealsForDay;
-      } else {
-        mealsForDay.add(element);
-        seoulMealsForWeek[element.date.toString().substring(0, 10)] =
-            mealsForDay;
+
+    MealsForWeek getMealsForWeekByCampus(CampusType campusType) {
+      List<MealModel> mealsForOneCampus =
+          campusType == CampusType.seoul ? mealsByCampus[0] : mealsByCampus[1];
+      MealsForWeek mealsForOneCampusForWeek = {};
+      for (var element in mealsForOneCampus) {
+        if (mealsForOneCampusForWeek.containsKey(element.date)) {
+          mealsForDay = mealsForOneCampusForWeek[element.date]!;
+          mealsForDay.add(element);
+          mealsForOneCampusForWeek[element.date.toString().substring(0, 10)] =
+              mealsForDay;
+        } else {
+          mealsForDay.add(element);
+          mealsForOneCampusForWeek[element.date.toString().substring(0, 10)] =
+              mealsForDay;
+        }
       }
+      return mealsForOneCampusForWeek;
     }
 
-    for (var element in meals[1]) {
-      if (ansungMealsForWeek.containsKey(element.date)) {
-        mealsForDay = ansungMealsForWeek[element.date]!;
-        mealsForDay.add(element);
-        ansungMealsForWeek[element.date.toString().substring(0, 10)] =
-            mealsForDay;
-      } else {
-        mealsForDay.add(element);
-        ansungMealsForWeek[element.date.toString().substring(0, 10)] =
-            mealsForDay;
-      }
-    }
+    seoulMealsForWeek = getMealsForWeekByCampus(CampusType.seoul);
+    ansungMealsForWeek = getMealsForWeekByCampus(CampusType.ansung);
 
     mealsForWeek.add(seoulMealsForWeek);
     mealsForWeek.add(ansungMealsForWeek);
