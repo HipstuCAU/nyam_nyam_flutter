@@ -320,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                       setState(() {
-                        getMealsByDate();
+                        // getMealsByDate();
                         resetRestaurantPicekr();
                         HomeScreen.pageController = PageController(
                             initialPage: 0, viewportFraction: 0.9);
