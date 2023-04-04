@@ -144,34 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return sevenDates;
   }
 
-  // void touchUpToInsideToSelectDate(int index, bool isUploadedDate) {
-  //   setState(() {
-  //     if (isUploadedDate) {
-  //       if (HomeScreen.isSelectedDate[index] == true) {
-  //         return;
-  //       } else {
-  //         HomeScreen.isSelectedDate = [
-  //           false,
-  //           false,
-  //           false,
-  //           false,
-  //           false,
-  //           false,
-  //           false,
-  //         ];
-  //         HomeScreen.isSelectedDate[index] = true;
-  //       }
-  //       getMealsByDate();
-  //       HomeScreen.pageController = PageController(
-  //         initialPage: HomeScreen.isSelectedRestaurant.indexOf(true),
-  //         viewportFraction: 0.9,
-  //       );
-  //     } else {
-  //       showToast();
-  //     }
-  //   });
-  // }
-
   void showToast() {
     Fluttertoast.showToast(
       msg: "😂 아직 식단이 업데이트 되지 않았어요",
@@ -182,11 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
       toastLength: Toast.LENGTH_SHORT,
     );
   }
-
-  // void getMealsByDate() {
-  //   meals = ApiService().getMeals(HomeScreen.entryPoint,
-  //       sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
-  // }
 
   void resetRestaurantPicekr() {
     HomeScreen.isSelectedRestaurant = HomeScreen.entryPoint == CampusType.seoul
@@ -234,10 +201,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Map<String, List<MealModel>> meals = {};
             if (HomeScreen.entryPoint == CampusType.seoul) {
               meals = snapshot.data![0];
-              print("HIhihi SEoul");
             } else {
               meals = snapshot.data![1];
-              print("HIhihi Ansung");
             }
             for (int i = 0; i < 7; i++) {
               if (meals[sevenDateTime[i]] != null) {
@@ -251,11 +216,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
 
             mealsByDate = mealsByDate.where((element) {
-              // print(element.date.runtimeType);
-              // print(sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]
-              // .runtimeType);
-              // print(DateTime.parse(
-              // sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]));
               return element.date ==
                   DateTime.parse(
                       sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
