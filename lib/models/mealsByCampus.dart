@@ -1,8 +1,8 @@
 class MealsByCampusModel {
-  final Map<String, dynamic> seoulMealsForWeak;
-  final Map<String, dynamic> ansungMealsForWeak;
+  final Map<String, dynamic> seoulMeals;
+  final Map<String, dynamic> ansungMeals;
 
   MealsByCampusModel.fromJson(Map<String, dynamic> json)
-      : seoulMealsForWeak = json['0'],
-        ansungMealsForWeak = json['1'];
+      : seoulMeals = json['0'],
+        ansungMeals = json['1'];
 }
