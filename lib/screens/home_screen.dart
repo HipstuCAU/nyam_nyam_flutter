@@ -295,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           false,
                                           false,
                                         ];
-                                        // meals
+                                        refreshAllMeals();
                                       });
                                     },
                                     child: const Text(
@@ -313,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           false,
                                           false,
                                         ];
-                                        // getMealsByDate();
+                                        refreshAllMeals();
                                       });
                                     },
                                     child: const Text(
@@ -374,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                           setState(() {
-                            // getMealsByDate();
+                            refreshAllMeals();
                             resetRestaurantPicekr();
                             HomeScreen.pageController = PageController(
                                 initialPage: 0, viewportFraction: 0.9);
