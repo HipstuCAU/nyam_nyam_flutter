@@ -64,8 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
   var sevenDaysOfWeek = [];
   List<String> sevenDateTime = [];
   Map<String, String> sevenDates = {};
-  Map<String, dynamic>? data;
-  Future<List<Map<String, List<MealModel>>>>? allMeals;
+  Map<String, dynamic> data = {};
+  Future<List<Map<String, List<MealModel>>>> allMeals =
+      ApiService().getMeals({});
 
   var currentPageIndex = 0;
 
@@ -82,14 +83,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    allMeals = ApiService().getMeals({});
     initPreferences();
     get7daysFromToday();
   }
 
   Future initPreferences() async {
     data = await ApiService().getJsonFromFirebase();
-    allMeals = ApiService().getMeals(data!);
+    allMeals = ApiService().getMeals(data);
     HomeScreen.preferences = await SharedPreferences.getInstance();
     final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
     final sortedSeoulRestaurants =
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void refreshAllMeals() {
-    allMeals = ApiService().getMeals(data!);
+    allMeals = ApiService().getMeals(data);
   }
 
   @override
