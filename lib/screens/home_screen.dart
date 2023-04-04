@@ -245,6 +245,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
             List<MealModel> mealsByDate =
                 meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
+
+            mealsByDate = mealsByDate.where((element) {
+              // print(element.date.runtimeType);
+              // print(sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]
+              // .runtimeType);
+              // print(DateTime.parse(
+              // sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]));
+              return element.date ==
+                  DateTime.parse(
+                      sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
+            }).toList();
+
             return Column(
               children: [
                 Padding(
