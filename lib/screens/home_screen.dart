@@ -79,6 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
     false,
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    allMeals = ApiService().getMeals({});
+    initPreferences();
+    get7daysFromToday();
+  }
+
   Future initPreferences() async {
     data = await ApiService().getJsonFromFirebase();
     allMeals = ApiService().getMeals(data!);
@@ -121,14 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ]);
       }
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    allMeals = ApiService().getMeals({});
-    initPreferences();
-    get7daysFromToday();
   }
 
   Map<String, String> get7daysFromToday() {
