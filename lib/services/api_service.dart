@@ -47,18 +47,25 @@ class ApiService {
   //   return isUploadedDates;
   // }
 
-  Future<List<Map<String, List<MealModel>>>> getMeals() async {
+  Future<Map<String, dynamic>> getJsonFromFirebase() async {
+    print("loading firebase!!!!!!!!!!!!!!!!!!!!!!!!");
     var response = await firestore
         .collection('CAU_Haksik')
         .doc("CAU_Cafeteria_Menu")
         .get();
     var data = response.data();
+    if (data != null) {
+      return data;
+    }
+    return {};
+  }
 
+  Future<List<Map<String, List<MealModel>>>> getMeals(
+      Map<String, dynamic> data) async {
     List<Map<String, List<MealModel>>> meals = [];
 
-    if (data != null) {
+    if (data.isNotEmpty) {
       MealsByCampusModel mealsInstances = MealsByCampusModel.fromJson(data);
-
       meals = getMealsForWeek(mealsInstances);
     }
 

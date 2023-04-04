@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var sevenDaysOfWeek = [];
   List<String> sevenDateTime = [];
   Map<String, String> sevenDates = {};
+  Map<String, dynamic> data = {};
 
   var currentPageIndex = 0;
 
@@ -78,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   Future initPreferences() async {
+    data = await ApiService().getJsonFromFirebase();
     HomeScreen.preferences = await SharedPreferences.getInstance();
     final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
     final sortedSeoulRestaurants =
@@ -208,9 +210,15 @@ class _HomeScreenState extends State<HomeScreen> {
           gradient: NyamColors.gradientBG,
         ),
         child: FutureBuilder(
-          future: ApiService().getMeals(),
+          future: ApiService().getMeals(data),
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.data!.isEmpty) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
@@ -219,8 +227,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Map<String, List<MealModel>> meals = {};
             if (HomeScreen.entryPoint == CampusType.seoul) {
               meals = snapshot.data![0];
+              print("HIhihi SEoul");
             } else {
               meals = snapshot.data![1];
+              print("HIhihi Ansung");
             }
             for (int i = 0; i < 7; i++) {
               if (meals[sevenDateTime[i]] != null) {
@@ -230,7 +240,8 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             }
 
-            List<MealModel> mealsByDate = [];
+            List<MealModel> mealsByDate =
+                meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
             return Column(
               children: [
                 Padding(
