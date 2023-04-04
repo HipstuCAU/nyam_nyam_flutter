@@ -61,11 +61,9 @@ class ApiService {
 
       var mealsForWeek = getMealsForWeek(mealsInstances);
 
-      if (mealsForWeek[date] != null) {
-        meals = mealsForWeek[date]!.where((element) {
-          return element.date == DateFormat('yyyy-MM-dd').parse(date);
-        }).toList();
-      }
+      meals = mealsForWeek[date].where((element) {
+        return element.date == DateFormat('yyyy-MM-dd').parse(date);
+      }).toList();
     }
 
     return meals;
@@ -313,20 +311,41 @@ class ApiService {
     return meals;
   }
 
-  MealsForWeek getMealsForWeek(MealsByCampusModel mealsByCampusModel) {
-    Map<String, List<MealModel>> mealsForWeek = {};
-    List<MealModel> meals = getMealsByCampus(mealsByCampusModel);
+  List<MealsForWeek> getMealsForWeek(MealsByCampusModel mealsByCampusModel) {
+    List<MealsForWeek> mealsForWeek = [];
+    Map<String, List<MealModel>> seoulMealsForWeek = {};
+    Map<String, List<MealModel>> ansungMealsForWeek = {};
+    List<List<MealModel>> meals = getMealsByCampus(mealsByCampusModel);
     List<MealModel> mealsForDay = [];
-    for (var element in meals) {
-      if (mealsForWeek.containsKey(element.date)) {
-        mealsForDay = mealsForWeek[element.date]!;
+    for (var element in meals[0]) {
+      if (seoulMealsForWeek.containsKey(element.date)) {
+        mealsForDay = seoulMealsForWeek[element.date]!;
         mealsForDay.add(element);
-        mealsForWeek[element.date.toString().substring(0, 10)] = mealsForDay;
+        seoulMealsForWeek[element.date.toString().substring(0, 10)] =
+            mealsForDay;
       } else {
         mealsForDay.add(element);
-        mealsForWeek[element.date.toString().substring(0, 10)] = mealsForDay;
+        seoulMealsForWeek[element.date.toString().substring(0, 10)] =
+            mealsForDay;
       }
     }
+
+    for (var element in meals[1]) {
+      if (ansungMealsForWeek.containsKey(element.date)) {
+        mealsForDay = ansungMealsForWeek[element.date]!;
+        mealsForDay.add(element);
+        ansungMealsForWeek[element.date.toString().substring(0, 10)] =
+            mealsForDay;
+      } else {
+        mealsForDay.add(element);
+        ansungMealsForWeek[element.date.toString().substring(0, 10)] =
+            mealsForDay;
+      }
+    }
+
+    mealsForWeek.add(seoulMealsForWeek);
+    mealsForWeek.add(ansungMealsForWeek);
+
     return mealsForWeek;
   }
 }
