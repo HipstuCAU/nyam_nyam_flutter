@@ -78,11 +78,18 @@ class _MenuState extends State<Menu> {
 
   void setOpenTime() {
     if (widget.mealsForDay.isNotEmpty) {
-      openTimeString =
-          widget.mealsForDay[0].openTime[0].toString().substring(11, 16);
-      closeTimeString =
-          widget.mealsForDay[0].openTime[1].toString().substring(11, 16);
-
+      if (widget.restaurantName == "카우버거") {
+        openTimeString = "09:30";
+        closeTimeString = "18:30";
+      } else if (widget.restaurantName == "라면") {
+        openTimeString = "06:00";
+        closeTimeString = "23:00";
+      } else {
+        openTimeString =
+            widget.mealsForDay[0].openTime[0].toString().substring(11, 16);
+        closeTimeString =
+            widget.mealsForDay[0].openTime[1].toString().substring(11, 16);
+      }
       openTimeint = int.parse(openTimeString.replaceAll(":", ""));
       closeTimeint = int.parse(closeTimeString.replaceAll(":", ""));
     }
