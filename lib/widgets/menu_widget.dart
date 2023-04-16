@@ -53,6 +53,21 @@ class _MenuState extends State<Menu> {
     setStatus();
     setIcon();
     setTitle();
+    sortStudentRestaurantMenu();
+  }
+
+  void sortStudentRestaurantMenu() {
+    if (widget.restaurantName == "학생식당") {
+      if (widget.mealsForDay.isNotEmpty) {
+        var setmenu = widget.mealsForDay
+            .where((element) => element.menu.length != 1)
+            .toList();
+        if (setmenu != []) {
+          widget.mealsForDay.last = widget.mealsForDay.first;
+          widget.mealsForDay.first = setmenu.first;
+        }
+      }
+    }
   }
 
   void checkIsBurgerOrRamen() {
