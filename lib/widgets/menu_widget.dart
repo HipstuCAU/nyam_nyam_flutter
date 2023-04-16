@@ -316,6 +316,7 @@ class _MenuState extends State<Menu> {
                         return Padding(
                           padding: const EdgeInsets.only(
                             top: 10,
+                            bottom: 5,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,7 +361,6 @@ class _MenuState extends State<Menu> {
                                     Padding(
                                       padding: const EdgeInsets.only(
                                         top: 10,
-                                        // bottom: 10,
                                       ),
                                       child: GridView.builder(
                                         physics:
@@ -369,7 +369,7 @@ class _MenuState extends State<Menu> {
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: crossCount,
-                                          childAspectRatio: 5,
+                                          childAspectRatio: 4,
                                         ),
                                         itemCount: menu.length,
                                         itemBuilder: (context, index) {
