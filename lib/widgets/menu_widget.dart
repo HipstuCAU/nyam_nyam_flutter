@@ -346,6 +346,18 @@ class _MenuState extends State<Menu> {
                                     ],
                                   ),
                                 )
+                              else if (widget.restaurantName == "카우버거")
+                                Column(
+                                  children: [
+                                    Text(
+                                      menu[index],
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  ],
+                                )
                               else
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +397,7 @@ class _MenuState extends State<Menu> {
                                           );
                                         },
                                       ),
-                                    ),
+                                    )
                                   ],
                                 )
                             ],
