@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var currentPageIndex = 0;
 
   List<bool> isUploadedDates = [
-    false,
+    true,
     false,
     false,
     false,
@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else {
               meals = snapshot.data![1];
             }
-            for (int i = 0; i < 7; i++) {
+            for (int i = 1; i < 7; i++) {
               if (meals[sevenDateTime[i]] != null) {
                 isUploadedDates[i] = true;
               } else {
@@ -213,7 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             List<MealModel> mealsByDate =
-                meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
+                meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]] ??
+                    [];
 
             mealsByDate = mealsByDate.where((element) {
               return element.date ==
