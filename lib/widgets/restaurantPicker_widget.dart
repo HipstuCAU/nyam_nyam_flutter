@@ -40,7 +40,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
         top: 10,
       ),
       child: SizedBox(
-        height: 50,
+        height: 55,
         child: ListView.builder(
           controller: HomeScreen.autoScrollController,
           scrollDirection: Axis.horizontal,
@@ -65,26 +65,17 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                     touchUpToInsideToSelectRestaurant(index);
                   },
                   child: Container(
-                    height: 30,
                     decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(0, 0),
-                          blurRadius: 3,
-                          spreadRadius: 1,
-                          color: Colors.black.withOpacity(0.1),
-                        )
-                      ],
                       color: HomeScreen.isSelectedRestaurant[index]
                           ? NyamColors.cauBlue
-                          : Colors.white,
+                          : NyamColors.customSkyBlue,
                       borderRadius: BorderRadius.circular(30),
                     ),
                     clipBehavior: Clip.none,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
+                        horizontal: 17.25,
+                        vertical: 10.25,
                       ),
                       child: Center(
                         child: Text(
@@ -94,8 +85,9 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                           style: TextStyle(
                             color: HomeScreen.isSelectedRestaurant[index]
                                 ? Colors.white
-                                : Colors.black,
-                            fontSize: 16,
+                                : NyamColors.customBlack,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
