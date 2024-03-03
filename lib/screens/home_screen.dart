@@ -353,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Container(
                   color: NyamColors.customSkyBlue,
-                  height: 45,
+                  height: 52,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 7,
@@ -399,10 +399,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width / 28,
+                            horizontal: MediaQuery.of(context).size.width / 30,
                           ),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 14,
+                            width: MediaQuery.of(context).size.width / 13,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: HomeScreen.isSelectedDate[index]
@@ -421,9 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               clipBehavior: Clip.hardEdge,
                               child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 3,
-                                ),
+                                padding: const EdgeInsets.only(top: 3),
                                 child: Column(
                                   children: [
                                     Text(
@@ -438,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       sevenDaysOfWeek[index],
                                       style: TextStyle(
                                         color: textColor,
-                                        fontSize: 10,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),

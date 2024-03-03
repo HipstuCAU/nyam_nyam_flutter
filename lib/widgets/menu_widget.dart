@@ -22,17 +22,12 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  Icon icon = const Icon(
-    Icons.nights_stay,
-    size: 20,
-  );
-
   Text mealsTitle = const Text(
     "",
     style: TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: NyamColors.grey700,
     ),
   );
 
@@ -51,7 +46,6 @@ class _MenuState extends State<Menu> {
     checkIsBurgerOrRamen();
     setOpenTime();
     setStatus();
-    setIcon();
     setTitle();
     sortStudentRestaurantMenu();
   }
@@ -119,50 +113,51 @@ class _MenuState extends State<Menu> {
     }
   }
 
-  void setIcon() {
-    switch (widget.timeIndex) {
-      case 0:
-        icon = Icon(
-          Icons.sunny_snowing,
-          size: 20,
-          color: openStatus == OpenStatusType.notRunning ||
-                  openStatus == OpenStatusType.closed
-              ? NyamColors.grey50
-              : Colors.black,
-        );
-        break;
-      case 1:
-        icon = Icon(
-          Icons.sunny,
-          size: 20,
-          color: openStatus == OpenStatusType.notRunning ||
-                  openStatus == OpenStatusType.closed
-              ? NyamColors.grey50
-              : Colors.black,
-        );
-        break;
-      case 2:
-        icon = Icon(
-          Icons.nights_stay,
-          size: 20,
-          color: openStatus == OpenStatusType.notRunning ||
-                  openStatus == OpenStatusType.closed
-              ? NyamColors.grey50
-              : Colors.black,
-        );
-        break;
-      default:
-        icon = Icon(
-          Icons.nights_stay,
-          size: 20,
-          color: openStatus == OpenStatusType.notRunning ||
-                  openStatus == OpenStatusType.closed
-              ? NyamColors.grey50
-              : Colors.black,
-        );
-        break;
-    }
-  }
+  // deprecated
+  // void setIcon() {
+  //   switch (widget.timeIndex) {
+  //     case 0:
+  //       icon = Icon(
+  //         Icons.sunny_snowing,
+  //         size: 20,
+  //         color: openStatus == OpenStatusType.notRunning ||
+  //                 openStatus == OpenStatusType.closed
+  //             ? NyamColors.grey50
+  //             : Colors.black,
+  //       );
+  //       break;
+  //     case 1:
+  //       icon = Icon(
+  //         Icons.sunny,
+  //         size: 20,
+  //         color: openStatus == OpenStatusType.notRunning ||
+  //                 openStatus == OpenStatusType.closed
+  //             ? NyamColors.grey50
+  //             : Colors.black,
+  //       );
+  //       break;
+  //     case 2:
+  //       icon = Icon(
+  //         Icons.nights_stay,
+  //         size: 20,
+  //         color: openStatus == OpenStatusType.notRunning ||
+  //                 openStatus == OpenStatusType.closed
+  //             ? NyamColors.grey50
+  //             : Colors.black,
+  //       );
+  //       break;
+  //     default:
+  //       icon = Icon(
+  //         Icons.nights_stay,
+  //         size: 20,
+  //         color: openStatus == OpenStatusType.notRunning ||
+  //                 openStatus == OpenStatusType.closed
+  //             ? NyamColors.grey50
+  //             : Colors.black,
+  //       );
+  //       break;
+  //   }
+  // }
 
   void setTitle() {
     if (isBurgerOrRamen) {
@@ -176,7 +171,7 @@ class _MenuState extends State<Menu> {
               color: openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
-                  : Colors.black,
+                  : NyamColors.grey700,
             ),
           );
           break;
@@ -189,7 +184,7 @@ class _MenuState extends State<Menu> {
               color: openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
-                  : Colors.black,
+                  : NyamColors.grey700,
             ),
           );
           break;
@@ -202,7 +197,7 @@ class _MenuState extends State<Menu> {
               color: openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
-                  : Colors.black,
+                  : NyamColors.grey700,
             ),
           );
           break;
@@ -218,7 +213,7 @@ class _MenuState extends State<Menu> {
               color: openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
-                  : Colors.black,
+                  : NyamColors.grey700,
             ),
           );
           break;
@@ -231,7 +226,7 @@ class _MenuState extends State<Menu> {
               color: openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
-                  : Colors.black,
+                  : NyamColors.grey700,
             ),
           );
           break;
@@ -244,7 +239,7 @@ class _MenuState extends State<Menu> {
               color: openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
-                  : Colors.black,
+                  : NyamColors.grey700,
             ),
           );
           break;
@@ -271,8 +266,8 @@ class _MenuState extends State<Menu> {
           padding: const EdgeInsets.only(
             left: 20,
             right: 10,
-            top: 10,
-            bottom: 10,
+            top: 24,
+            bottom: 24,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,31 +275,22 @@ class _MenuState extends State<Menu> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  mealsTitle,
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (!isBurgerOrRamen) icon,
-                      Padding(
-                        padding: isBurgerOrRamen
-                            ? EdgeInsets.zero
-                            : const EdgeInsets.only(left: 10),
-                        child: mealsTitle,
+                      OpenState(
+                        openTimeString: openTimeString,
+                        closeTimeString: closeTimeString,
+                        openStatusType: openStatus,
+                        mealsForDay: widget.mealsForDay,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: OpenState(
-                          openTimeString: openTimeString,
-                          closeTimeString: closeTimeString,
-                          openStatusType: openStatus,
-                          mealsForDay: widget.mealsForDay,
-                        ),
+                      Icon(
+                        isOpenedToSee
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
+                        color: NyamColors.grey400,
                       ),
                     ],
-                  ),
-                  Icon(
-                    isOpenedToSee
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
                   )
                 ],
               ),
@@ -363,6 +349,7 @@ class _MenuState extends State<Menu> {
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
+                                          color: NyamColors.grey600,
                                         ),
                                       ),
                                     ],
@@ -390,6 +377,7 @@ class _MenuState extends State<Menu> {
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
+                                          color: NyamColors.grey600,
                                         ),
                                       ),
                                     Padding(
@@ -413,6 +401,7 @@ class _MenuState extends State<Menu> {
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
+                                                color: NyamColors.grey700,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -456,7 +445,7 @@ class OpenState extends StatefulWidget {
 }
 
 class _OpenStateState extends State<OpenState> {
-  Color backgrounColor = NyamColors.grey50;
+  Color backgrounColor = Colors.white;
   Color titleColor = NyamColors.customGrey;
   String title = "미운영";
 
@@ -470,19 +459,15 @@ class _OpenStateState extends State<OpenState> {
   void setColor() {
     switch (widget.openStatusType) {
       case OpenStatusType.preparing:
-        backgrounColor = NyamColors.customYellow.withOpacity(0.2);
         titleColor = NyamColors.customYellow;
         break;
       case OpenStatusType.running:
-        backgrounColor = NyamColors.customBlue.withOpacity(0.2);
         titleColor = NyamColors.customBlue;
         break;
       case OpenStatusType.closed:
-        backgrounColor = NyamColors.customRed.withOpacity(0.2);
         titleColor = NyamColors.customRed;
         break;
       case OpenStatusType.notRunning:
-        backgrounColor = NyamColors.grey50;
         titleColor = NyamColors.customGrey;
         break;
     }
