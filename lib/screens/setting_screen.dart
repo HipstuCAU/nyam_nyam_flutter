@@ -153,6 +153,7 @@ class _SettingScreenState extends State<SettingScreen> {
             onPressed: () {
               Navigator.pop(context);
             }),
+        titleSpacing: 0,
         title: const Text(
           "설정",
           style: TextStyle(
@@ -274,12 +275,12 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
                       horizontal: 20,
                     ),
                     child: Row(
-                      children: const [
+                      children: [
                         Text(
                           "식당 순서 설정",
                           style: TextStyle(
