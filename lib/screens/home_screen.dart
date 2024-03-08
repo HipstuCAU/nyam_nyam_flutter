@@ -542,6 +542,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
+                    const SizedBox(
+                      height: 60,
+                    )
                   ],
                 );
               },
@@ -692,7 +695,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height - 210,
+      height: MediaQuery.of(context).size.height - 190,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
