@@ -40,7 +40,7 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
         top: 10,
       ),
       child: SizedBox(
-        height: 55,
+        height: 59,
         child: ListView.builder(
           controller: HomeScreen.autoScrollController,
           scrollDirection: Axis.horizontal,
