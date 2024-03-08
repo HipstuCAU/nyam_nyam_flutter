@@ -261,6 +261,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                               false,
                                               false,
                                             ];
+                                            HomeScreen.isSelectedDate = [
+                                              true,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                            ];
                                             refreshAllMeals();
                                           });
                                         },
@@ -276,6 +285,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                             Navigator.pop(context, 'Cancel');
                                             HomeScreen.isSelectedRestaurant = [
                                               true,
+                                              false,
+                                              false,
+                                            ];
+                                            HomeScreen.isSelectedDate = [
+                                              true,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
                                               false,
                                               false,
                                             ];
