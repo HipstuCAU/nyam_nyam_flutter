@@ -189,6 +189,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                       child: const Text(
                         "서울캠퍼스",
+                        style: TextStyle(color: NyamColors.cauBlue),
                       ),
                     ),
                     CupertinoActionSheetAction(
@@ -205,6 +206,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                       child: const Text(
                         "안성캠퍼스",
+                        style: TextStyle(color: NyamColors.cauBlue),
                       ),
                     ),
                   ],
@@ -213,7 +215,10 @@ class _SettingScreenState extends State<SettingScreen> {
                     onPressed: () {
                       Navigator.pop(context, 'Cancel');
                     },
-                    child: const Text("취소"),
+                    child: const Text(
+                      "취소",
+                      style: TextStyle(color: NyamColors.cauBlue),
+                    ),
                   ),
                 ),
               );

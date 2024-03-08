@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
@@ -194,13 +195,17 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: NyamColors.cauBlue,
+                    ),
                   );
                 }
 
                 if (snapshot.data!.isEmpty) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: NyamColors.cauBlue,
+                    ),
                   );
                 }
 
@@ -261,11 +266,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                               false,
                                               false,
                                             ];
+                                            HomeScreen.isSelectedDate = [
+                                              true,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                            ];
                                             refreshAllMeals();
                                           });
                                         },
                                         child: const Text(
                                           "서울캠퍼스",
+                                          style: TextStyle(
+                                              color: NyamColors.cauBlue),
                                         ),
                                       ),
                                       CupertinoActionSheetAction(
@@ -279,11 +295,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                               false,
                                               false,
                                             ];
+                                            HomeScreen.isSelectedDate = [
+                                              true,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                              false,
+                                            ];
                                             refreshAllMeals();
                                           });
                                         },
                                         child: const Text(
                                           "안성캠퍼스",
+                                          style: TextStyle(
+                                              color: NyamColors.cauBlue),
                                         ),
                                       ),
                                     ],
@@ -292,7 +319,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                       onPressed: () {
                                         Navigator.pop(context, 'Cancel');
                                       },
-                                      child: const Text("취소"),
+                                      child: const Text(
+                                        "취소",
+                                        style: TextStyle(
+                                            color: NyamColors.cauBlue),
+                                      ),
                                     ),
                                   ),
                                 );
@@ -511,6 +542,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
+                    const SizedBox(
+                      height: 60,
+                    )
                   ],
                 );
               },
@@ -661,7 +695,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height - 210,
+      height: MediaQuery.of(context).size.height - 190,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
