@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
@@ -533,12 +533,17 @@ class AdBannerWidget extends StatelessWidget {
     super.key,
   });
 
+  final adUnitId = kReleaseMode
+      ? 'ca-app-pub-2359699243056694/7806769375'
+      : 'ca-app-pub-3940256099942544/2435281174';
+
   @override
   Widget build(BuildContext context) {
+    log(adUnitId);
     return AdWidget(
       ad: BannerAd(
         size: AdSize.fullBanner,
-        adUnitId: 'ca-app-pub-3940256099942544/2435281174',
+        adUnitId: adUnitId,
         listener: const BannerAdListener(),
         request: const AdRequest(),
       )..load(),
