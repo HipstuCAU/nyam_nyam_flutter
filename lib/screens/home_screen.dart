@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
@@ -554,7 +555,7 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: 0,
             width: MediaQuery.of(context).size.width,
             height: 60,
-            child: const AdBannerWidget(),
+            child: AdBannerWidget(),
           )
         ],
       ),
@@ -563,13 +564,13 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class AdBannerWidget extends StatelessWidget {
-  const AdBannerWidget({
+  AdBannerWidget({
     super.key,
   });
 
   final adUnitId = kReleaseMode
-      ? 'ca-app-pub-2359699243056694/7806769375'
-      : 'ca-app-pub-3940256099942544/2435281174';
+      ? dotenv.env['RELEASE_ID'] ?? ''
+      : dotenv.env['TEST_ID'] ?? '';
 
   @override
   Widget build(BuildContext context) {

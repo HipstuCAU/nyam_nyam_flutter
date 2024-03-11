@@ -614,3 +614,10 @@ obj/
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,dart,xcode,macos,windows,android,androidstudio,swift,cocoapods,web,visualstudiocode,kotlin,intellij,objective-c
+
+# dotenv environment variables file
+.env*
+
+### Dart Patch ###
+# dotenv environment variables file
+.env
