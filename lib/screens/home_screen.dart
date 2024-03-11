@@ -185,404 +185,368 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: NyamColors.gradientBG,
-            ),
-            child: FutureBuilder(
-              future: allMeals,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: NyamColors.cauBlue,
-                    ),
-                  );
-                }
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: NyamColors.gradientBG,
+        ),
+        child: FutureBuilder(
+          future: allMeals,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: NyamColors.cauBlue,
+                ),
+              );
+            }
 
-                if (snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: NyamColors.cauBlue,
-                    ),
-                  );
-                }
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: NyamColors.cauBlue,
+                ),
+              );
+            }
 
-                Map<String, List<MealModel>> meals = {};
-                if (HomeScreen.entryPoint == CampusType.seoul) {
-                  meals = snapshot.data![0];
-                } else {
-                  meals = snapshot.data![1];
-                }
-                for (int i = 0; i < 7; i++) {
-                  if (meals[sevenDateTime[i]] != null) {
-                    isUploadedDates[i] = true;
-                  } else {
-                    isUploadedDates[i] = false;
-                  }
-                }
+            Map<String, List<MealModel>> meals = {};
+            if (HomeScreen.entryPoint == CampusType.seoul) {
+              meals = snapshot.data![0];
+            } else {
+              meals = snapshot.data![1];
+            }
+            for (int i = 0; i < 7; i++) {
+              if (meals[sevenDateTime[i]] != null) {
+                isUploadedDates[i] = true;
+              } else {
+                isUploadedDates[i] = false;
+              }
+            }
 
-                List<MealModel> mealsByDate = meals[
-                    sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
+            List<MealModel> mealsByDate =
+                meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
 
-                mealsByDate = mealsByDate.where((element) {
-                  return element.date ==
-                      DateTime.parse(sevenDateTime[
-                          HomeScreen.isSelectedDate.indexOf(true)]);
-                }).toList();
+            mealsByDate = mealsByDate.where((element) {
+              return element.date ==
+                  DateTime.parse(
+                      sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
+            }).toList();
 
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 30,
-                        left: 10,
-                        right: 10,
-                        bottom: 4,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Directionality(
-                            textDirection: ui.TextDirection.rtl,
-                            child: TextButton.icon(
-                              onPressed: (() {
-                                showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (context) => CupertinoActionSheet(
-                                    title: const Text("캠퍼스를 선택해주세요."),
-                                    actions: <Widget>[
-                                      CupertinoActionSheetAction(
-                                        onPressed: () {
-                                          setState(() {
-                                            HomeScreen.entryPoint =
-                                                CampusType.seoul;
-                                            Navigator.pop(context, 'Cancel');
-                                            HomeScreen.isSelectedRestaurant = [
-                                              true,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                            ];
-                                            HomeScreen.isSelectedDate = [
-                                              true,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                            ];
-                                            refreshAllMeals();
-                                          });
-                                        },
-                                        child: const Text(
-                                          "서울캠퍼스",
-                                          style: TextStyle(
-                                              color: NyamColors.cauBlue),
-                                        ),
-                                      ),
-                                      CupertinoActionSheetAction(
-                                        onPressed: () {
-                                          setState(() {
-                                            HomeScreen.entryPoint =
-                                                CampusType.ansung;
-                                            Navigator.pop(context, 'Cancel');
-                                            HomeScreen.isSelectedRestaurant = [
-                                              true,
-                                              false,
-                                              false,
-                                            ];
-                                            HomeScreen.isSelectedDate = [
-                                              true,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                              false,
-                                            ];
-                                            refreshAllMeals();
-                                          });
-                                        },
-                                        child: const Text(
-                                          "안성캠퍼스",
-                                          style: TextStyle(
-                                              color: NyamColors.cauBlue),
-                                        ),
-                                      ),
-                                    ],
-                                    cancelButton: CupertinoActionSheetAction(
-                                      isDefaultAction: true,
-                                      onPressed: () {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 30,
+                    left: 10,
+                    right: 10,
+                    bottom: 4,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Directionality(
+                        textDirection: ui.TextDirection.rtl,
+                        child: TextButton.icon(
+                          onPressed: (() {
+                            showCupertinoModalPopup(
+                              context: context,
+                              builder: (context) => CupertinoActionSheet(
+                                title: const Text("캠퍼스를 선택해주세요."),
+                                actions: <Widget>[
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      setState(() {
+                                        HomeScreen.entryPoint =
+                                            CampusType.seoul;
                                         Navigator.pop(context, 'Cancel');
-                                      },
-                                      child: const Text(
-                                        "취소",
-                                        style: TextStyle(
-                                            color: NyamColors.cauBlue),
-                                      ),
+                                        HomeScreen.isSelectedRestaurant = [
+                                          true,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                        ];
+                                        HomeScreen.isSelectedDate = [
+                                          true,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                        ];
+                                        refreshAllMeals();
+                                        HomeScreen.pageController.jumpToPage(0);
+                                      });
+                                    },
+                                    child: const Text(
+                                      "서울캠퍼스",
+                                      style:
+                                          TextStyle(color: NyamColors.cauBlue),
                                     ),
                                   ),
-                                );
-                              }),
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: NyamColors.customGrey,
-                                size: 35,
+                                  CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      setState(() {
+                                        HomeScreen.entryPoint =
+                                            CampusType.ansung;
+                                        Navigator.pop(context, 'Cancel');
+                                        HomeScreen.isSelectedRestaurant = [
+                                          true,
+                                          false,
+                                          false,
+                                        ];
+                                        HomeScreen.isSelectedDate = [
+                                          true,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                        ];
+                                        refreshAllMeals();
+                                        HomeScreen.pageController.jumpToPage(0);
+                                      });
+                                    },
+                                    child: const Text(
+                                      "안성캠퍼스",
+                                      style:
+                                          TextStyle(color: NyamColors.cauBlue),
+                                    ),
+                                  ),
+                                ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    Navigator.pop(context, 'Cancel');
+                                  },
+                                  child: const Text(
+                                    "취소",
+                                    style: TextStyle(color: NyamColors.cauBlue),
+                                  ),
+                                ),
                               ),
-                              label: Text(
-                                HomeScreen.entryPoint == CampusType.seoul
-                                    ? "서울캠퍼스"
-                                    : "안성캠퍼스",
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black,
+                            );
+                          }),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: NyamColors.customGrey,
+                            size: 35,
+                          ),
+                          label: Text(
+                            HomeScreen.entryPoint == CampusType.seoul
+                                ? "서울캠퍼스"
+                                : "안성캠퍼스",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                var begin = const Offset(1, 0);
+                                var end = Offset.zero;
+                                var curve = Curves.ease;
+                                var tween = Tween(begin: begin, end: end).chain(
+                                  CurveTween(
+                                    curve: curve,
+                                  ),
+                                );
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: child,
+                                );
+                              },
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      SettingScreen(),
+                            ),
+                          );
+                          setState(() {
+                            refreshAllMeals();
+                            resetRestaurantPicekr();
+                            HomeScreen.pageController = PageController(
+                                initialPage: 0, viewportFraction: 0.9);
+                          });
+                        },
+                        icon: const Icon(Icons.settings),
+                        color: NyamColors.customGrey,
+                        iconSize: 25,
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 10,
+                  color: NyamColors.customSkyBlue,
+                ),
+                Container(
+                  color: NyamColors.customSkyBlue,
+                  height: 52,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 7,
+                    itemBuilder: (context, index) {
+                      Color textColor = NyamColors.grey50;
+                      if (isUploadedDates[index] == true) {
+                        if (HomeScreen.isSelectedDate[index]) {
+                          textColor = Colors.white;
+                        } else {
+                          textColor = NyamColors.customBlack;
+                        }
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (isUploadedDates[index]) {
+                              if (HomeScreen.isSelectedDate[index] == true) {
+                                return;
+                              } else {
+                                HomeScreen.isSelectedDate = [
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                  false,
+                                ];
+                                HomeScreen.isSelectedDate[index] = true;
+                              }
+                              mealsByDate = meals[sevenDateTime[index]]!;
+                              refreshAllMeals();
+                              HomeScreen.pageController = PageController(
+                                initialPage: HomeScreen.isSelectedRestaurant
+                                    .indexOf(true),
+                                viewportFraction: 0.9,
+                              );
+                            } else {
+                              showToast();
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width / 30,
+                          ),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 13,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: HomeScreen.isSelectedDate[index]
+                                    ? NyamColors.cauBlue
+                                    : NyamColors.customSkyBlue,
+                                borderRadius: BorderRadius.circular(15),
+                                border: index == 0
+                                    ? Border.all(
+                                        width: 1,
+                                        color: NyamColors.cauBlue,
+                                      )
+                                    : Border.all(
+                                        width: 0,
+                                        color: NyamColors.customSkyBlue,
+                                      ),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      sevenDays[index],
+                                      style: TextStyle(
+                                        color: textColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      sevenDaysOfWeek[index],
+                                      style: TextStyle(
+                                        color: textColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                          IconButton(
-                            onPressed: () async {
-                              final result = await Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    var begin = const Offset(1, 0);
-                                    var end = Offset.zero;
-                                    var curve = Curves.ease;
-                                    var tween =
-                                        Tween(begin: begin, end: end).chain(
-                                      CurveTween(
-                                        curve: curve,
-                                      ),
-                                    );
-                                    return SlideTransition(
-                                      position: animation.drive(tween),
-                                      child: child,
-                                    );
-                                  },
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      SettingScreen(),
-                                ),
-                              );
-                              setState(() {
-                                refreshAllMeals();
-                                resetRestaurantPicekr();
-                                HomeScreen.pageController = PageController(
-                                    initialPage: 0, viewportFraction: 0.9);
-                              });
-                            },
-                            icon: const Icon(Icons.settings),
-                            color: NyamColors.customGrey,
-                            iconSize: 25,
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 10,
-                      color: NyamColors.customSkyBlue,
-                    ),
-                    Container(
-                      color: NyamColors.customSkyBlue,
-                      height: 52,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 7,
-                        itemBuilder: (context, index) {
-                          Color textColor = NyamColors.grey50;
-                          if (isUploadedDates[index] == true) {
-                            if (HomeScreen.isSelectedDate[index]) {
-                              textColor = Colors.white;
-                            } else {
-                              textColor = NyamColors.customBlack;
-                            }
-                          }
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  height: 10,
+                  color: NyamColors.customSkyBlue,
+                ),
+                RestaurantPicker(
+                  seoulRestaurantName: HomeScreen.seoulRestaurantName,
+                  ansungRestaurantName: HomeScreen.ansungRestaurantName,
+                ),
+                Expanded(
+                  child: PageView.builder(
+                    controller: HomeScreen.pageController,
+                    onPageChanged: (value) {
+                      setState(() {
+                        if (HomeScreen.entryPoint == CampusType.seoul) {
+                          HomeScreen.isSelectedRestaurant = [
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                          ];
+                        } else {
+                          HomeScreen.isSelectedRestaurant = [
+                            false,
+                            false,
+                            false,
+                          ];
+                        }
 
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (isUploadedDates[index]) {
-                                  if (HomeScreen.isSelectedDate[index] ==
-                                      true) {
-                                    return;
-                                  } else {
-                                    HomeScreen.isSelectedDate = [
-                                      false,
-                                      false,
-                                      false,
-                                      false,
-                                      false,
-                                      false,
-                                      false,
-                                    ];
-                                    HomeScreen.isSelectedDate[index] = true;
-                                  }
-                                  mealsByDate = meals[sevenDateTime[index]]!;
-                                  refreshAllMeals();
-                                  HomeScreen.pageController = PageController(
-                                    initialPage: HomeScreen.isSelectedRestaurant
-                                        .indexOf(true),
-                                    viewportFraction: 0.9,
-                                  );
-                                } else {
-                                  showToast();
-                                }
-                              });
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width / 30,
-                              ),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 13,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: HomeScreen.isSelectedDate[index]
-                                        ? NyamColors.cauBlue
-                                        : NyamColors.customSkyBlue,
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: index == 0
-                                        ? Border.all(
-                                            width: 1,
-                                            color: NyamColors.cauBlue,
-                                          )
-                                        : Border.all(
-                                            width: 0,
-                                            color: NyamColors.customSkyBlue,
-                                          ),
-                                  ),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          sevenDays[index],
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Text(
-                                          sevenDaysOfWeek[index],
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    Container(
-                      height: 10,
-                      color: NyamColors.customSkyBlue,
-                    ),
-                    RestaurantPicker(
-                      seoulRestaurantName: HomeScreen.seoulRestaurantName,
-                      ansungRestaurantName: HomeScreen.ansungRestaurantName,
-                    ),
-                    Expanded(
-                      child: PageView.builder(
-                        controller: HomeScreen.pageController,
-                        onPageChanged: (value) {
-                          setState(() {
-                            if (HomeScreen.entryPoint == CampusType.seoul) {
-                              HomeScreen.isSelectedRestaurant = [
-                                false,
-                                false,
-                                false,
-                                false,
-                                false,
-                              ];
-                            } else {
-                              HomeScreen.isSelectedRestaurant = [
-                                false,
-                                false,
-                                false,
-                              ];
-                            }
-
-                            HomeScreen.isSelectedRestaurant[value] = true;
-                            HomeScreen.autoScrollController.animateTo(
-                              value * 30,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeIn,
-                            );
-                          });
-                        },
-                        itemCount: HomeScreen.entryPoint == CampusType.seoul
-                            ? HomeScreen.seoulRestaurantName.length
-                            : HomeScreen.ansungRestaurantName.length,
-                        itemBuilder: (context, index) {
-                          var restaurantName =
-                              HomeScreen.entryPoint == CampusType.seoul
-                                  ? HomeScreen.seoulRestaurantName[index]
-                                  : HomeScreen.ansungRestaurantName[index];
-                          return MealsOfRestaurant(
-                            restaurantName: restaurantName,
-                            mealsForDay: mealsByDate,
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 60,
-                    )
-                  ],
-                );
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            child: AdBannerWidget(),
-          )
-        ],
+                        HomeScreen.isSelectedRestaurant[value] = true;
+                        HomeScreen.autoScrollController.animateTo(
+                          value * 30,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                        );
+                      });
+                    },
+                    itemCount: HomeScreen.entryPoint == CampusType.seoul
+                        ? HomeScreen.seoulRestaurantName.length
+                        : HomeScreen.ansungRestaurantName.length,
+                    itemBuilder: (context, index) {
+                      var restaurantName =
+                          HomeScreen.entryPoint == CampusType.seoul
+                              ? HomeScreen.seoulRestaurantName[index]
+                              : HomeScreen.ansungRestaurantName[index];
+                      return MealsOfRestaurant(
+                        restaurantName: restaurantName,
+                        mealsForDay: mealsByDate,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 60,
+                )
+              ],
+            );
+          },
+        ),
       ),
-    );
-  }
-}
-
-class AdBannerWidget extends StatelessWidget {
-  AdBannerWidget({
-    super.key,
-  });
-
-  final adUnitId = kReleaseMode
-      ? dotenv.env['RELEASE_ID'] ?? ''
-      : dotenv.env['TEST_ID'] ?? '';
-
-  @override
-  Widget build(BuildContext context) {
-    log(adUnitId);
-    return AdWidget(
-      ad: BannerAd(
-        size: AdSize.fullBanner,
-        adUnitId: adUnitId,
-        listener: const BannerAdListener(),
-        request: const AdRequest(),
-      )..load(),
-      key: UniqueKey(),
     );
   }
 }
