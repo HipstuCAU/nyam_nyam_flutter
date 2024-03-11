@@ -275,7 +275,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           false,
                                         ];
                                         refreshAllMeals();
-                                        HomeScreen.pageController.jumpToPage(0);
+                                        HomeScreen.pageController =
+                                            PageController(
+                                          initialPage: 0,
+                                          viewportFraction: 0.9,
+                                        );
                                       });
                                     },
                                     child: const Text(
@@ -305,7 +309,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           false,
                                         ];
                                         refreshAllMeals();
-                                        HomeScreen.pageController.jumpToPage(0);
+                                        HomeScreen.pageController =
+                                            PageController(
+                                          initialPage: 0,
+                                          viewportFraction: 0.9,
+                                        );
                                       });
                                     },
                                     child: const Text(
