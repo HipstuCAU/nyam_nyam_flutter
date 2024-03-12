@@ -91,10 +91,10 @@ class ApiService {
               case "카우잇츠(cau eats)":
                 restaurantType = RestaurantType.cauEats;
                 break;
-              case "(다빈치)카우버거":
+              case "(안성)카우버거":
                 restaurantType = RestaurantType.cauBurger;
                 break;
-              case "(다빈치)라면":
+              case "(안성)라면":
                 restaurantType = RestaurantType.ramen;
                 break;
               default:
