@@ -323,7 +323,8 @@ class _MenuState extends State<Menu> {
                         //   menu = menu;
                         // } else
 
-                        if (widget.restaurantName == "카우버거") {
+                        if (widget.restaurantName == "카우버거" ||
+                            widget.restaurantName == "생활관B") {
                           // menu = [(menu[0])];
                           crossCount = 1;
                         }
@@ -401,7 +402,8 @@ class _MenuState extends State<Menu> {
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: crossCount,
-                                          childAspectRatio: 4,
+                                          childAspectRatio:
+                                              crossCount == 1 ? 9 : 4,
                                         ),
                                         itemCount: menu.length,
                                         itemBuilder: (context, index) {
