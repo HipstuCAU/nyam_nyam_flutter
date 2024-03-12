@@ -316,6 +316,8 @@ class _MenuState extends State<Menu> {
                       itemCount: widget.mealsForDay.length,
                       itemBuilder: (context, index) {
                         var crossCount = 2;
+                        widget.mealsForDay.sort(
+                            (b, a) => a.menu.length.compareTo(b.menu.length));
                         var menu = widget.mealsForDay[index].menu;
 
                         // 라면 메뉴 변경됨
@@ -349,6 +351,7 @@ class _MenuState extends State<Menu> {
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
+                                          color: NyamColors.grey600,
                                         ),
                                       ),
                                       Text(
