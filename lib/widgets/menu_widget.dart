@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
@@ -315,10 +317,14 @@ class _MenuState extends State<Menu> {
                       itemBuilder: (context, index) {
                         var crossCount = 2;
                         var menu = widget.mealsForDay[index].menu;
-                        if (widget.restaurantName == "라면") {
-                          menu = menu.sublist(1);
-                        } else if (widget.restaurantName == "카우버거") {
-                          menu = ["햄버거 판매시간 ${menu[0].substring(6)}"];
+
+                        // 라면 메뉴 변경됨
+                        // if (widget.restaurantName == "라면") {
+                        //   menu = menu;
+                        // } else
+
+                        if (widget.restaurantName == "카우버거") {
+                          // menu = [(menu[0])];
                           crossCount = 1;
                         }
                         return Padding(
@@ -356,16 +362,20 @@ class _MenuState extends State<Menu> {
                                   ),
                                 )
                               else if (widget.restaurantName == "카우버거")
-                                Column(
-                                  children: [
-                                    Text(
-                                      menu[index],
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    )
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        menu[0],
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: NyamColors.grey600,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 )
                               else
                                 Column(
