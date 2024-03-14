@@ -704,8 +704,8 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                     var meals = [breakfast, lunch, dinner];
                     return Padding(
                       padding: const EdgeInsets.only(
-                        top: 7,
-                        bottom: 7,
+                        top: 5,
+                        bottom: 5,
                       ),
                       child: Menu(
                         isTodayMeals: isTodayMeals,

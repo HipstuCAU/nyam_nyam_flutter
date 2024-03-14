@@ -212,8 +212,7 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning ||
-                      openStatus == OpenStatusType.closed
+              color: openStatus == OpenStatusType.notRunning
                   ? NyamColors.grey50
                   : NyamColors.grey700,
             ),
@@ -225,8 +224,7 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning ||
-                      openStatus == OpenStatusType.closed
+              color: openStatus == OpenStatusType.notRunning
                   ? NyamColors.grey50
                   : NyamColors.grey700,
             ),
@@ -238,8 +236,7 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning ||
-                      openStatus == OpenStatusType.closed
+              color: openStatus == OpenStatusType.notRunning
                   ? NyamColors.grey50
                   : NyamColors.grey700,
             ),
@@ -262,14 +259,14 @@ class _MenuState extends State<Menu> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Padding(
           padding: const EdgeInsets.only(
             left: 20,
             right: 10,
-            top: 24,
-            bottom: 24,
+            top: 16,
+            bottom: 16,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
