@@ -1,17 +1,13 @@
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/foundation.dart' show listEquals;
+import 'package:material_ui/material_ui.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
+
 import 'dart:ui' as ui;
-import 'package:intl/date_symbol_data_local.dart';
+
 import 'package:nyam_nyam_flutter/models/meal.dart';
 import 'package:nyam_nyam_flutter/screens/setting_screen.dart';
 import 'package:nyam_nyam_flutter/services/api_service.dart';
@@ -21,33 +17,50 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.loadMeals});
+
+  final Future<List<MealsForWeek>> Function()? loadMeals;
 
   static CampusType entryPoint = CampusType.seoul;
-  static List<bool> isSelectedRestaurant = [
-    true,
-    false,
-    false,
-    false,
-    false,
-  ];
+  static List<bool> isSelectedRestaurant = List.generate(
+    defaultSeoulRestaurants.length,
+    (index) => index == 0,
+  );
   static PageController pageController = PageController(
     initialPage: 0,
     viewportFraction: 0.9,
   );
   static AutoScrollController autoScrollController = AutoScrollController();
-  static List<String> seoulRestaurantName = [
+  static const defaultSeoulRestaurants = [
     '참슬기',
     '생활관A',
     '생활관B',
     '학생식당',
-    '교직원'
+    '교직원',
+    'University Club',
   ];
-  static List<String> ansungRestaurantName = [
-    '카우이츠',
-    '카우버거',
-    '라면',
-  ];
+  static const defaultAnsungRestaurants = ['카우이츠', '카우버거', '라면'];
+  static List<String> seoulRestaurantName = [...defaultSeoulRestaurants];
+  static List<String> ansungRestaurantName = [...defaultAnsungRestaurants];
+
+  static Future<void> restoreRestaurantOrders() async {
+    final seoul = preferences.getStringList('sortedSeoulRestaurants');
+    final ansung = preferences.getStringList('sortedAnsungRestaurants');
+    seoulRestaurantName = {...?seoul, ...defaultSeoulRestaurants}.toList();
+    ansungRestaurantName = {...?ansung, ...defaultAnsungRestaurants}.toList();
+    if (!listEquals(seoul, seoulRestaurantName)) {
+      await preferences.setStringList(
+        'sortedSeoulRestaurants',
+        seoulRestaurantName,
+      );
+    }
+    if (!listEquals(ansung, ansungRestaurantName)) {
+      await preferences.setStringList(
+        'sortedAnsungRestaurants',
+        ansungRestaurantName,
+      );
+    }
+  }
 
   static List<bool> isSelectedDate = [
     true,
@@ -66,491 +79,412 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var sevenDays = [];
-  var sevenDaysOfWeek = [];
-  List<String> sevenDateTime = [];
-  Map<String, String> sevenDates = {};
-  Map<String, dynamic> data = {};
-  Future<List<Map<String, List<MealModel>>>> allMeals =
-      ApiService().getMeals({});
-
-  var currentPageIndex = 0;
-
-  List<bool> isUploadedDates = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
+  final List<String> sevenDays = [];
+  final List<String> sevenDaysOfWeek = [];
+  final List<String> sevenDateTime = [];
+  late final PageController _pageController;
+  late final AutoScrollController _autoScrollController;
+  late final Future<void> _preferencesReady;
+  late Future<List<MealsForWeek>> allMeals;
 
   @override
   void initState() {
     super.initState();
-    initPreferences();
+    _pageController = PageController(viewportFraction: 0.9);
+    _autoScrollController = AutoScrollController();
+    HomeScreen.pageController = _pageController;
+    HomeScreen.autoScrollController = _autoScrollController;
+    HomeScreen.isSelectedDate = List.generate(7, (index) => index == 0);
     get7daysFromToday();
+    _preferencesReady = initPreferences();
+    allMeals = _loadMeals();
   }
 
-  Future initPreferences() async {
-    data = await ApiService().getJsonFromFirebase();
-    allMeals = ApiService().getMeals(data);
-    HomeScreen.preferences = await SharedPreferences.getInstance();
-    final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
-    final sortedSeoulRestaurants =
-        HomeScreen.preferences.getStringList('sortedSeoulRestaurants');
-    final sortedAnsungRestaurants =
-        HomeScreen.preferences.getStringList('sortedAnsungRestaurants');
-    setState(() {
-      if (favoriteCampus != null) {
-        if (favoriteCampus == "서울") {
-          HomeScreen.entryPoint = CampusType.seoul;
-        } else {
-          HomeScreen.entryPoint = CampusType.ansung;
-        }
-      } else {
-        HomeScreen.preferences.setString('favoriteCampus', '서울');
-      }
-
-      if (sortedSeoulRestaurants != null) {
-        HomeScreen.seoulRestaurantName = sortedSeoulRestaurants;
-      } else {
-        HomeScreen.preferences.setStringList('sortedSeoulRestaurants', [
-          '참슬기',
-          '생활관A',
-          '생활관B',
-          '학생식당',
-          '교직원',
-        ]);
-      }
-
-      if (sortedAnsungRestaurants != null) {
-        HomeScreen.ansungRestaurantName = sortedAnsungRestaurants;
-      } else {
-        HomeScreen.preferences.setStringList('sortedAnsungRestaurants', [
-          '카우이츠',
-          '카우버거',
-          '라면',
-        ]);
-      }
-    });
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _autoScrollController.dispose();
+    super.dispose();
   }
 
-  Map<String, String> get7daysFromToday() {
-    var today = DateTime.now().add(const Duration(hours: 0));
-    for (int i = 0; i < 7; i++) {
-      initializeDateFormatting();
-      DateTime date = today.subtract(Duration(days: -i));
-      sevenDateTime.add(DateFormat('yyyy-MM-dd').format(date));
-      sevenDays.add(int.parse(DateFormat('dd').format(date)).toString());
-      sevenDaysOfWeek.add(DateFormat.E('ko_KR').format(date));
-      sevenDates[sevenDaysOfWeek[i]] = sevenDays[i];
+  Future<void> initPreferences() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    HomeScreen.preferences = preferences;
+    final favoriteCampus = preferences.getString('favoriteCampus');
+    HomeScreen.entryPoint = favoriteCampus == '안성'
+        ? CampusType.ansung
+        : CampusType.seoul;
+    if (favoriteCampus == null) {
+      await preferences.setString('favoriteCampus', '서울');
     }
-    return sevenDates;
+    await HomeScreen.restoreRestaurantOrders();
+    if (!mounted) return;
+    resetRestaurantPicker();
+  }
+
+  Future<List<MealsForWeek>> _loadMeals() async {
+    await _preferencesReady;
+    if (!mounted) return [];
+    if (widget.loadMeals != null) return widget.loadMeals!();
+    final service = ApiService();
+    final data = await service.getJsonFromFirebase();
+    return service.getMeals(data);
+  }
+
+  void get7daysFromToday() {
+    final today = DateTime.now();
+    const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+    for (var i = 0; i < 7; i++) {
+      final date = today.add(Duration(days: i));
+      sevenDateTime.add(DateFormat('yyyy-MM-dd').format(date));
+      sevenDays.add(date.day.toString());
+      sevenDaysOfWeek.add(weekdays[date.weekday - 1]);
+    }
   }
 
   void showToast() {
     Fluttertoast.showToast(
       msg: "😂 아직 식단이 업데이트 되지 않았어요",
       gravity: ToastGravity.TOP,
-      backgroundColor: const Color(0xFF4E5968).withOpacity(0.98),
+      backgroundColor: const Color(0xFF4E5968).withValues(alpha: 0.98),
       fontSize: 16,
       textColor: Colors.white,
       toastLength: Toast.LENGTH_SHORT,
     );
   }
 
-  void resetRestaurantPicekr() {
-    HomeScreen.isSelectedRestaurant = HomeScreen.entryPoint == CampusType.seoul
-        ? [
-            true,
-            false,
-            false,
-            false,
-            false,
-          ]
-        : [
-            true,
-            false,
-            false,
-          ];
-    HomeScreen.pageController.jumpToPage(0);
+  void resetRestaurantPicker() {
+    final count = HomeScreen.entryPoint == CampusType.seoul
+        ? HomeScreen.seoulRestaurantName.length
+        : HomeScreen.ansungRestaurantName.length;
+    HomeScreen.isSelectedRestaurant = List.generate(
+      count,
+      (index) => index == 0,
+    );
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(0);
+    }
   }
 
-  void refreshAllMeals() {
-    allMeals = ApiService().getMeals(data);
+  void _selectCampus(CampusType campus) {
+    Navigator.pop(context);
+    setState(() {
+      HomeScreen.entryPoint = campus;
+      HomeScreen.isSelectedDate = List.generate(7, (index) => index == 0);
+      resetRestaurantPicker();
+    });
+  }
+
+  void _retry() {
+    setState(() {
+      allMeals = _loadMeals();
+    });
+  }
+
+  Widget _loadMessage(String message) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message),
+          TextButton(onPressed: _retry, child: const Text('다시 시도')),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: NyamColors.gradientBG,
-        ),
+        decoration: const BoxDecoration(gradient: NyamColors.gradientBG),
         child: FutureBuilder(
           future: allMeals,
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(
-                child: CircularProgressIndicator(
-                  color: NyamColors.cauBlue,
-                ),
+                child: CircularProgressIndicator(color: NyamColors.cauBlue),
               );
             }
 
-            if (snapshot.data!.isEmpty) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: NyamColors.cauBlue,
-                ),
-              );
+            if (snapshot.hasError) {
+              return _loadMessage('식단을 불러오지 못했어요.');
+            }
+            final allCampusMeals = snapshot.data ?? [];
+            if (allCampusMeals.isEmpty) {
+              return _loadMessage('아직 등록된 식단이 없어요.');
             }
 
-            Map<String, List<MealModel>> meals = {};
-            if (HomeScreen.entryPoint == CampusType.seoul) {
-              meals = snapshot.data![0];
-            } else {
-              meals = snapshot.data![1];
-            }
-            for (int i = 0; i < 7; i++) {
-              if (meals[sevenDateTime[i]] != null) {
-                isUploadedDates[i] = true;
-              } else {
-                isUploadedDates[i] = false;
-              }
-            }
+            final campusIndex = HomeScreen.entryPoint == CampusType.seoul
+                ? 0
+                : 1;
+            final MealsForWeek meals = campusIndex < allCampusMeals.length
+                ? allCampusMeals[campusIndex]
+                : {};
+            final isUploadedDates = List.generate(
+              7,
+              (index) => meals[sevenDateTime[index]]?.isNotEmpty ?? false,
+            );
+            final selectedDate = HomeScreen.isSelectedDate.indexOf(true);
+            final mealsByDate =
+                meals[sevenDateTime[selectedDate]] ?? <MealModel>[];
 
-            List<MealModel> mealsByDate =
-                meals[sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]]!;
-
-            mealsByDate = mealsByDate.where((element) {
-              return element.date ==
-                  DateTime.parse(
-                      sevenDateTime[HomeScreen.isSelectedDate.indexOf(true)]);
-            }).toList();
-
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 30,
-                    left: 10,
-                    right: 10,
-                    bottom: 4,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverToBoxAdapter(
+                  child: Column(
                     children: [
-                      Directionality(
-                        textDirection: ui.TextDirection.rtl,
-                        child: TextButton.icon(
-                          onPressed: (() {
-                            showCupertinoModalPopup(
-                              context: context,
-                              builder: (context) => CupertinoActionSheet(
-                                title: const Text("캠퍼스를 선택해주세요."),
-                                actions: <Widget>[
-                                  CupertinoActionSheetAction(
-                                    onPressed: () {
-                                      setState(() {
-                                        HomeScreen.entryPoint =
-                                            CampusType.seoul;
-                                        Navigator.pop(context, 'Cancel');
-                                        HomeScreen.isSelectedRestaurant = [
-                                          true,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                        ];
-                                        HomeScreen.isSelectedDate = [
-                                          true,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                        ];
-                                        refreshAllMeals();
-                                        HomeScreen.pageController =
-                                            PageController(
-                                          initialPage: 0,
-                                          viewportFraction: 0.9,
-                                        );
-                                      });
-                                    },
-                                    child: const Text(
-                                      "서울캠퍼스",
-                                      style:
-                                          TextStyle(color: NyamColors.cauBlue),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 30,
+                          left: 10,
+                          right: 10,
+                          bottom: 4,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Directionality(
+                              textDirection: ui.TextDirection.rtl,
+                              child: TextButton.icon(
+                                onPressed: (() {
+                                  showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (context) => CupertinoActionSheet(
+                                      title: const Text("캠퍼스를 선택해주세요."),
+                                      actions: <Widget>[
+                                        CupertinoActionSheetAction(
+                                          onPressed: () {
+                                            _selectCampus(CampusType.seoul);
+                                          },
+                                          child: const Text(
+                                            "서울캠퍼스",
+                                            style: TextStyle(
+                                              color: NyamColors.cauBlue,
+                                            ),
+                                          ),
+                                        ),
+                                        CupertinoActionSheetAction(
+                                          onPressed: () {
+                                            _selectCampus(CampusType.ansung);
+                                          },
+                                          child: const Text(
+                                            "안성캠퍼스",
+                                            style: TextStyle(
+                                              color: NyamColors.cauBlue,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      cancelButton: CupertinoActionSheetAction(
+                                        isDefaultAction: true,
+                                        onPressed: () {
+                                          Navigator.pop(context, 'Cancel');
+                                        },
+                                        child: const Text(
+                                          "취소",
+                                          style: TextStyle(
+                                            color: NyamColors.cauBlue,
+                                          ),
+                                        ),
+                                      ),
                                     ),
+                                  );
+                                }),
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: NyamColors.customGrey,
+                                  size: 35,
+                                ),
+                                label: Text(
+                                  HomeScreen.entryPoint == CampusType.seoul
+                                      ? "서울캠퍼스"
+                                      : "안성캠퍼스",
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
                                   ),
-                                  CupertinoActionSheetAction(
-                                    onPressed: () {
-                                      setState(() {
-                                        HomeScreen.entryPoint =
-                                            CampusType.ansung;
-                                        Navigator.pop(context, 'Cancel');
-                                        HomeScreen.isSelectedRestaurant = [
-                                          true,
-                                          false,
-                                          false,
-                                        ];
-                                        HomeScreen.isSelectedDate = [
-                                          true,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                          false,
-                                        ];
-                                        refreshAllMeals();
-                                        HomeScreen.pageController =
-                                            PageController(
-                                          initialPage: 0,
-                                          viewportFraction: 0.9,
-                                        );
-                                      });
-                                    },
-                                    child: const Text(
-                                      "안성캠퍼스",
-                                      style:
-                                          TextStyle(color: NyamColors.cauBlue),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                await Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionsBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                          child,
+                                        ) {
+                                          var begin = const Offset(1, 0);
+                                          var end = Offset.zero;
+                                          var curve = Curves.ease;
+                                          var tween = Tween(
+                                            begin: begin,
+                                            end: end,
+                                          ).chain(CurveTween(curve: curve));
+                                          return SlideTransition(
+                                            position: animation.drive(tween),
+                                            child: child,
+                                          );
+                                        },
+                                    pageBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                    ) => SettingScreen(),
+                                  ),
+                                );
+                                if (!mounted) return;
+                                setState(resetRestaurantPicker);
+                              },
+                              icon: const Icon(Icons.settings),
+                              color: NyamColors.customGrey,
+                              iconSize: 25,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(height: 10, color: NyamColors.customSkyBlue),
+                      Container(
+                        color: NyamColors.customSkyBlue,
+                        height: 52,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 7,
+                          itemBuilder: (context, index) {
+                            Color textColor = NyamColors.grey50;
+                            if (isUploadedDates[index] == true) {
+                              if (HomeScreen.isSelectedDate[index]) {
+                                textColor = Colors.white;
+                              } else {
+                                textColor = NyamColors.customBlack;
+                              }
+                            }
+
+                            return GestureDetector(
+                              onTap: () {
+                                if (!isUploadedDates[index]) {
+                                  showToast();
+                                  return;
+                                }
+                                if (HomeScreen.isSelectedDate[index]) return;
+                                setState(() {
+                                  HomeScreen.isSelectedDate = List.generate(
+                                    7,
+                                    (day) => day == index,
+                                  );
+                                });
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width / 30,
+                                ),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width / 13,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HomeScreen.isSelectedDate[index]
+                                          ? NyamColors.cauBlue
+                                          : NyamColors.customSkyBlue,
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: index == 0
+                                          ? Border.all(
+                                              width: 1,
+                                              color: NyamColors.cauBlue,
+                                            )
+                                          : Border.all(
+                                              width: 0,
+                                              color: NyamColors.customSkyBlue,
+                                            ),
                                     ),
-                                  ),
-                                ],
-                                cancelButton: CupertinoActionSheetAction(
-                                  isDefaultAction: true,
-                                  onPressed: () {
-                                    Navigator.pop(context, 'Cancel');
-                                  },
-                                  child: const Text(
-                                    "취소",
-                                    style: TextStyle(color: NyamColors.cauBlue),
+                                    clipBehavior: Clip.hardEdge,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 3),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            sevenDays[index],
+                                            style: TextStyle(
+                                              color: textColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Text(
+                                            sevenDaysOfWeek[index],
+                                            style: TextStyle(
+                                              color: textColor,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             );
-                          }),
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: NyamColors.customGrey,
-                            size: 35,
-                          ),
-                          label: Text(
-                            HomeScreen.entryPoint == CampusType.seoul
-                                ? "서울캠퍼스"
-                                : "안성캠퍼스",
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                            ),
-                          ),
+                          },
                         ),
                       ),
-                      IconButton(
-                        onPressed: () async {
-                          await Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                var begin = const Offset(1, 0);
-                                var end = Offset.zero;
-                                var curve = Curves.ease;
-                                var tween = Tween(begin: begin, end: end).chain(
-                                  CurveTween(
-                                    curve: curve,
-                                  ),
-                                );
-                                return SlideTransition(
-                                  position: animation.drive(tween),
-                                  child: child,
-                                );
-                              },
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      SettingScreen(),
-                            ),
-                          );
-                          setState(() {
-                            refreshAllMeals();
-                            resetRestaurantPicekr();
-                            HomeScreen.pageController = PageController(
-                                initialPage: 0, viewportFraction: 0.9);
-                          });
-                        },
-                        icon: const Icon(Icons.settings),
-                        color: NyamColors.customGrey,
-                        iconSize: 25,
-                      )
+                      Container(height: 10, color: NyamColors.customSkyBlue),
+                      RestaurantPicker(
+                        seoulRestaurantName: HomeScreen.seoulRestaurantName,
+                        ansungRestaurantName: HomeScreen.ansungRestaurantName,
+                      ),
                     ],
                   ),
                 ),
-                Container(
-                  height: 10,
-                  color: NyamColors.customSkyBlue,
-                ),
-                Container(
-                  color: NyamColors.customSkyBlue,
-                  height: 52,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 7,
-                    itemBuilder: (context, index) {
-                      Color textColor = NyamColors.grey50;
-                      if (isUploadedDates[index] == true) {
-                        if (HomeScreen.isSelectedDate[index]) {
-                          textColor = Colors.white;
-                        } else {
-                          textColor = NyamColors.customBlack;
-                        }
-                      }
-
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (isUploadedDates[index]) {
-                              if (HomeScreen.isSelectedDate[index] == true) {
-                                return;
-                              } else {
-                                HomeScreen.isSelectedDate = [
-                                  false,
-                                  false,
-                                  false,
-                                  false,
-                                  false,
-                                  false,
-                                  false,
-                                ];
-                                HomeScreen.isSelectedDate[index] = true;
-                              }
-                              mealsByDate = meals[sevenDateTime[index]]!;
-                              refreshAllMeals();
-                              HomeScreen.pageController = PageController(
-                                initialPage: HomeScreen.isSelectedRestaurant
-                                    .indexOf(true),
-                                viewportFraction: 0.9,
-                              );
-                            } else {
-                              showToast();
-                            }
-                          });
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width / 30,
-                          ),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 13,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: HomeScreen.isSelectedDate[index]
-                                    ? NyamColors.cauBlue
-                                    : NyamColors.customSkyBlue,
-                                borderRadius: BorderRadius.circular(15),
-                                border: index == 0
-                                    ? Border.all(
-                                        width: 1,
-                                        color: NyamColors.cauBlue,
-                                      )
-                                    : Border.all(
-                                        width: 0,
-                                        color: NyamColors.customSkyBlue,
-                                      ),
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      sevenDays[index],
-                                      style: TextStyle(
-                                        color: textColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Text(
-                                      sevenDaysOfWeek[index],
-                                      style: TextStyle(
-                                        color: textColor,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Container(
-                  height: 10,
-                  color: NyamColors.customSkyBlue,
-                ),
-                RestaurantPicker(
-                  seoulRestaurantName: HomeScreen.seoulRestaurantName,
-                  ansungRestaurantName: HomeScreen.ansungRestaurantName,
-                ),
-                Expanded(
-                  child: PageView.builder(
-                    controller: HomeScreen.pageController,
-                    onPageChanged: (value) {
-                      setState(() {
-                        if (HomeScreen.entryPoint == CampusType.seoul) {
-                          HomeScreen.isSelectedRestaurant = [
-                            false,
-                            false,
-                            false,
-                            false,
-                            false,
-                          ];
-                        } else {
-                          HomeScreen.isSelectedRestaurant = [
-                            false,
-                            false,
-                            false,
-                          ];
-                        }
-
-                        HomeScreen.isSelectedRestaurant[value] = true;
-                        HomeScreen.autoScrollController.animateTo(
-                          value * 30,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeIn,
-                        );
-                      });
-                    },
-                    itemCount: HomeScreen.entryPoint == CampusType.seoul
-                        ? HomeScreen.seoulRestaurantName.length
-                        : HomeScreen.ansungRestaurantName.length,
-                    itemBuilder: (context, index) {
-                      var restaurantName =
-                          HomeScreen.entryPoint == CampusType.seoul
-                              ? HomeScreen.seoulRestaurantName[index]
-                              : HomeScreen.ansungRestaurantName[index];
-                      return MealsOfRestaurant(
-                        restaurantName: restaurantName,
-                        mealsForDay: mealsByDate,
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 60,
-                )
               ],
+              body: mealsByDate.isEmpty
+                  ? const Center(child: Text('아직 등록된 식단이 없어요.'))
+                  : PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (value) {
+                        setState(() {
+                          final count =
+                              HomeScreen.entryPoint == CampusType.seoul
+                              ? HomeScreen.seoulRestaurantName.length
+                              : HomeScreen.ansungRestaurantName.length;
+                          HomeScreen.isSelectedRestaurant = List.filled(
+                            count,
+                            false,
+                          );
+                          HomeScreen.isSelectedRestaurant[value] = true;
+                          if (_autoScrollController.hasClients) {
+                            _autoScrollController.animateTo(
+                              (value * 30.0).clamp(
+                                0.0,
+                                _autoScrollController.position.maxScrollExtent,
+                              ),
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeIn,
+                            );
+                          }
+                        });
+                      },
+                      itemCount: HomeScreen.entryPoint == CampusType.seoul
+                          ? HomeScreen.seoulRestaurantName.length
+                          : HomeScreen.ansungRestaurantName.length,
+                      itemBuilder: (context, index) {
+                        var restaurantName =
+                            HomeScreen.entryPoint == CampusType.seoul
+                            ? HomeScreen.seoulRestaurantName[index]
+                            : HomeScreen.ansungRestaurantName[index];
+                        return MealsOfRestaurant(
+                          restaurantName: restaurantName,
+                          mealsForDay: mealsByDate,
+                        );
+                      },
+                    ),
             );
           },
         ),
@@ -560,15 +494,14 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class MealsOfRestaurant extends StatefulWidget {
-  MealsOfRestaurant({
+  const MealsOfRestaurant({
     super.key,
     required this.mealsForDay,
     required this.restaurantName,
   });
 
-  MealsForDay mealsForDay;
-
-  String restaurantName;
+  final MealsForDay mealsForDay;
+  final String restaurantName;
 
   @override
   State<MealsOfRestaurant> createState() => _MealsOfRestaurantState();
@@ -578,6 +511,19 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
   @override
   void initState() {
     super.initState();
+    _updateMeals();
+  }
+
+  @override
+  void didUpdateWidget(covariant MealsOfRestaurant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.mealsForDay != widget.mealsForDay ||
+        oldWidget.restaurantName != widget.restaurantName) {
+      _updateMeals();
+    }
+  }
+
+  void _updateMeals() {
     setRestaurantName(widget.restaurantName);
     setMealsByTime();
     checkIsTodayMeals();
@@ -596,16 +542,15 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
     if (widget.mealsForDay.isNotEmpty) {
       isTodayMeals =
           DateFormat('yyyy-MM-dd').format(widget.mealsForDay[0].date) ==
-                  DateFormat('yyyy-MM-dd').format(DateTime.now())
-              ? true
-              : false;
+              DateFormat('yyyy-MM-dd').format(DateTime.now())
+          ? true
+          : false;
     }
   }
 
   void checkIsBurgerOrRamen() {
-    if (widget.restaurantName == "카우버거" || widget.restaurantName == "라면") {
-      isBurgerOrRamen = true;
-    }
+    isBurgerOrRamen =
+        widget.restaurantName == '카우버거' || widget.restaurantName == '라면';
   }
 
   void setRestaurantName(String restaurantName) {
@@ -630,6 +575,10 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
       case "교직원":
         restaurantType = RestaurantType.staff;
         restaurantDetailName = "법학관 303관 B1층";
+        break;
+      case 'University Club':
+        restaurantType = RestaurantType.universityClub;
+        restaurantDetailName = '102관 11층';
         break;
       case "카우이츠":
         restaurantType = RestaurantType.cauEats;
@@ -667,9 +616,9 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height - 190,
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      primary: true,
+      child: PrimaryScrollController.none(
         child: Padding(
           padding: const EdgeInsets.only(
             right: 10,
@@ -681,9 +630,7 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                ),
+                padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   restaurantDetailName,
                   style: const TextStyle(
@@ -703,14 +650,13 @@ class _MealsOfRestaurantState extends State<MealsOfRestaurant> {
                   itemBuilder: (context, index) {
                     var meals = [breakfast, lunch, dinner];
                     return Padding(
-                      padding: const EdgeInsets.only(
-                        top: 5,
-                        bottom: 5,
-                      ),
+                      padding: const EdgeInsets.only(top: 5, bottom: 5),
                       child: Menu(
                         isTodayMeals: isTodayMeals,
                         timeIndex: index,
-                        mealsForDay: meals[index],
+                        mealsForDay: isBurgerOrRamen
+                            ? mealsOfRestaurant
+                            : meals[index],
                         restaurantName: widget.restaurantName,
                       ),
                     );

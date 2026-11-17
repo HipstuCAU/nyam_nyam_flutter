@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
@@ -21,24 +21,21 @@ class RestaurantPicker extends StatefulWidget {
 class _RestaurantPickerState extends State<RestaurantPicker> {
   void touchUpToInsideToSelectRestaurant(int index) {
     setState(() {
-      HomeScreen.isSelectedRestaurant = [
-        false,
-        false,
-        false,
-        false,
-        false,
-      ];
+      final count = HomeScreen.entryPoint == CampusType.seoul
+          ? widget.seoulRestaurantName.length
+          : widget.ansungRestaurantName.length;
+      HomeScreen.isSelectedRestaurant = List.filled(count, false);
       HomeScreen.isSelectedRestaurant[index] = true;
-      HomeScreen.pageController.jumpToPage(index);
+      if (HomeScreen.pageController.hasClients) {
+        HomeScreen.pageController.jumpToPage(index);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 10,
-      ),
+      padding: const EdgeInsets.only(top: 10),
       child: SizedBox(
         height: 59,
         child: ListView.builder(
@@ -58,7 +55,13 @@ class _RestaurantPickerState extends State<RestaurantPicker> {
                   top: 5,
                   bottom: 10,
                   right:
-                      index == widget.seoulRestaurantName.length - 1 ? 20 : 0,
+                      index ==
+                          (HomeScreen.entryPoint == CampusType.seoul
+                                  ? widget.seoulRestaurantName.length
+                                  : widget.ansungRestaurantName.length) -
+                              1
+                      ? 20
+                      : 0,
                 ),
                 child: GestureDetector(
                   onTap: () {
