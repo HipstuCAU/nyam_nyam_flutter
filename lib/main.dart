@@ -1,14 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:nyam_nyam_flutter/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: "lib/.env");
+
+  // Firebase 초기화를 dotenv 로드 전에 수행
   await Firebase.initializeApp();
+  await dotenv.load(fileName: ".env");
+
   MobileAds.instance.initialize();
   runApp(const App());
 }
@@ -43,8 +46,8 @@ class AdBannerWidget extends StatelessWidget {
   });
 
   final adUnitId = kReleaseMode
-      ? dotenv.env['RELEASE_ID'] ?? ''
-      : dotenv.env['TEST_ID'] ?? '';
+      ? dotenv.env['RELEASE_BANNER_AD_ID'] ?? ''
+      : dotenv.env['TEST_BANNER_AD_ID'] ?? '';
 
   @override
   Widget build(BuildContext context) {

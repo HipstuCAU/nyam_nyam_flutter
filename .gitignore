@@ -56,8 +56,8 @@ Pods/
 # Files and directories created by pub
 .dart_tool/
 .packages
-# If you're building an application, you may want to check-in your pubspec.lock
-pubspec.lock
+# Track the resolved dependency versions for this application.
+!pubspec.lock
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
@@ -81,6 +81,9 @@ doc/api/
 ### Dart Patch ###
 # dotenv environment variables file
 .env
+
+# FVM SDK cache (the SDK version is tracked in .fvmrc).
+.fvm/
 
 ### Flutter ###
 # Flutter/Dart/Pub related

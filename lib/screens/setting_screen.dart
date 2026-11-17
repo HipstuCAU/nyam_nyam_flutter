@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
@@ -69,7 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
-  touchUpInsideToChangeFavoriteCampus(String campus) async {
+  Future<void> touchUpInsideToChangeFavoriteCampus(String campus) async {
     final favoriteCampus = HomeScreen.preferences.getString('favoriteCampus');
     if (favoriteCampus != null) {
       await HomeScreen.preferences.setString('favoriteCampus', campus);
@@ -87,7 +87,7 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
-  updateRestaurantSorting() async {
+  Future<void> updateRestaurantSorting() async {
     if (widget.selectedCampus == CampusType.seoul) {
       await HomeScreen.preferences.setStringList(
           'sortedSeoulRestaurants', HomeScreen.seoulRestaurantName);
@@ -97,7 +97,7 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
-  initializeRestaurantPicker() {
+  void initializeRestaurantPicker() {
     if (widget.selectedCampus == CampusType.seoul) {
       HomeScreen.isSelectedRestaurant = [
         false,
@@ -116,7 +116,7 @@ class _SettingScreenState extends State<SettingScreen> {
     HomeScreen.isSelectedRestaurant[0] = true;
   }
 
-  luanchURL(int index) async {
+  Future<void> luanchURL(int index) async {
     const urls = [
       "https://mportal.cau.ac.kr/main.do",
       "https://docs.google.com/document/d/1bpCB8lzZzmw1yTrK54HRttgz3kWzHao_EyYe91kpiFw/edit?usp=sharing"
@@ -124,7 +124,7 @@ class _SettingScreenState extends State<SettingScreen> {
     await launchUrlString(urls[index]);
   }
 
-  sendEmail() async {
+  Future<void> sendEmail() async {
     final Email email = Email(
       body: '',
       subject: '[중대한학식 문의]',
@@ -321,12 +321,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       child: ReorderableListView(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          onReorder: (oldIndex, newIndex) {
+                          onReorderItem: (oldIndex, newIndex) {
                             setState(
                               () {
-                                if (oldIndex < newIndex) {
-                                  newIndex -= 1;
-                                }
                                 final String item =
                                     widget.selectedCampus == CampusType.seoul
                                         ? HomeScreen.seoulRestaurantName

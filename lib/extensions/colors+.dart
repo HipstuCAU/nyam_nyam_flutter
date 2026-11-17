@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NyamColors {
   static const cauBlue = Color(0xFF2155A4);
