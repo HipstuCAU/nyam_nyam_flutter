@@ -23,7 +23,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('서울'), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(5));
+    expect(find.text('University Club'), findsOneWidget);
+    expect(HomeScreen.preferences.getStringList('sortedSeoulRestaurants'), [
+      '교직원',
+      '학생식당',
+      '생활관B',
+      '생활관A',
+      '참슬기',
+      'University Club',
+    ]);
+    expect(find.byType(ListTile), findsNWidgets(6));
     expect(
       find.descendant(
         of: find.byType(ListTile).first,
@@ -74,7 +83,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final destination = tester.getCenter(find.text('참슬기'));
+    final destination = tester.getCenter(find.text('University Club'));
     final gesture = await tester.startGesture(
       tester.getCenter(find.text('교직원')),
     );
@@ -89,6 +98,7 @@ void main() {
       '생활관B',
       '생활관A',
       '참슬기',
+      'University Club',
       '교직원',
     ]);
     expect(tester.takeException(), isNull);

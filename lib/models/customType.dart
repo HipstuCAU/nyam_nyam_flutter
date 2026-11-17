@@ -9,6 +9,7 @@ enum RestaurantType {
   cauEats,
   cauBurger,
   ramen,
+  universityClub,
 }
 
 enum CampusType {
@@ -23,6 +24,7 @@ enum MealTime {
 }
 
 enum OpenType {
+  closed,
   closeOnWeekends,
   everyday,
 }

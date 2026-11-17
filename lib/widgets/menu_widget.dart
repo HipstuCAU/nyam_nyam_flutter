@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:nyam_nyam_flutter/extensions/colors+.dart';
 import 'package:nyam_nyam_flutter/models/customType.dart';
 
 class Menu extends StatefulWidget {
-  Menu({
+  const Menu({
     super.key,
     required this.mealsForDay,
     required this.restaurantName,
@@ -13,11 +12,10 @@ class Menu extends StatefulWidget {
     required this.isTodayMeals,
   });
 
-  MealsForDay mealsForDay;
-  String restaurantName;
-  DateTime now = DateTime.now();
-  int timeIndex;
-  bool isTodayMeals;
+  final MealsForDay mealsForDay;
+  final String restaurantName;
+  final int timeIndex;
+  final bool isTodayMeals;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -33,6 +31,8 @@ class _MenuState extends State<Menu> {
     ),
   );
 
+  MealsForDay meals = [];
+  bool hasOperatingHours = false;
   bool isOpenedToSee = true;
   bool isBurgerOrRamen = false;
   int openTimeint = 0;
@@ -45,72 +45,91 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
-    checkIsBurgerOrRamen();
+    _updateMeals();
+  }
+
+  @override
+  void didUpdateWidget(covariant Menu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.mealsForDay != widget.mealsForDay ||
+        oldWidget.restaurantName != widget.restaurantName ||
+        oldWidget.isTodayMeals != widget.isTodayMeals ||
+        oldWidget.timeIndex != widget.timeIndex) {
+      _updateMeals();
+    }
+  }
+
+  void _updateMeals() {
+    meals = List.of(widget.mealsForDay)
+      ..sort((a, b) => b.menu.length.compareTo(a.menu.length));
+    isBurgerOrRamen =
+        widget.restaurantName == '카우버거' || widget.restaurantName == '라면';
+    hasOperatingHours = false;
+    openTimeString = '';
+    closeTimeString = '';
+    isOpenedToSee = true;
     setOpenTime();
     setStatus();
-    setTitle();
-    sortStudentRestaurantMenu();
-  }
-
-  void sortStudentRestaurantMenu() {
-    if (widget.restaurantName == "학생식당") {
-      if (widget.mealsForDay.isNotEmpty) {
-        var setmenu = widget.mealsForDay
-            .where((element) => element.menu.length != 1)
-            .toList();
-        if (setmenu != []) {
-          widget.mealsForDay.last = widget.mealsForDay.first;
-          widget.mealsForDay.first = setmenu.first;
+    if (isBurgerOrRamen) {
+      final MealsForDay uniqueMeals = [];
+      for (final meal in meals) {
+        if (!uniqueMeals.any(
+          (item) =>
+              item.price == meal.price && listEquals(item.menu, meal.menu),
+        )) {
+          uniqueMeals.add(meal);
         }
       }
+      meals = uniqueMeals;
     }
-  }
-
-  void checkIsBurgerOrRamen() {
-    if (widget.restaurantName == "카우버거" || widget.restaurantName == "라면") {
-      isBurgerOrRamen = true;
-    }
+    setTitle();
   }
 
   void setOpenTime() {
-    if (widget.mealsForDay.isNotEmpty) {
-      if (widget.restaurantName == "카우버거") {
-        openTimeString = "09:30";
-        closeTimeString = "18:30";
-      } else if (widget.restaurantName == "라면") {
-        openTimeString = "06:00";
-        closeTimeString = "23:00";
-      } else {
-        openTimeString =
-            widget.mealsForDay[0].openTime[0].toString().substring(11, 16);
-        closeTimeString =
-            widget.mealsForDay[0].openTime[1].toString().substring(11, 16);
-      }
-      openTimeint = int.parse(openTimeString.replaceAll(":", ""));
-      closeTimeint = int.parse(closeTimeString.replaceAll(":", ""));
-    }
-
-    now = int.parse(
-        DateTime.now().toString().substring(11, 16).replaceAll(":", ""));
+    final ranges = meals.where(
+      (meal) =>
+          meal.openTime.length >= 2 &&
+          meal.openType != OpenType.closed &&
+          !(meal.openType == OpenType.closeOnWeekends &&
+              meal.date.weekday >= DateTime.saturday),
+    );
+    if (ranges.isEmpty) return;
+    int minutes(DateTime time) => time.hour * 60 + time.minute;
+    final opening = ranges
+        .map((meal) => minutes(meal.openTime[0]))
+        .reduce((a, b) => a < b ? a : b);
+    final closing = ranges
+        .map((meal) => minutes(meal.openTime[1]))
+        .reduce((a, b) => a > b ? a : b);
+    String formatTime(int time) =>
+        '${(time ~/ 60).toString().padLeft(2, '0')}:${(time % 60).toString().padLeft(2, '0')}';
+    openTimeString = formatTime(opening);
+    closeTimeString = formatTime(closing);
+    openTimeint = opening ~/ 60 * 100 + opening % 60;
+    closeTimeint = closing ~/ 60 * 100 + closing % 60;
+    hasOperatingHours = true;
+    final currentTime = DateTime.now();
+    now = currentTime.hour * 100 + currentTime.minute;
   }
 
   void setStatus() {
-    setState(() {});
-    if (widget.mealsForDay.isNotEmpty) {
-      if (widget.isTodayMeals) {
-        if (now < openTimeint) {
-          openStatus = OpenStatusType.preparing;
-        } else if (openTimeint < now && now < closeTimeint) {
-          openStatus = OpenStatusType.running;
-        } else {
-          openStatus = OpenStatusType.closed;
-          isOpenedToSee = false;
-        }
-      } else {
-        openStatus = OpenStatusType.preparing;
-      }
-    } else {
+    if (meals.isEmpty ||
+        meals.every(
+          (meal) =>
+              meal.openType == OpenType.closed ||
+              (meal.openType == OpenType.closeOnWeekends &&
+                  meal.date.weekday >= DateTime.saturday),
+        )) {
       openStatus = OpenStatusType.notRunning;
+      isOpenedToSee = false;
+    } else if (!widget.isTodayMeals ||
+        !hasOperatingHours ||
+        now < openTimeint) {
+      openStatus = OpenStatusType.preparing;
+    } else if (now < closeTimeint) {
+      openStatus = OpenStatusType.running;
+    } else {
+      openStatus = OpenStatusType.closed;
       isOpenedToSee = false;
     }
   }
@@ -170,7 +189,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning ||
+              color:
+                  openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : NyamColors.grey700,
@@ -183,7 +203,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning ||
+              color:
+                  openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : NyamColors.grey700,
@@ -196,7 +217,8 @@ class _MenuState extends State<Menu> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: openStatus == OpenStatusType.notRunning ||
+              color:
+                  openStatus == OpenStatusType.notRunning ||
                       openStatus == OpenStatusType.closed
                   ? NyamColors.grey50
                   : NyamColors.grey700,
@@ -281,7 +303,8 @@ class _MenuState extends State<Menu> {
                         openTimeString: openTimeString,
                         closeTimeString: closeTimeString,
                         openStatusType: openStatus,
-                        mealsForDay: widget.mealsForDay,
+                        mealsForDay: meals,
+                        hasOperatingHours: hasOperatingHours,
                       ),
                       Icon(
                         isOpenedToSee
@@ -290,7 +313,7 @@ class _MenuState extends State<Menu> {
                         color: NyamColors.grey400,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
               if (isOpenedToSee)
@@ -308,14 +331,12 @@ class _MenuState extends State<Menu> {
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Divider(
                         height: 0.5,
-                        color: NyamColors.customGrey.withOpacity(0.5),
+                        color: NyamColors.customGrey.withValues(alpha: 0.5),
                       ),
-                      itemCount: widget.mealsForDay.length,
+                      itemCount: meals.length,
                       itemBuilder: (context, index) {
                         var crossCount = 2;
-                        widget.mealsForDay.sort(
-                            (b, a) => a.menu.length.compareTo(b.menu.length));
-                        var menu = widget.mealsForDay[index].menu;
+                        var menu = meals[index].menu;
 
                         // 라면 메뉴 변경됨
                         // if (widget.restaurantName == "라면") {
@@ -328,10 +349,7 @@ class _MenuState extends State<Menu> {
                           crossCount = 1;
                         }
                         return Padding(
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            bottom: 5,
-                          ),
+                          padding: const EdgeInsets.only(top: 10, bottom: 5),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -352,7 +370,7 @@ class _MenuState extends State<Menu> {
                                         ),
                                       ),
                                       Text(
-                                        widget.mealsForDay[index].price,
+                                        meals[index].price,
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
@@ -368,13 +386,13 @@ class _MenuState extends State<Menu> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        menu[0],
+                                        menu.isEmpty ? '' : menu[0],
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                           color: NyamColors.grey600,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 )
@@ -384,7 +402,7 @@ class _MenuState extends State<Menu> {
                                   children: [
                                     if (widget.restaurantName != "카우버거")
                                       Text(
-                                        widget.mealsForDay[index].price,
+                                        meals[index].price,
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
@@ -392,19 +410,18 @@ class _MenuState extends State<Menu> {
                                         ),
                                       ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 10,
-                                      ),
+                                      padding: const EdgeInsets.only(top: 10),
                                       child: GridView.builder(
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: crossCount,
-                                          childAspectRatio:
-                                              crossCount == 1 ? 9 : 4,
-                                        ),
+                                              crossAxisCount: crossCount,
+                                              childAspectRatio: crossCount == 1
+                                                  ? 9
+                                                  : 4,
+                                            ),
                                         itemCount: menu.length,
                                         itemBuilder: (context, index) {
                                           return SizedBox(
@@ -420,16 +437,16 @@ class _MenuState extends State<Menu> {
                                           );
                                         },
                                       ),
-                                    )
+                                    ),
                                   ],
-                                )
+                                ),
                             ],
                           ),
                         );
                       },
                     ),
                   ),
-                )
+                ),
             ],
           ),
         ),
@@ -438,82 +455,46 @@ class _MenuState extends State<Menu> {
   }
 }
 
-class OpenState extends StatefulWidget {
-  OpenState({
+class OpenState extends StatelessWidget {
+  const OpenState({
     super.key,
     required this.mealsForDay,
     required this.openStatusType,
     required this.openTimeString,
     required this.closeTimeString,
+    this.hasOperatingHours = true,
   });
 
-  MealsForDay mealsForDay;
-  OpenStatusType openStatusType;
-  String openTimeString = "";
-  String closeTimeString = "";
-
-  @override
-  State<OpenState> createState() => _OpenStateState();
-}
-
-class _OpenStateState extends State<OpenState> {
-  Color backgrounColor = Colors.white;
-  Color titleColor = NyamColors.customGrey;
-  String title = "미운영";
-
-  @override
-  void initState() {
-    super.initState();
-    setColor();
-    setTitle();
-  }
-
-  void setColor() {
-    switch (widget.openStatusType) {
-      case OpenStatusType.preparing:
-        titleColor = NyamColors.customYellow;
-        break;
-      case OpenStatusType.running:
-        titleColor = NyamColors.customBlue;
-        break;
-      case OpenStatusType.closed:
-        titleColor = NyamColors.customRed;
-        break;
-      case OpenStatusType.notRunning:
-        titleColor = NyamColors.customGrey;
-        break;
-    }
-  }
-
-  void setTitle() {
-    switch (widget.openStatusType) {
-      case OpenStatusType.preparing:
-        title = "준비중 ${widget.openTimeString}~${widget.closeTimeString}";
-        break;
-      case OpenStatusType.running:
-        title = "운영중 ${widget.openTimeString}~${widget.closeTimeString}";
-        break;
-      case OpenStatusType.closed:
-        title = "운영종료";
-        break;
-      case OpenStatusType.notRunning:
-        title = "미운영";
-        break;
-    }
-  }
+  final MealsForDay mealsForDay;
+  final OpenStatusType openStatusType;
+  final String openTimeString;
+  final String closeTimeString;
+  final bool hasOperatingHours;
 
   @override
   Widget build(BuildContext context) {
+    final titleColor = switch (openStatusType) {
+      OpenStatusType.preparing => NyamColors.customYellow,
+      OpenStatusType.running => NyamColors.customBlue,
+      OpenStatusType.closed => NyamColors.customRed,
+      OpenStatusType.notRunning => NyamColors.customGrey,
+    };
+    final title =
+        openStatusType != OpenStatusType.notRunning && !hasOperatingHours
+        ? '영업시간 정보 없음'
+        : switch (openStatusType) {
+            OpenStatusType.preparing => '준비중 $openTimeString~$closeTimeString',
+            OpenStatusType.running => '운영중 $openTimeString~$closeTimeString',
+            OpenStatusType.closed => '운영종료',
+            OpenStatusType.notRunning => '미운영',
+          };
     return Container(
       decoration: BoxDecoration(
-        color: backgrounColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 2,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
           title,
           style: TextStyle(

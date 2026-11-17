@@ -5,223 +5,130 @@ import 'package:nyam_nyam_flutter/models/meal.dart';
 import 'package:nyam_nyam_flutter/models/mealsByCampus.dart';
 
 class ApiService {
-  final firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get firestore => FirebaseFirestore.instance;
+
+  static const _restaurantTypes = {
+    '참슬기식당(310관 B4층)': RestaurantType.chamsulgi,
+    '생활관식당(블루미르308관)': RestaurantType.domitoryA,
+    '생활관식당(블루미르309관)': RestaurantType.domitoryB,
+    '학생식당(303관B1층)': RestaurantType.student,
+    '교직원식당(303관B1층)': RestaurantType.staff,
+    'University Club(102관11층)': RestaurantType.universityClub,
+    '카우잇츠(cau eats)': RestaurantType.cauEats,
+    '(안성)카우버거': RestaurantType.cauBurger,
+    '(다빈치)카우버거': RestaurantType.cauBurger,
+    '(안성)라면': RestaurantType.ramen,
+    '(다빈치)라면': RestaurantType.ramen,
+  };
 
   Future<Map<String, dynamic>> getJsonFromFirebase() async {
-    var response = await firestore
+    final response = await firestore
         .collection('CAU_Haksik')
-        .doc("CAU_Cafeteria_Menu")
+        .doc('CAU_Cafeteria_Menu')
         .get();
-    var data = response.data();
-    if (data != null) {
-      return data;
-    }
-    return {};
+    return response.data() ?? {};
   }
 
   Future<List<Map<String, List<MealModel>>>> getMeals(
-      Map<String, dynamic> data) async {
-    List<Map<String, List<MealModel>>> meals = [];
-
-    if (data.isNotEmpty) {
-      MealsByCampusModel mealsInstances = MealsByCampusModel.fromJson(data);
-      meals = getMealsForWeek(mealsInstances);
-    }
-
-    return meals;
+    Map<String, dynamic> data,
+  ) async {
+    if (data.isEmpty) return [];
+    return getMealsForWeek(MealsByCampusModel.fromJson(data));
   }
 
   List<List<MealModel>> getMealsByCampus(
-      MealsByCampusModel mealsByCampusModel) {
-    List<MealModel> seoulMeals = [];
-    List<MealModel> ansungMeals = [];
-    List<List<MealModel>> meals = [];
-    List<String> menu;
-    String price;
-    DateTime date;
-    List<DateTime> openTime = [];
-    MealTime mealTime;
-    MealType mealType;
-    OpenType openType;
-    RestaurantType restaurantType;
+    MealsByCampusModel mealsByCampusModel,
+  ) {
+    List<MealModel> getMealsForOneCampus(Map<String, dynamic> days) {
+      final meals = <MealModel>[];
+      days.forEach((dateKey, dayValue) {
+        final date = DateTime.parse(dateKey.replaceAll('.', ''));
+        final mealsByDay = dayValue as Map<String, dynamic>;
+        mealsByDay.forEach((timeKey, timeValue) {
+          final mealTime = switch (timeKey) {
+            '1' => MealTime.lunch,
+            '2' => MealTime.dinner,
+            _ => MealTime.breakfast,
+          };
+          final mealsByTime = timeValue as Map<String, dynamic>;
+          mealsByTime.forEach((restaurantName, restaurantValue) {
+            final restaurantType = _restaurantTypes[restaurantName];
+            // An unknown restaurant must not appear under another restaurant.
+            if (restaurantType == null) return;
+            final mealsByType = restaurantValue as Map<String, dynamic>;
+            mealsByType.forEach((typeKey, mealValue) {
+              final value = mealValue as Map<String, dynamic>;
+              final menu = (value['menu'] as String? ?? '')
+                  .split('|')
+                  .map((item) => item.trim())
+                  .where((item) => item.isNotEmpty)
+                  .toList();
+              if (menu.isEmpty) return;
 
-    List<MealModel> getMealsForOneCampus(CampusType campusType) {
-      Map<String, dynamic> meals = campusType == CampusType.seoul
-          ? mealsByCampusModel.seoulMeals
-          : mealsByCampusModel.ansungMeals;
+              final typeParts = typeKey.split('(');
+              final type = typeParts.length > 1
+                  ? typeParts[1].replaceAll(')', '')
+                  : typeKey;
+              final mealType = switch (type) {
+                '양식' => MealType.western,
+                '특식' => MealType.special,
+                '학생석식' => MealType.studentDinner,
+                '석식' => MealType.ordinaryDinner,
+                '일품1' => MealType.illpum1,
+                _ => MealType.korean,
+              };
+              final openType = switch (menu.length == 1 ? menu.single : null) {
+                '주말운영없음' => OpenType.closeOnWeekends,
+                '운영없음' || '휴무' => OpenType.closed,
+                _ => OpenType.everyday,
+              };
 
-      List<MealModel> mealsForOneCampus = [];
-
-      meals.forEach((key, value) {
-        date = DateTime.parse(key.replaceAll(".", ""));
-
-        Map<String, dynamic> mealsByDay = value;
-        mealsByDay.forEach((key, value) {
-          switch (key) {
-            case "0":
-              mealTime = MealTime.breakfast;
-              break;
-            case "1":
-              mealTime = MealTime.lunch;
-              break;
-            case "2":
-              mealTime = MealTime.dinner;
-              break;
-            default:
-              mealTime = MealTime.breakfast;
-          }
-          Map<String, dynamic> mealsByTime = value;
-          mealsByTime.forEach((key, value) {
-            switch (key) {
-              case "참슬기식당(310관 B4층)":
-                restaurantType = RestaurantType.chamsulgi;
-                break;
-              case "생활관식당(블루미르308관)":
-                restaurantType = RestaurantType.domitoryA;
-                break;
-              case "생활관식당(블루미르309관)":
-                restaurantType = RestaurantType.domitoryB;
-                break;
-              case "학생식당(303관B1층)":
-                restaurantType = RestaurantType.student;
-                break;
-              case "교직원식당(303관B1층)":
-                restaurantType = RestaurantType.staff;
-                break;
-              case "카우잇츠(cau eats)":
-                restaurantType = RestaurantType.cauEats;
-                break;
-              case "(안성)카우버거":
-                restaurantType = RestaurantType.cauBurger;
-                break;
-              case "(안성)라면":
-                restaurantType = RestaurantType.ramen;
-                break;
-              default:
-                restaurantType = RestaurantType.chamsulgi;
-                break;
-            }
-            Map<String, dynamic> mealsByType = value;
-            mealsByType.forEach((key, value) {
-              var tmpMealType = key.split("(");
-              if (tmpMealType.length > 1) {
-                key = tmpMealType[1].replaceAll(')', '');
-              }
-
-              switch (key) {
-                case "한식":
-                  mealType = MealType.korean;
-                  break;
-                case "양식":
-                  mealType = MealType.western;
-                  break;
-                case "특식":
-                  mealType = MealType.special;
-                  break;
-                case "학생석식":
-                  mealType = MealType.studentDinner;
-                  break;
-                case "석식":
-                  mealType = MealType.ordinaryDinner;
-                  break;
-                default:
-                  mealType = MealType.korean;
-                  break;
-              }
-              price = value['price'];
-              var menuFullString = value['menu'];
-              if (menuFullString != null) {
-                if (menuFullString != "") {
-                  menu = menuFullString.split("|");
-                  openType = menu == "주말운영없음"
-                      ? OpenType.closeOnWeekends
-                      : OpenType.everyday;
-
-                  if (value['time'] != null) {
-                    openTime = [];
-
-                    var tmpOpenTimeList = value['time'].split('~');
-                    if (tmpOpenTimeList.length == 1) {
-                      openTime
-                          .add(DateFormat("hh:mm").parse(tmpOpenTimeList[0]));
-                    } else if (tmpOpenTimeList.length == 2) {
-                      try {
-                        openTime
-                            .add(DateFormat("hh:mm").parse(tmpOpenTimeList[0]));
-                      } catch (e) {
-                        openTime.add(DateFormat("hh:mm").parse("00:00"));
-                      }
-                      try {
-                        openTime
-                            .add(DateFormat("hh:mm").parse(tmpOpenTimeList[1]));
-                      } catch (e) {
-                        openTime.add(DateFormat("hh:mm").parse("00:00"));
-                      }
-                    }
-                  }
-
-                  MealModel meal = MealModel(
-                    date: date,
-                    openTime: openTime,
-                    restaurantType: restaurantType,
-                    mealTime: mealTime,
-                    mealType: mealType,
-                    openType: openType,
-                    menu: menu,
-                    price: price,
-                  );
-                  mealsForOneCampus.add(meal);
-                }
-              }
+              meals.add(
+                MealModel(
+                  date: date,
+                  openTime: _parseOpenTime(value['time'] as String?),
+                  restaurantType: restaurantType,
+                  mealTime: mealTime,
+                  mealType: mealType,
+                  openType: openType,
+                  menu: menu,
+                  price: value['price'] as String? ?? '',
+                ),
+              );
             });
           });
         });
       });
-      return mealsForOneCampus;
+      return meals;
     }
 
-    seoulMeals = getMealsForOneCampus(CampusType.seoul);
-    ansungMeals = getMealsForOneCampus(CampusType.ansung);
+    return [
+      getMealsForOneCampus(mealsByCampusModel.seoulMeals),
+      getMealsForOneCampus(mealsByCampusModel.ansungMeals),
+    ];
+  }
 
-    meals.add(seoulMeals);
-    meals.add(ansungMeals);
-
-    return meals;
+  List<DateTime> _parseOpenTime(String? raw) {
+    if (raw == null || raw.trim().isEmpty) return [];
+    final parts = raw.split('~');
+    if (parts.length > 2) return [];
+    final format = DateFormat('HH:mm');
+    try {
+      return parts.map((part) => format.parseStrict(part.trim())).toList();
+    } on FormatException {
+      return [];
+    }
   }
 
   List<MealsForWeek> getMealsForWeek(MealsByCampusModel mealsByCampusModel) {
-    List<List<MealModel>> mealsByCampus = getMealsByCampus(mealsByCampusModel);
-
-    List<MealsForWeek> mealsForWeek = [];
-    MealsForWeek seoulMealsForWeek = {};
-    MealsForWeek ansungMealsForWeek = {};
-    List<MealModel> mealsForDay = [];
-
-    MealsForWeek getMealsForWeekByCampus(CampusType campusType) {
-      List<MealModel> mealsForOneCampus =
-          campusType == CampusType.seoul ? mealsByCampus[0] : mealsByCampus[1];
-      MealsForWeek mealsForOneCampusForWeek = {};
-      for (var element in mealsForOneCampus) {
-        if (mealsForOneCampusForWeek.containsKey(element.date)) {
-          mealsForDay = mealsForOneCampusForWeek[element.date]!;
-          mealsForDay.add(element);
-          mealsForOneCampusForWeek[element.date.toString().substring(0, 10)] =
-              mealsForDay;
-        } else {
-          mealsForDay.add(element);
-          mealsForOneCampusForWeek[element.date.toString().substring(0, 10)] =
-              mealsForDay;
-        }
+    final format = DateFormat('yyyy-MM-dd');
+    return getMealsByCampus(mealsByCampusModel).map((campusMeals) {
+      final mealsForWeek = <String, List<MealModel>>{};
+      for (final meal in campusMeals) {
+        final dateKey = format.format(meal.date);
+        mealsForWeek.putIfAbsent(dateKey, () => []).add(meal);
       }
-      return mealsForOneCampusForWeek;
-    }
-
-    seoulMealsForWeek = getMealsForWeekByCampus(CampusType.seoul);
-    ansungMealsForWeek = getMealsForWeekByCampus(CampusType.ansung);
-
-    mealsForWeek.add(seoulMealsForWeek);
-    mealsForWeek.add(ansungMealsForWeek);
-
-    return mealsForWeek;
+      return mealsForWeek;
+    }).toList();
   }
 }
